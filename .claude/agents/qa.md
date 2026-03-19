@@ -38,6 +38,8 @@ Then examine the full codebase.
   - API client behaviour including error handling, caching, and
     response parsing for both USDA FoodData Central and Open Food
     Facts.
+- Write tests only for code in this project. Do not write tests for 3rd
+  party libraries or builtin language libraries.
 - Verify that nutritional calculations are correct, including:
   - Scaling from per-100g reference values to user-entered weights.
   - Proportional calculation from recipe total weight to portion

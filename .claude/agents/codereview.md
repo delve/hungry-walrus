@@ -17,6 +17,7 @@ Read the following documents before starting:
 - Technical architecture: `./handoffs/architecture.md`
 - Design specification: `./handoffs/design.md`
 - The developer session notes specified in your session prompt.
+- The ongoing record of issues in your handoff file
 
 Then examine the code produced in the most recent Developer session.
 Use the developer session notes to understand what was built and where
@@ -24,7 +25,7 @@ to focus. Only verify against the design specification when reviewing
 UI-related code.
 
 ## Your responsibilities
-- Verify that new code follows the architecture document's patterns,
+- Verify that code follows the architecture document's patterns,
   module structure, and conventions.
 - Check for consistency with existing code from previous sessions
   including naming conventions, error handling patterns, and structural
@@ -39,28 +40,12 @@ UI-related code.
   that the Developer did not document in their session notes.
 - Assess whether the code integrates cleanly with existing layers
   based on the interfaces defined in the architecture.
+- Update the status of issues when the finding is fixed.
 
 ## Output
-Write your review report to the handoff file specified in your session
-prompt. Structure the report as follows:
-
-### Summary
-A brief overview of what was reviewed and the overall assessment.
-
-### Critical issues
-Problems that must be fixed before proceeding. These include
-architectural violations, broken interfaces between layers, incorrect
-business logic, or missing error handling that would cause failures.
-
-### Warnings
-Issues that should be addressed but do not block progress. These
-include inconsistent patterns, suboptimal implementations, or minor
-deviations from conventions.
-
-### Observations
-Suggestions for improvement that are not urgent. These include
-readability improvements, potential future maintainability concerns,
-or alternative approaches worth considering.
+Write or update the issue report in the handoff file specified in your session
+prompt. Structure the report as described in `./docs/issue_tracking.md`. 
+Follow all additional rules and descriptions in the issue tracking document.
 
 ## Rules
 - Do not modify any code. Your output is a report only.
@@ -70,6 +55,10 @@ or alternative approaches worth considering.
   where possible. Vague feedback is not actionable.
 - If the developer session notes flag a concern or deviation, verify
   whether the concern is valid and include your assessment in the
-  report.
-- Do not review code from previous sessions unless it is relevant to
-  assessing the integration of the current session's work.
+  report as observations.
+- Do not review code from other layers unless it is relevant to
+  assessing the integration of the current layer's work.
+- If a finding is deferred or ignored by the developer consider the rationale 
+  and if it is sound update the finding and do not re-raise the same finding.
+- If a finding is deferred or ignored by the product owner update the finding 
+  and do not report that finding on later passes.

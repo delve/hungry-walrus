@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base theme used before Compose takes over. Dark background to avoid white flash. -->
+    <style name="Theme.HungryWalrus" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">#0E0E0E</item>
+        <item name="android:statusBarColor">#0E0E0E</item>
+        <item name="android:navigationBarColor">#0E0E0E</item>
+    </style>
+</resources>
