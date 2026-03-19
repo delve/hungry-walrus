@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.delve.hungrywalrus.app-debug-78:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.delve.hungrywalrus.app-main-80:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.delve.hungrywalrus.app-debug-78:/mipmap-hdpi_ic_launcher.xml.flat",
+        "source": "com.delve.hungrywalrus.app-main-80:/mipmap-hdpi/ic_launcher.xml"
+    }
+]

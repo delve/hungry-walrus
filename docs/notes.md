@@ -12,12 +12,11 @@ And your pipeline execution order is:
 1. Developer session 01 — data layer
 1. Code Review session 01 — reviews data layer
 1. You review, send fixes back to Developer if needed
-1. Developer session 02 — next layer per architecture
+1. Developer session 02 — domain layer
 1. Code Review session 02 — reviews that layer
 1. You review
-1. Continue Developer → Code Review → You for each layer
-1. Developer final session — UI layer
-1. Code Review — reviews UI layer (include design spec)
+1. Developer session 03 — UI layer
+1. Code Review session 03 — reviews UI layer (include design spec)
 1. You review
 1. QA — integration tests, additional unit tests, full report
 1. You review, send bugs back to Developer if needed

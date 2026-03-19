@@ -1,0 +1,856 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:2:1-28:12
+INJECTED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:2:1-28:12
+INJECTED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:2:1-28:12
+INJECTED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:2:1-28:12
+MERGED from [androidx.hilt:hilt-navigation-compose:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/0a04771d81e0452313e643c9a4ffa333/transformed/hilt-navigation-compose-1.2.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.hilt:hilt-navigation:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/6b4f61637e6b67434eb2333d641c53a3/transformed/hilt-navigation-1.2.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-common:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/06f5b807b0e1cd7ef754496f95e634db/transformed/navigation-common-2.8.7/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-runtime:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/da25b9054ee4c7b8e3725d240570d8d5/transformed/navigation-runtime-2.8.7/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-common-ktx:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/1b1242334bf1905689b8ad8b805a65da/transformed/navigation-common-ktx-2.8.7/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/be20659a14b65c37a4027bb175678397/transformed/navigation-runtime-ktx-2.8.7/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigation:navigation-compose:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/d09be3fceea58d3ca3c51bde2be3b0b9/transformed/navigation-compose-2.8.7/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.room:room-runtime-android:2.7.0] /home/delve/.gradle/caches/8.11.1/transforms/d20e621f584d2c4a78e87d30c861037a/transformed/room-runtime-release/AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.hilt:hilt-work:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/85aa59e134be5f14da505fe2d1b7f4e7/transformed/hilt-work-1.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.work:work-runtime-ktx:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/d4213a3ae1cb0ad89b9a92e85ce03d58/transformed/work-runtime-ktx-2.10.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:17:1-145:12
+MERGED from [androidx.room:room-ktx:2.7.0] /home/delve/.gradle/caches/8.11.1/transforms/e30833b22b2c43649e2ab265a185e350/transformed/room-ktx-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.dagger:hilt-android:2.53.1] /home/delve/.gradle/caches/8.11.1/transforms/0df8f57f38c3264f55b485b3003d9b50/transformed/hilt-android-2.53.1/AndroidManifest.xml:16:1-19:12
+MERGED from [androidx.camera:camera-video:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/4b4216cffd6d2ecb1b8bf2c5acf196d9/transformed/camera-video-1.4.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.camera:camera-core:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/ad56f13c4edf7b94daf8068555ac0be7/transformed/camera-core-1.4.1/AndroidManifest.xml:17:1-36:12
+MERGED from [androidx.camera:camera-view:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/96ef09e8cb95aaedcf2e7fe9160988cc/transformed/camera-view-1.4.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.camera:camera-camera2:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/da3ef8856f27c9a4a3d299a115dc7a20/transformed/camera-camera2-1.4.1/AndroidManifest.xml:17:1-36:12
+MERGED from [androidx.camera:camera-lifecycle:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/ddb4000aa85023a504924f5fe01e2c39/transformed/camera-lifecycle-1.4.1/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.mlkit:barcode-scanning:17.3.0] /home/delve/.gradle/caches/8.11.1/transforms/6d6df09adc76a845d6530a11ab16e1e7/transformed/barcode-scanning-17.3.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/delve/.gradle/caches/8.11.1/transforms/0ac555718990efa94449b0d7bec14f05/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:2:1-18:12
+MERGED from [com.google.mlkit:barcode-scanning-common:17.0.0] /home/delve/.gradle/caches/8.11.1/transforms/67c92b31d1219446e0003e0dc51257db/transformed/barcode-scanning-common-17.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/delve/.gradle/caches/8.11.1/transforms/4cb19d272570dc9124e52c50358e6916/transformed/vision-common-17.3.0/AndroidManifest.xml:2:1-18:12
+MERGED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:2:1-26:12
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/delve/.gradle/caches/8.11.1/transforms/9291895d59f8df8267b24ba86df3a5c2/transformed/play-services-base-18.5.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.mlkit:vision-interfaces:16.3.0] /home/delve/.gradle/caches/8.11.1/transforms/86814e27c4c2a03aaef4e2336d9f83f1/transformed/vision-interfaces-16.3.0/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/delve/.gradle/caches/8.11.1/transforms/18d1b1a7013aa62af2d908a0101eee46/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/delve/.gradle/caches/8.11.1/transforms/318a1a9b450c4e11b162bdbaabc17d5e/transformed/play-services-basement-18.4.0/AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/delve/.gradle/caches/8.11.1/transforms/88d26ec50b82f12b2e689f96c0449568/transformed/appcompat-resources-1.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.appcompat:appcompat:1.6.1] /home/delve/.gradle/caches/8.11.1/transforms/96e58ece5c8328d65f20862391d6bddc/transformed/appcompat-1.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.fragment:fragment:1.5.1] /home/delve/.gradle/caches/8.11.1/transforms/e45d022dbd07d0a05d5ffdb03bc87234/transformed/fragment-1.5.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.activity:activity-ktx:1.9.3] /home/delve/.gradle/caches/8.11.1/transforms/36f130315b0d66fab0d3cfa06871c4d9/transformed/activity-ktx-1.9.3/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity:1.9.3] /home/delve/.gradle/caches/8.11.1/transforms/05dc37f11c77dd9f91f83d0113b170aa/transformed/activity-1.9.3/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.material3:material3-android:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/4ce3ad443f5768f4adca51764a1def97/transformed/material3-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.material:material-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/da319ce0d9271bf5b2625e98d95f6b82/transformed/material-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-core-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/3461219953032f1df4125cb1b0494eca/transformed/animation-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-ripple-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/76ec3154c97f81a2012ef228719cece9/transformed/material-ripple-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/081f55ce418e35bc5ec13b58750fdd0d/transformed/animation-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/8ba643892871d1eb8916ce9607365681/transformed/foundation-layout-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/6081d31d23cdf2fcced1f8538241c388/transformed/foundation-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/1b97c24d9c2ec1c2176ad4537563fc82/transformed/ui-tooling-data-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-unit-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/5304fc380738ff874b69da9ba59ca054/transformed/ui-unit-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-geometry-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/e8521d945fa13ee72dd328017729fc83/transformed/ui-geometry-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-util-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/b6a60e0cbd568d05cfdb3603565c0d80/transformed/ui-util-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-text-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/888d662262626d41e84976d4adfa93d0/transformed/ui-text-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/5d3c03973a4d6cf0d02a4c4e4ec9e6eb/transformed/ui-tooling-preview-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.ui:ui-graphics-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/86ca75ae0db0cd0547ec9cd8b0e679a9/transformed/ui-graphics-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/3d4ad16881f92fdbb89a45e2909f3db3/transformed/ui-tooling-release/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.activity:activity-compose:1.9.3] /home/delve/.gradle/caches/8.11.1/transforms/84484d5b8f99258660db2699efdbb24f/transformed/activity-compose-1.9.3/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.loader:loader:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/75e4449a6a5c90e98049990b0e94f814/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /home/delve/.gradle/caches/8.11.1/transforms/1bd09a5d63cc6f1e2dfb85ea2b27aaed/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/delve/.gradle/caches/8.11.1/transforms/13108010c7e31e3334d9c6b2b14ff157/transformed/savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/90fe3471d985eb9be0eabebad875bc8b/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.core:core-ktx:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/abafa0514dfc49ef0684d7e6798709b9/transformed/core-ktx-1.15.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/33a70ba869433fbc445d303982a92779/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.autofill:autofill:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/5bb5fd02b1c9430abf7945c004d3906e/transformed/autofill-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.graphics:graphics-path:1.0.1] /home/delve/.gradle/caches/8.11.1/transforms/746a61322bbe9b82f6544edd2931b7ac/transformed/graphics-path-1.0.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/9024004508fe248beec53384a01583c7/transformed/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/ddf940b585447a5c40c9cdd37c060203/transformed/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/delve/.gradle/caches/8.11.1/transforms/e66f0d6c00a54de5377aeda6dfd0e40f/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/delve/.gradle/caches/8.11.1/transforms/0a90028639d246433f60e49654bf4df5/transformed/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /home/delve/.gradle/caches/8.11.1/transforms/e6274a15260b59a7489321a32a83a83c/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/delve/.gradle/caches/8.11.1/transforms/867290d7bae5b1d9ece59ab134b3847a/transformed/emoji2-1.3.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6585e301b267bde53f4b25a8c6960d49/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/335c90f41639ed8bbb32ba4d9144a1c8/transformed/lifecycle-runtime-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/47712eb805d5d4f4628cb281bbda964d/transformed/lifecycle-viewmodel-2.8.7/AndroidManifest.xml:2:1-5:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/cca0fd31f40aeb132b0a94d32ade6155/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/74dfec0bdd92070b7670dda123e9791a/transformed/lifecycle-livedata-core-ktx-2.8.7/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/0f528514c27382e55f6c5a9f288ae442/transformed/lifecycle-viewmodel-ktx-2.8.7/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6b4551b52e5d745abe534d6714f8a92e/transformed/lifecycle-viewmodel-savedstate-2.8.7/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-service:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/0e4a676a23e5f3b10f530f9183b630d6/transformed/lifecycle-service-2.8.7/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6926f7dc541a52fb8e9c4559b7b79c66/transformed/lifecycle-livedata-core-2.8.7/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/7822376de5b821289cdc2268a910674c/transformed/lifecycle-livedata-2.8.7/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/047131a61ebfde108290d6a1bd6a15b4/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/523f450ea2251c082df0b4ef7fcf7831/transformed/lifecycle-runtime-ktx-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/a85d9789a9a61a2f9f07281f518b99c4/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/915733c39cc2399a6c6d9884723f60e1/transformed/material-icons-extended-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/95a6447fc598c22599361a52868f79f2/transformed/material-icons-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/834734bb3ada1ba97d0f54522e1ce22b/transformed/ui-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/7b13fdef9669510dbb9962aea4a07ea4/transformed/runtime-saveable-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/1e900254c80b2ff5b893226b6327f1e9/transformed/runtime-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/delve/.gradle/caches/8.11.1/transforms/e33b44d6fe9d5b89e9037be674095103/transformed/startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/de33c8aa1b83df9b352ea7bcf9197498/transformed/tracing-1.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.tracing:tracing-ktx:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/7d3395e43eb5a1f13c7794171cc02906/transformed/tracing-ktx-1.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/f77fa5cac0db8167b0126fba6f2feb54/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.sqlite:sqlite-framework-android:2.5.0] /home/delve/.gradle/caches/8.11.1/transforms/7c923b51665709117a21afe06cc62f46/transformed/sqlite-framework-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.sqlite:sqlite-android:2.5.0] /home/delve/.gradle/caches/8.11.1/transforms/d032595ff769529b86d9c803af315d14/transformed/sqlite-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.security:security-crypto:1.1.0-alpha06] /home/delve/.gradle/caches/8.11.1/transforms/38232bdbdfd5f4775a4410d0de88eeb9/transformed/security-crypto-1.1.0-alpha06/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/delve/.gradle/caches/8.11.1/transforms/5ee0af01c9cef06a3e05ff206a6ffdbc/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/delve/.gradle/caches/8.11.1/transforms/dd73aa8774a490c93b34831963f5ac54/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.exifinterface:exifinterface:1.3.2] /home/delve/.gradle/caches/8.11.1/transforms/cf75ab901b166e3552e006f098801f7a/transformed/exifinterface-1.3.2/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:15:1-38:12
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:15:1-41:12
+MERGED from [com.google.android.datatransport:transport-api:2.2.1] /home/delve/.gradle/caches/8.11.1/transforms/c206a17db6820f032e84334a729de9ac/transformed/transport-api-2.2.1/AndroidManifest.xml:15:1-22:12
+MERGED from [com.google.firebase:firebase-components:16.1.0] /home/delve/.gradle/caches/8.11.1/transforms/16cc3acea70025c104b0447afe2cd55e/transformed/firebase-components-16.1.0/AndroidManifest.xml:15:1-23:12
+MERGED from [com.google.firebase:firebase-encoders-json:17.1.0] /home/delve/.gradle/caches/8.11.1/transforms/868e88a22691a3a4e532dab57daeac5b/transformed/firebase-encoders-json-17.1.0/AndroidManifest.xml:15:1-23:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/0e31dcb73338bee4b25bfdf2c84792e1/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/84f236616a10f6b10cfb3d28dc847b9c/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.dagger:dagger-lint-aar:2.53.1] /home/delve/.gradle/caches/8.11.1/transforms/7a938035e364e0d7becfd9d2b26f068a/transformed/dagger-lint-aar-2.53.1/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/delve/.gradle/caches/8.11.1/transforms/90aed047b6ac6221f7c34112e68f35fb/transformed/image-1.0.0-beta1/AndroidManifest.xml:2:1-9:12
+	package
+		INJECTED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:4:5-67
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:26:5-67
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:26:5-67
+	android:name
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:4:22-64
+uses-permission#android.permission.CAMERA
+ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:5:5-65
+	android:name
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:5:22-62
+uses-feature#android.hardware.camera
+ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:7:5-9:36
+	android:required
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:9:9-33
+	android:name
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:8:9-47
+application
+ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:11:5-27:19
+INJECTED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:11:5-27:19
+MERGED from [androidx.room:room-runtime-android:2.7.0] /home/delve/.gradle/caches/8.11.1/transforms/d20e621f584d2c4a78e87d30c861037a/transformed/room-runtime-release/AndroidManifest.xml:23:5-29:19
+MERGED from [androidx.room:room-runtime-android:2.7.0] /home/delve/.gradle/caches/8.11.1/transforms/d20e621f584d2c4a78e87d30c861037a/transformed/room-runtime-release/AndroidManifest.xml:23:5-29:19
+MERGED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:28:5-143:19
+MERGED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:28:5-143:19
+MERGED from [androidx.camera:camera-core:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/ad56f13c4edf7b94daf8068555ac0be7/transformed/camera-core-1.4.1/AndroidManifest.xml:23:5-34:19
+MERGED from [androidx.camera:camera-core:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/ad56f13c4edf7b94daf8068555ac0be7/transformed/camera-core-1.4.1/AndroidManifest.xml:23:5-34:19
+MERGED from [androidx.camera:camera-camera2:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/da3ef8856f27c9a4a3d299a115dc7a20/transformed/camera-camera2-1.4.1/AndroidManifest.xml:23:5-34:19
+MERGED from [androidx.camera:camera-camera2:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/da3ef8856f27c9a4a3d299a115dc7a20/transformed/camera-camera2-1.4.1/AndroidManifest.xml:23:5-34:19
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/delve/.gradle/caches/8.11.1/transforms/0ac555718990efa94449b0d7bec14f05/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/delve/.gradle/caches/8.11.1/transforms/0ac555718990efa94449b0d7bec14f05/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/delve/.gradle/caches/8.11.1/transforms/4cb19d272570dc9124e52c50358e6916/transformed/vision-common-17.3.0/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/delve/.gradle/caches/8.11.1/transforms/4cb19d272570dc9124e52c50358e6916/transformed/vision-common-17.3.0/AndroidManifest.xml:8:5-16:19
+MERGED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:8:5-24:19
+MERGED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:8:5-24:19
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/delve/.gradle/caches/8.11.1/transforms/9291895d59f8df8267b24ba86df3a5c2/transformed/play-services-base-18.5.0/AndroidManifest.xml:4:5-6:19
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/delve/.gradle/caches/8.11.1/transforms/9291895d59f8df8267b24ba86df3a5c2/transformed/play-services-base-18.5.0/AndroidManifest.xml:4:5-6:19
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/delve/.gradle/caches/8.11.1/transforms/18d1b1a7013aa62af2d908a0101eee46/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:4:5-20
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/delve/.gradle/caches/8.11.1/transforms/18d1b1a7013aa62af2d908a0101eee46/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:4:5-20
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/delve/.gradle/caches/8.11.1/transforms/318a1a9b450c4e11b162bdbaabc17d5e/transformed/play-services-basement-18.4.0/AndroidManifest.xml:5:5-7:19
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/delve/.gradle/caches/8.11.1/transforms/318a1a9b450c4e11b162bdbaabc17d5e/transformed/play-services-basement-18.4.0/AndroidManifest.xml:5:5-7:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/3d4ad16881f92fdbb89a45e2909f3db3/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/3d4ad16881f92fdbb89a45e2909f3db3/transformed/ui-tooling-release/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/delve/.gradle/caches/8.11.1/transforms/867290d7bae5b1d9ece59ab134b3847a/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/delve/.gradle/caches/8.11.1/transforms/867290d7bae5b1d9ece59ab134b3847a/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6585e301b267bde53f4b25a8c6960d49/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6585e301b267bde53f4b25a8c6960d49/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/delve/.gradle/caches/8.11.1/transforms/e33b44d6fe9d5b89e9037be674095103/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/delve/.gradle/caches/8.11.1/transforms/e33b44d6fe9d5b89e9037be674095103/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/delve/.gradle/caches/8.11.1/transforms/5ee0af01c9cef06a3e05ff206a6ffdbc/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/delve/.gradle/caches/8.11.1/transforms/5ee0af01c9cef06a3e05ff206a6ffdbc/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:28:5-36:19
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:28:5-36:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:25:5-39:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:25:5-39:19
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/delve/.gradle/caches/8.11.1/transforms/90aed047b6ac6221f7c34112e68f35fb/transformed/image-1.0.0-beta1/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/delve/.gradle/caches/8.11.1/transforms/90aed047b6ac6221f7c34112e68f35fb/transformed/image-1.0.0-beta1/AndroidManifest.xml:7:5-20
+	android:extractNativeLibs
+		INJECTED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:28:18-86
+	android:supportsRtl
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:16:9-35
+	android:label
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:15:9-41
+	android:icon
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:14:9-43
+	android:allowBackup
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:13:9-36
+	android:theme
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:17:9-50
+	android:name
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:12:9-40
+activity#com.delve.hungrywalrus.MainActivity
+ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:18:9-26:20
+	android:exported
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:20:13-36
+	android:theme
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:21:13-54
+	android:name
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:19:13-41
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:22:13-25:29
+action#android.intent.action.MAIN
+ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:23:17-69
+	android:name
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:23:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:24:17-77
+	android:name
+		ADDED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml:24:27-74
+uses-sdk
+INJECTED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml
+INJECTED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml
+MERGED from [androidx.hilt:hilt-navigation-compose:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/0a04771d81e0452313e643c9a4ffa333/transformed/hilt-navigation-compose-1.2.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.hilt:hilt-navigation-compose:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/0a04771d81e0452313e643c9a4ffa333/transformed/hilt-navigation-compose-1.2.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.hilt:hilt-navigation:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/6b4f61637e6b67434eb2333d641c53a3/transformed/hilt-navigation-1.2.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.hilt:hilt-navigation:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/6b4f61637e6b67434eb2333d641c53a3/transformed/hilt-navigation-1.2.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-common:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/06f5b807b0e1cd7ef754496f95e634db/transformed/navigation-common-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/06f5b807b0e1cd7ef754496f95e634db/transformed/navigation-common-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/da25b9054ee4c7b8e3725d240570d8d5/transformed/navigation-runtime-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/da25b9054ee4c7b8e3725d240570d8d5/transformed/navigation-runtime-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common-ktx:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/1b1242334bf1905689b8ad8b805a65da/transformed/navigation-common-ktx-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-common-ktx:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/1b1242334bf1905689b8ad8b805a65da/transformed/navigation-common-ktx-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/be20659a14b65c37a4027bb175678397/transformed/navigation-runtime-ktx-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-runtime-ktx:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/be20659a14b65c37a4027bb175678397/transformed/navigation-runtime-ktx-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/d09be3fceea58d3ca3c51bde2be3b0b9/transformed/navigation-compose-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/d09be3fceea58d3ca3c51bde2be3b0b9/transformed/navigation-compose-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.room:room-runtime-android:2.7.0] /home/delve/.gradle/caches/8.11.1/transforms/d20e621f584d2c4a78e87d30c861037a/transformed/room-runtime-release/AndroidManifest.xml:21:5-44
+MERGED from [androidx.room:room-runtime-android:2.7.0] /home/delve/.gradle/caches/8.11.1/transforms/d20e621f584d2c4a78e87d30c861037a/transformed/room-runtime-release/AndroidManifest.xml:21:5-44
+MERGED from [androidx.hilt:hilt-work:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/85aa59e134be5f14da505fe2d1b7f4e7/transformed/hilt-work-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.hilt:hilt-work:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/85aa59e134be5f14da505fe2d1b7f4e7/transformed/hilt-work-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.work:work-runtime-ktx:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/d4213a3ae1cb0ad89b9a92e85ce03d58/transformed/work-runtime-ktx-2.10.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.work:work-runtime-ktx:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/d4213a3ae1cb0ad89b9a92e85ce03d58/transformed/work-runtime-ktx-2.10.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.room:room-ktx:2.7.0] /home/delve/.gradle/caches/8.11.1/transforms/e30833b22b2c43649e2ab265a185e350/transformed/room-ktx-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.room:room-ktx:2.7.0] /home/delve/.gradle/caches/8.11.1/transforms/e30833b22b2c43649e2ab265a185e350/transformed/room-ktx-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.dagger:hilt-android:2.53.1] /home/delve/.gradle/caches/8.11.1/transforms/0df8f57f38c3264f55b485b3003d9b50/transformed/hilt-android-2.53.1/AndroidManifest.xml:18:3-42
+MERGED from [com.google.dagger:hilt-android:2.53.1] /home/delve/.gradle/caches/8.11.1/transforms/0df8f57f38c3264f55b485b3003d9b50/transformed/hilt-android-2.53.1/AndroidManifest.xml:18:3-42
+MERGED from [androidx.camera:camera-video:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/4b4216cffd6d2ecb1b8bf2c5acf196d9/transformed/camera-video-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-video:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/4b4216cffd6d2ecb1b8bf2c5acf196d9/transformed/camera-video-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-core:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/ad56f13c4edf7b94daf8068555ac0be7/transformed/camera-core-1.4.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-core:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/ad56f13c4edf7b94daf8068555ac0be7/transformed/camera-core-1.4.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-view:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/96ef09e8cb95aaedcf2e7fe9160988cc/transformed/camera-view-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-view:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/96ef09e8cb95aaedcf2e7fe9160988cc/transformed/camera-view-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-camera2:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/da3ef8856f27c9a4a3d299a115dc7a20/transformed/camera-camera2-1.4.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-camera2:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/da3ef8856f27c9a4a3d299a115dc7a20/transformed/camera-camera2-1.4.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.camera:camera-lifecycle:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/ddb4000aa85023a504924f5fe01e2c39/transformed/camera-lifecycle-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.camera:camera-lifecycle:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/ddb4000aa85023a504924f5fe01e2c39/transformed/camera-lifecycle-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:barcode-scanning:17.3.0] /home/delve/.gradle/caches/8.11.1/transforms/6d6df09adc76a845d6530a11ab16e1e7/transformed/barcode-scanning-17.3.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:barcode-scanning:17.3.0] /home/delve/.gradle/caches/8.11.1/transforms/6d6df09adc76a845d6530a11ab16e1e7/transformed/barcode-scanning-17.3.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/delve/.gradle/caches/8.11.1/transforms/0ac555718990efa94449b0d7bec14f05/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:6:5-44
+MERGED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/delve/.gradle/caches/8.11.1/transforms/0ac555718990efa94449b0d7bec14f05/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:barcode-scanning-common:17.0.0] /home/delve/.gradle/caches/8.11.1/transforms/67c92b31d1219446e0003e0dc51257db/transformed/barcode-scanning-common-17.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:barcode-scanning-common:17.0.0] /home/delve/.gradle/caches/8.11.1/transforms/67c92b31d1219446e0003e0dc51257db/transformed/barcode-scanning-common-17.0.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/delve/.gradle/caches/8.11.1/transforms/4cb19d272570dc9124e52c50358e6916/transformed/vision-common-17.3.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/delve/.gradle/caches/8.11.1/transforms/4cb19d272570dc9124e52c50358e6916/transformed/vision-common-17.3.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:6:5-44
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/delve/.gradle/caches/8.11.1/transforms/9291895d59f8df8267b24ba86df3a5c2/transformed/play-services-base-18.5.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-base:18.5.0] /home/delve/.gradle/caches/8.11.1/transforms/9291895d59f8df8267b24ba86df3a5c2/transformed/play-services-base-18.5.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.mlkit:vision-interfaces:16.3.0] /home/delve/.gradle/caches/8.11.1/transforms/86814e27c4c2a03aaef4e2336d9f83f1/transformed/vision-interfaces-16.3.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.mlkit:vision-interfaces:16.3.0] /home/delve/.gradle/caches/8.11.1/transforms/86814e27c4c2a03aaef4e2336d9f83f1/transformed/vision-interfaces-16.3.0/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/delve/.gradle/caches/8.11.1/transforms/18d1b1a7013aa62af2d908a0101eee46/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-tasks:18.2.0] /home/delve/.gradle/caches/8.11.1/transforms/18d1b1a7013aa62af2d908a0101eee46/transformed/play-services-tasks-18.2.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/delve/.gradle/caches/8.11.1/transforms/318a1a9b450c4e11b162bdbaabc17d5e/transformed/play-services-basement-18.4.0/AndroidManifest.xml:3:5-44
+MERGED from [com.google.android.gms:play-services-basement:18.4.0] /home/delve/.gradle/caches/8.11.1/transforms/318a1a9b450c4e11b162bdbaabc17d5e/transformed/play-services-basement-18.4.0/AndroidManifest.xml:3:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/delve/.gradle/caches/8.11.1/transforms/88d26ec50b82f12b2e689f96c0449568/transformed/appcompat-resources-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /home/delve/.gradle/caches/8.11.1/transforms/88d26ec50b82f12b2e689f96c0449568/transformed/appcompat-resources-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] /home/delve/.gradle/caches/8.11.1/transforms/96e58ece5c8328d65f20862391d6bddc/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat:1.6.1] /home/delve/.gradle/caches/8.11.1/transforms/96e58ece5c8328d65f20862391d6bddc/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.5.1] /home/delve/.gradle/caches/8.11.1/transforms/e45d022dbd07d0a05d5ffdb03bc87234/transformed/fragment-1.5.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.5.1] /home/delve/.gradle/caches/8.11.1/transforms/e45d022dbd07d0a05d5ffdb03bc87234/transformed/fragment-1.5.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity-ktx:1.9.3] /home/delve/.gradle/caches/8.11.1/transforms/36f130315b0d66fab0d3cfa06871c4d9/transformed/activity-ktx-1.9.3/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.9.3] /home/delve/.gradle/caches/8.11.1/transforms/36f130315b0d66fab0d3cfa06871c4d9/transformed/activity-ktx-1.9.3/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity:1.9.3] /home/delve/.gradle/caches/8.11.1/transforms/05dc37f11c77dd9f91f83d0113b170aa/transformed/activity-1.9.3/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.9.3] /home/delve/.gradle/caches/8.11.1/transforms/05dc37f11c77dd9f91f83d0113b170aa/transformed/activity-1.9.3/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material3:material3-android:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/4ce3ad443f5768f4adca51764a1def97/transformed/material3-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material3:material3-android:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/4ce3ad443f5768f4adca51764a1def97/transformed/material3-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material:material-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/da319ce0d9271bf5b2625e98d95f6b82/transformed/material-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/da319ce0d9271bf5b2625e98d95f6b82/transformed/material-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/3461219953032f1df4125cb1b0494eca/transformed/animation-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/3461219953032f1df4125cb1b0494eca/transformed/animation-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/76ec3154c97f81a2012ef228719cece9/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/76ec3154c97f81a2012ef228719cece9/transformed/material-ripple-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/081f55ce418e35bc5ec13b58750fdd0d/transformed/animation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/081f55ce418e35bc5ec13b58750fdd0d/transformed/animation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/8ba643892871d1eb8916ce9607365681/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/8ba643892871d1eb8916ce9607365681/transformed/foundation-layout-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/6081d31d23cdf2fcced1f8538241c388/transformed/foundation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/6081d31d23cdf2fcced1f8538241c388/transformed/foundation-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/1b97c24d9c2ec1c2176ad4537563fc82/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/1b97c24d9c2ec1c2176ad4537563fc82/transformed/ui-tooling-data-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/5304fc380738ff874b69da9ba59ca054/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/5304fc380738ff874b69da9ba59ca054/transformed/ui-unit-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/e8521d945fa13ee72dd328017729fc83/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/e8521d945fa13ee72dd328017729fc83/transformed/ui-geometry-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/b6a60e0cbd568d05cfdb3603565c0d80/transformed/ui-util-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/b6a60e0cbd568d05cfdb3603565c0d80/transformed/ui-util-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/888d662262626d41e84976d4adfa93d0/transformed/ui-text-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/888d662262626d41e84976d4adfa93d0/transformed/ui-text-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/5d3c03973a4d6cf0d02a4c4e4ec9e6eb/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/5d3c03973a4d6cf0d02a4c4e4ec9e6eb/transformed/ui-tooling-preview-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/86ca75ae0db0cd0547ec9cd8b0e679a9/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/86ca75ae0db0cd0547ec9cd8b0e679a9/transformed/ui-graphics-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/3d4ad16881f92fdbb89a45e2909f3db3/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/3d4ad16881f92fdbb89a45e2909f3db3/transformed/ui-tooling-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity-compose:1.9.3] /home/delve/.gradle/caches/8.11.1/transforms/84484d5b8f99258660db2699efdbb24f/transformed/activity-compose-1.9.3/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-compose:1.9.3] /home/delve/.gradle/caches/8.11.1/transforms/84484d5b8f99258660db2699efdbb24f/transformed/activity-compose-1.9.3/AndroidManifest.xml:5:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/75e4449a6a5c90e98049990b0e94f814/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/75e4449a6a5c90e98049990b0e94f814/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /home/delve/.gradle/caches/8.11.1/transforms/1bd09a5d63cc6f1e2dfb85ea2b27aaed/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /home/delve/.gradle/caches/8.11.1/transforms/1bd09a5d63cc6f1e2dfb85ea2b27aaed/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/delve/.gradle/caches/8.11.1/transforms/13108010c7e31e3334d9c6b2b14ff157/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /home/delve/.gradle/caches/8.11.1/transforms/13108010c7e31e3334d9c6b2b14ff157/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/90fe3471d985eb9be0eabebad875bc8b/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/90fe3471d985eb9be0eabebad875bc8b/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.core:core-ktx:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/abafa0514dfc49ef0684d7e6798709b9/transformed/core-ktx-1.15.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/abafa0514dfc49ef0684d7e6798709b9/transformed/core-ktx-1.15.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/33a70ba869433fbc445d303982a92779/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/33a70ba869433fbc445d303982a92779/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.autofill:autofill:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/5bb5fd02b1c9430abf7945c004d3906e/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.autofill:autofill:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/5bb5fd02b1c9430abf7945c004d3906e/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.graphics:graphics-path:1.0.1] /home/delve/.gradle/caches/8.11.1/transforms/746a61322bbe9b82f6544edd2931b7ac/transformed/graphics-path-1.0.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.graphics:graphics-path:1.0.1] /home/delve/.gradle/caches/8.11.1/transforms/746a61322bbe9b82f6544edd2931b7ac/transformed/graphics-path-1.0.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/9024004508fe248beec53384a01583c7/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/9024004508fe248beec53384a01583c7/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/ddf940b585447a5c40c9cdd37c060203/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/ddf940b585447a5c40c9cdd37c060203/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/delve/.gradle/caches/8.11.1/transforms/e66f0d6c00a54de5377aeda6dfd0e40f/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /home/delve/.gradle/caches/8.11.1/transforms/e66f0d6c00a54de5377aeda6dfd0e40f/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/delve/.gradle/caches/8.11.1/transforms/0a90028639d246433f60e49654bf4df5/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /home/delve/.gradle/caches/8.11.1/transforms/0a90028639d246433f60e49654bf4df5/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /home/delve/.gradle/caches/8.11.1/transforms/e6274a15260b59a7489321a32a83a83c/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /home/delve/.gradle/caches/8.11.1/transforms/e6274a15260b59a7489321a32a83a83c/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/delve/.gradle/caches/8.11.1/transforms/867290d7bae5b1d9ece59ab134b3847a/transformed/emoji2-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/delve/.gradle/caches/8.11.1/transforms/867290d7bae5b1d9ece59ab134b3847a/transformed/emoji2-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6585e301b267bde53f4b25a8c6960d49/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6585e301b267bde53f4b25a8c6960d49/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/335c90f41639ed8bbb32ba4d9144a1c8/transformed/lifecycle-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/335c90f41639ed8bbb32ba4d9144a1c8/transformed/lifecycle-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/47712eb805d5d4f4628cb281bbda964d/transformed/lifecycle-viewmodel-2.8.7/AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/47712eb805d5d4f4628cb281bbda964d/transformed/lifecycle-viewmodel-2.8.7/AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/cca0fd31f40aeb132b0a94d32ade6155/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/cca0fd31f40aeb132b0a94d32ade6155/transformed/lifecycle-viewmodel-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/74dfec0bdd92070b7670dda123e9791a/transformed/lifecycle-livedata-core-ktx-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/74dfec0bdd92070b7670dda123e9791a/transformed/lifecycle-livedata-core-ktx-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/0f528514c27382e55f6c5a9f288ae442/transformed/lifecycle-viewmodel-ktx-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/0f528514c27382e55f6c5a9f288ae442/transformed/lifecycle-viewmodel-ktx-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6b4551b52e5d745abe534d6714f8a92e/transformed/lifecycle-viewmodel-savedstate-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6b4551b52e5d745abe534d6714f8a92e/transformed/lifecycle-viewmodel-savedstate-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-service:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/0e4a676a23e5f3b10f530f9183b630d6/transformed/lifecycle-service-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-service:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/0e4a676a23e5f3b10f530f9183b630d6/transformed/lifecycle-service-2.8.7/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6926f7dc541a52fb8e9c4559b7b79c66/transformed/lifecycle-livedata-core-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6926f7dc541a52fb8e9c4559b7b79c66/transformed/lifecycle-livedata-core-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/7822376de5b821289cdc2268a910674c/transformed/lifecycle-livedata-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/7822376de5b821289cdc2268a910674c/transformed/lifecycle-livedata-2.8.7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/047131a61ebfde108290d6a1bd6a15b4/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/047131a61ebfde108290d6a1bd6a15b4/transformed/lifecycle-runtime-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/523f450ea2251c082df0b4ef7fcf7831/transformed/lifecycle-runtime-ktx-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/523f450ea2251c082df0b4ef7fcf7831/transformed/lifecycle-runtime-ktx-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/a85d9789a9a61a2f9f07281f518b99c4/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/a85d9789a9a61a2f9f07281f518b99c4/transformed/lifecycle-viewmodel-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/915733c39cc2399a6c6d9884723f60e1/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/915733c39cc2399a6c6d9884723f60e1/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/95a6447fc598c22599361a52868f79f2/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/95a6447fc598c22599361a52868f79f2/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/834734bb3ada1ba97d0f54522e1ce22b/transformed/ui-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/834734bb3ada1ba97d0f54522e1ce22b/transformed/ui-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/7b13fdef9669510dbb9962aea4a07ea4/transformed/runtime-saveable-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/7b13fdef9669510dbb9962aea4a07ea4/transformed/runtime-saveable-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/1e900254c80b2ff5b893226b6327f1e9/transformed/runtime-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/1e900254c80b2ff5b893226b6327f1e9/transformed/runtime-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/delve/.gradle/caches/8.11.1/transforms/e33b44d6fe9d5b89e9037be674095103/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/delve/.gradle/caches/8.11.1/transforms/e33b44d6fe9d5b89e9037be674095103/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/de33c8aa1b83df9b352ea7bcf9197498/transformed/tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/de33c8aa1b83df9b352ea7bcf9197498/transformed/tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing-ktx:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/7d3395e43eb5a1f13c7794171cc02906/transformed/tracing-ktx-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing-ktx:1.2.0] /home/delve/.gradle/caches/8.11.1/transforms/7d3395e43eb5a1f13c7794171cc02906/transformed/tracing-ktx-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/f77fa5cac0db8167b0126fba6f2feb54/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/f77fa5cac0db8167b0126fba6f2feb54/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.sqlite:sqlite-framework-android:2.5.0] /home/delve/.gradle/caches/8.11.1/transforms/7c923b51665709117a21afe06cc62f46/transformed/sqlite-framework-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.sqlite:sqlite-framework-android:2.5.0] /home/delve/.gradle/caches/8.11.1/transforms/7c923b51665709117a21afe06cc62f46/transformed/sqlite-framework-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.sqlite:sqlite-android:2.5.0] /home/delve/.gradle/caches/8.11.1/transforms/d032595ff769529b86d9c803af315d14/transformed/sqlite-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.sqlite:sqlite-android:2.5.0] /home/delve/.gradle/caches/8.11.1/transforms/d032595ff769529b86d9c803af315d14/transformed/sqlite-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.security:security-crypto:1.1.0-alpha06] /home/delve/.gradle/caches/8.11.1/transforms/38232bdbdfd5f4775a4410d0de88eeb9/transformed/security-crypto-1.1.0-alpha06/AndroidManifest.xml:20:5-44
+MERGED from [androidx.security:security-crypto:1.1.0-alpha06] /home/delve/.gradle/caches/8.11.1/transforms/38232bdbdfd5f4775a4410d0de88eeb9/transformed/security-crypto-1.1.0-alpha06/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/delve/.gradle/caches/8.11.1/transforms/5ee0af01c9cef06a3e05ff206a6ffdbc/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/delve/.gradle/caches/8.11.1/transforms/5ee0af01c9cef06a3e05ff206a6ffdbc/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/delve/.gradle/caches/8.11.1/transforms/dd73aa8774a490c93b34831963f5ac54/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /home/delve/.gradle/caches/8.11.1/transforms/dd73aa8774a490c93b34831963f5ac54/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.exifinterface:exifinterface:1.3.2] /home/delve/.gradle/caches/8.11.1/transforms/cf75ab901b166e3552e006f098801f7a/transformed/exifinterface-1.3.2/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.2] /home/delve/.gradle/caches/8.11.1/transforms/cf75ab901b166e3552e006f098801f7a/transformed/exifinterface-1.3.2/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-api:2.2.1] /home/delve/.gradle/caches/8.11.1/transforms/c206a17db6820f032e84334a729de9ac/transformed/transport-api-2.2.1/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.android.datatransport:transport-api:2.2.1] /home/delve/.gradle/caches/8.11.1/transforms/c206a17db6820f032e84334a729de9ac/transformed/transport-api-2.2.1/AndroidManifest.xml:18:5-20:41
+MERGED from [com.google.firebase:firebase-components:16.1.0] /home/delve/.gradle/caches/8.11.1/transforms/16cc3acea70025c104b0447afe2cd55e/transformed/firebase-components-16.1.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-components:16.1.0] /home/delve/.gradle/caches/8.11.1/transforms/16cc3acea70025c104b0447afe2cd55e/transformed/firebase-components-16.1.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-encoders-json:17.1.0] /home/delve/.gradle/caches/8.11.1/transforms/868e88a22691a3a4e532dab57daeac5b/transformed/firebase-encoders-json-17.1.0/AndroidManifest.xml:19:5-21:41
+MERGED from [com.google.firebase:firebase-encoders-json:17.1.0] /home/delve/.gradle/caches/8.11.1/transforms/868e88a22691a3a4e532dab57daeac5b/transformed/firebase-encoders-json-17.1.0/AndroidManifest.xml:19:5-21:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/0e31dcb73338bee4b25bfdf2c84792e1/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/0e31dcb73338bee4b25bfdf2c84792e1/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/84f236616a10f6b10cfb3d28dc847b9c/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /home/delve/.gradle/caches/8.11.1/transforms/84f236616a10f6b10cfb3d28dc847b9c/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.dagger:dagger-lint-aar:2.53.1] /home/delve/.gradle/caches/8.11.1/transforms/7a938035e364e0d7becfd9d2b26f068a/transformed/dagger-lint-aar-2.53.1/AndroidManifest.xml:18:3-42
+MERGED from [com.google.dagger:dagger-lint-aar:2.53.1] /home/delve/.gradle/caches/8.11.1/transforms/7a938035e364e0d7becfd9d2b26f068a/transformed/dagger-lint-aar-2.53.1/AndroidManifest.xml:18:3-42
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/delve/.gradle/caches/8.11.1/transforms/90aed047b6ac6221f7c34112e68f35fb/transformed/image-1.0.0-beta1/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.odml:image:1.0.0-beta1] /home/delve/.gradle/caches/8.11.1/transforms/90aed047b6ac6221f7c34112e68f35fb/transformed/image-1.0.0-beta1/AndroidManifest.xml:5:5-44
+	android:targetSdkVersion
+		INJECTED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/delve/repos/github/delve/hungry-walrus/app/src/main/AndroidManifest.xml
+service#androidx.room.MultiInstanceInvalidationService
+ADDED from [androidx.room:room-runtime-android:2.7.0] /home/delve/.gradle/caches/8.11.1/transforms/d20e621f584d2c4a78e87d30c861037a/transformed/room-runtime-release/AndroidManifest.xml:24:9-28:63
+	android:exported
+		ADDED from [androidx.room:room-runtime-android:2.7.0] /home/delve/.gradle/caches/8.11.1/transforms/d20e621f584d2c4a78e87d30c861037a/transformed/room-runtime-release/AndroidManifest.xml:27:13-37
+	tools:ignore
+		ADDED from [androidx.room:room-runtime-android:2.7.0] /home/delve/.gradle/caches/8.11.1/transforms/d20e621f584d2c4a78e87d30c861037a/transformed/room-runtime-release/AndroidManifest.xml:28:13-60
+	android:directBootAware
+		ADDED from [androidx.room:room-runtime-android:2.7.0] /home/delve/.gradle/caches/8.11.1/transforms/d20e621f584d2c4a78e87d30c861037a/transformed/room-runtime-release/AndroidManifest.xml:26:13-43
+	android:name
+		ADDED from [androidx.room:room-runtime-android:2.7.0] /home/delve/.gradle/caches/8.11.1/transforms/d20e621f584d2c4a78e87d30c861037a/transformed/room-runtime-release/AndroidManifest.xml:25:13-74
+uses-permission#android.permission.WAKE_LOCK
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:23:5-68
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:23:22-65
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:25:5-79
+MERGED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:25:5-79
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:22:5-79
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:24:22-76
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:25:5-81
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:25:22-78
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:26:5-77
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:26:22-74
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:29:9-37:20
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/delve/.gradle/caches/8.11.1/transforms/867290d7bae5b1d9ece59ab134b3847a/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.emoji2:emoji2:1.3.0] /home/delve/.gradle/caches/8.11.1/transforms/867290d7bae5b1d9ece59ab134b3847a/transformed/emoji2-1.3.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6585e301b267bde53f4b25a8c6960d49/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6585e301b267bde53f4b25a8c6960d49/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/delve/.gradle/caches/8.11.1/transforms/e33b44d6fe9d5b89e9037be674095103/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] /home/delve/.gradle/caches/8.11.1/transforms/e33b44d6fe9d5b89e9037be674095103/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:33:13-31
+	android:authorities
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:31:13-68
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:32:13-37
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:30:13-67
+meta-data#androidx.work.WorkManagerInitializer
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:34:13-36:52
+	android:value
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:36:17-49
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:35:17-68
+service#androidx.work.impl.background.systemalarm.SystemAlarmService
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:39:9-45:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:42:13-72
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:43:13-37
+	tools:ignore
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:44:13-60
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:45:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:41:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:40:13-88
+service#androidx.work.impl.background.systemjob.SystemJobService
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:46:9-52:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:49:13-70
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:50:13-36
+	android:permission
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:51:13-69
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:52:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:48:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:47:13-84
+service#androidx.work.impl.foreground.SystemForegroundService
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:53:9-59:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:56:13-77
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:57:13-37
+	tools:ignore
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:58:13-60
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:59:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:55:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:54:13-81
+receiver#androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:61:9-66:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:64:13-35
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:65:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:66:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:63:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:62:13-88
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:67:9-77:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:70:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:71:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:72:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:69:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:68:13-106
+intent-filter#action:name:android.intent.action.ACTION_POWER_CONNECTED+action:name:android.intent.action.ACTION_POWER_DISCONNECTED
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:73:13-76:29
+action#android.intent.action.ACTION_POWER_CONNECTED
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:74:17-87
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:74:25-84
+action#android.intent.action.ACTION_POWER_DISCONNECTED
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:75:17-90
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:75:25-87
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:78:9-88:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:81:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:82:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:83:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:80:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:79:13-104
+intent-filter#action:name:android.intent.action.BATTERY_LOW+action:name:android.intent.action.BATTERY_OKAY
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:84:13-87:29
+action#android.intent.action.BATTERY_OKAY
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:85:17-77
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:85:25-74
+action#android.intent.action.BATTERY_LOW
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:86:17-76
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:86:25-73
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:89:9-99:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:92:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:93:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:94:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:91:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:90:13-104
+intent-filter#action:name:android.intent.action.DEVICE_STORAGE_LOW+action:name:android.intent.action.DEVICE_STORAGE_OK
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:95:13-98:29
+action#android.intent.action.DEVICE_STORAGE_LOW
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:96:17-83
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:96:25-80
+action#android.intent.action.DEVICE_STORAGE_OK
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:97:17-82
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:97:25-79
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:100:9-109:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:103:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:104:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:105:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:102:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:101:13-103
+intent-filter#action:name:android.net.conn.CONNECTIVITY_CHANGE
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:106:13-108:29
+action#android.net.conn.CONNECTIVITY_CHANGE
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:107:17-79
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:107:25-76
+receiver#androidx.work.impl.background.systemalarm.RescheduleReceiver
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:110:9-121:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:113:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:114:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:115:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:112:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:111:13-88
+intent-filter#action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.TIMEZONE_CHANGED+action:name:android.intent.action.TIME_SET
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:116:13-120:29
+action#android.intent.action.BOOT_COMPLETED
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:117:17-79
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:117:25-76
+action#android.intent.action.TIME_SET
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:118:17-73
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:118:25-70
+action#android.intent.action.TIMEZONE_CHANGED
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:119:17-81
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:119:25-78
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:122:9-131:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:125:13-72
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:126:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:127:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:124:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:123:13-99
+intent-filter#action:name:androidx.work.impl.background.systemalarm.UpdateProxies
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:128:13-130:29
+action#androidx.work.impl.background.systemalarm.UpdateProxies
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:129:17-98
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:129:25-95
+receiver#androidx.work.impl.diagnostics.DiagnosticsReceiver
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:132:9-142:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:135:13-35
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:136:13-36
+	android:permission
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:137:13-57
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:138:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:134:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:133:13-78
+intent-filter#action:name:androidx.work.diagnostics.REQUEST_DIAGNOSTICS
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:139:13-141:29
+action#androidx.work.diagnostics.REQUEST_DIAGNOSTICS
+ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:140:17-88
+	android:name
+		ADDED from [androidx.work:work-runtime:2.10.0] /home/delve/.gradle/caches/8.11.1/transforms/7c752dec8857d8364e0c13e6cf3ee489/transformed/work-runtime-2.10.0/AndroidManifest.xml:140:25-85
+service#androidx.camera.core.impl.MetadataHolderService
+ADDED from [androidx.camera:camera-core:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/ad56f13c4edf7b94daf8068555ac0be7/transformed/camera-core-1.4.1/AndroidManifest.xml:29:9-33:78
+MERGED from [androidx.camera:camera-camera2:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/da3ef8856f27c9a4a3d299a115dc7a20/transformed/camera-camera2-1.4.1/AndroidManifest.xml:24:9-33:19
+MERGED from [androidx.camera:camera-camera2:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/da3ef8856f27c9a4a3d299a115dc7a20/transformed/camera-camera2-1.4.1/AndroidManifest.xml:24:9-33:19
+	android:enabled
+		ADDED from [androidx.camera:camera-core:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/ad56f13c4edf7b94daf8068555ac0be7/transformed/camera-core-1.4.1/AndroidManifest.xml:31:13-36
+	android:exported
+		ADDED from [androidx.camera:camera-core:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/ad56f13c4edf7b94daf8068555ac0be7/transformed/camera-core-1.4.1/AndroidManifest.xml:32:13-37
+	tools:ignore
+		ADDED from [androidx.camera:camera-core:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/ad56f13c4edf7b94daf8068555ac0be7/transformed/camera-core-1.4.1/AndroidManifest.xml:33:13-75
+	android:name
+		ADDED from [androidx.camera:camera-core:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/ad56f13c4edf7b94daf8068555ac0be7/transformed/camera-core-1.4.1/AndroidManifest.xml:30:13-75
+meta-data#androidx.camera.core.impl.MetadataHolderService.DEFAULT_CONFIG_PROVIDER
+ADDED from [androidx.camera:camera-camera2:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/da3ef8856f27c9a4a3d299a115dc7a20/transformed/camera-camera2-1.4.1/AndroidManifest.xml:30:13-32:89
+	android:value
+		ADDED from [androidx.camera:camera-camera2:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/da3ef8856f27c9a4a3d299a115dc7a20/transformed/camera-camera2-1.4.1/AndroidManifest.xml:32:17-86
+	android:name
+		ADDED from [androidx.camera:camera-camera2:1.4.1] /home/delve/.gradle/caches/8.11.1/transforms/da3ef8856f27c9a4a3d299a115dc7a20/transformed/camera-camera2-1.4.1/AndroidManifest.xml:31:17-103
+service#com.google.mlkit.common.internal.MlKitComponentDiscoveryService
+ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/delve/.gradle/caches/8.11.1/transforms/0ac555718990efa94449b0d7bec14f05/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/delve/.gradle/caches/8.11.1/transforms/4cb19d272570dc9124e52c50358e6916/transformed/vision-common-17.3.0/AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.mlkit:vision-common:17.3.0] /home/delve/.gradle/caches/8.11.1/transforms/4cb19d272570dc9124e52c50358e6916/transformed/vision-common-17.3.0/AndroidManifest.xml:9:9-15:19
+MERGED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:15:9-23:19
+MERGED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:15:9-23:19
+	android:exported
+		ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/delve/.gradle/caches/8.11.1/transforms/0ac555718990efa94449b0d7bec14f05/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:11:13-37
+	tools:targetApi
+		ADDED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:19:13-32
+	android:directBootAware
+		ADDED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:17:13-43
+	android:name
+		ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/delve/.gradle/caches/8.11.1/transforms/0ac555718990efa94449b0d7bec14f05/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:10:13-91
+meta-data#com.google.firebase.components:com.google.mlkit.vision.barcode.internal.BarcodeRegistrar
+ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/delve/.gradle/caches/8.11.1/transforms/0ac555718990efa94449b0d7bec14f05/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:12:13-14:85
+	android:value
+		ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/delve/.gradle/caches/8.11.1/transforms/0ac555718990efa94449b0d7bec14f05/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:14:17-82
+	android:name
+		ADDED from [com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1] /home/delve/.gradle/caches/8.11.1/transforms/0ac555718990efa94449b0d7bec14f05/transformed/play-services-mlkit-barcode-scanning-18.3.1/AndroidManifest.xml:13:17-120
+meta-data#com.google.firebase.components:com.google.mlkit.vision.common.internal.VisionCommonRegistrar
+ADDED from [com.google.mlkit:vision-common:17.3.0] /home/delve/.gradle/caches/8.11.1/transforms/4cb19d272570dc9124e52c50358e6916/transformed/vision-common-17.3.0/AndroidManifest.xml:12:13-14:85
+	android:value
+		ADDED from [com.google.mlkit:vision-common:17.3.0] /home/delve/.gradle/caches/8.11.1/transforms/4cb19d272570dc9124e52c50358e6916/transformed/vision-common-17.3.0/AndroidManifest.xml:14:17-82
+	android:name
+		ADDED from [com.google.mlkit:vision-common:17.3.0] /home/delve/.gradle/caches/8.11.1/transforms/4cb19d272570dc9124e52c50358e6916/transformed/vision-common-17.3.0/AndroidManifest.xml:13:17-124
+provider#com.google.mlkit.common.internal.MlKitInitProvider
+ADDED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:9:9-13:38
+	android:authorities
+		ADDED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:11:13-69
+	android:exported
+		ADDED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:12:13-37
+	android:initOrder
+		ADDED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:13:13-35
+	android:name
+		ADDED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:10:13-78
+meta-data#com.google.firebase.components:com.google.mlkit.common.internal.CommonComponentRegistrar
+ADDED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:20:13-22:85
+	android:value
+		ADDED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:22:17-82
+	android:name
+		ADDED from [com.google.mlkit:common:18.11.0] /home/delve/.gradle/caches/8.11.1/transforms/e2c8dce1e599961307e0c2eb8c113367/transformed/common-18.11.0/AndroidManifest.xml:21:17-120
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:18.5.0] /home/delve/.gradle/caches/8.11.1/transforms/9291895d59f8df8267b24ba86df3a5c2/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:9-173
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:18.5.0] /home/delve/.gradle/caches/8.11.1/transforms/9291895d59f8df8267b24ba86df3a5c2/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:146-170
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:18.5.0] /home/delve/.gradle/caches/8.11.1/transforms/9291895d59f8df8267b24ba86df3a5c2/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:86-145
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:18.5.0] /home/delve/.gradle/caches/8.11.1/transforms/9291895d59f8df8267b24ba86df3a5c2/transformed/play-services-base-18.5.0/AndroidManifest.xml:5:19-85
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:18.4.0] /home/delve/.gradle/caches/8.11.1/transforms/318a1a9b450c4e11b162bdbaabc17d5e/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:9-122
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:18.4.0] /home/delve/.gradle/caches/8.11.1/transforms/318a1a9b450c4e11b162bdbaabc17d5e/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:66-119
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:18.4.0] /home/delve/.gradle/caches/8.11.1/transforms/318a1a9b450c4e11b162bdbaabc17d5e/transformed/play-services-basement-18.4.0/AndroidManifest.xml:6:20-65
+activity#androidx.compose.ui.tooling.PreviewActivity
+ADDED from [androidx.compose.ui:ui-tooling-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/3d4ad16881f92fdbb89a45e2909f3db3/transformed/ui-tooling-release/AndroidManifest.xml:23:9-25:39
+	android:exported
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/3d4ad16881f92fdbb89a45e2909f3db3/transformed/ui-tooling-release/AndroidManifest.xml:25:13-36
+	android:name
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.7.8] /home/delve/.gradle/caches/8.11.1/transforms/3d4ad16881f92fdbb89a45e2909f3db3/transformed/ui-tooling-release/AndroidManifest.xml:24:13-71
+meta-data#androidx.emoji2.text.EmojiCompatInitializer
+ADDED from [androidx.emoji2:emoji2:1.3.0] /home/delve/.gradle/caches/8.11.1/transforms/867290d7bae5b1d9ece59ab134b3847a/transformed/emoji2-1.3.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/delve/.gradle/caches/8.11.1/transforms/867290d7bae5b1d9ece59ab134b3847a/transformed/emoji2-1.3.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.3.0] /home/delve/.gradle/caches/8.11.1/transforms/867290d7bae5b1d9ece59ab134b3847a/transformed/emoji2-1.3.0/AndroidManifest.xml:30:17-75
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:23:9-81
+permission#com.delve.hungrywalrus.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:26:22-94
+uses-permission#com.delve.hungrywalrus.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.15.0] /home/delve/.gradle/caches/8.11.1/transforms/235b3d092507c3de5038addbf676f7bc/transformed/core-1.15.0/AndroidManifest.xml:26:22-94
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6585e301b267bde53f4b25a8c6960d49/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6585e301b267bde53f4b25a8c6960d49/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.8.7] /home/delve/.gradle/caches/8.11.1/transforms/6585e301b267bde53f4b25a8c6960d49/transformed/lifecycle-process-2.8.7/AndroidManifest.xml:30:17-78
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /home/delve/.gradle/caches/8.11.1/transforms/201dbbe9195493d9c629f7fe85e31bd1/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+service#com.google.android.datatransport.runtime.backends.TransportBackendDiscovery
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:29:9-35:19
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:36:9-38:40
+MERGED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:36:9-38:40
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:31:13-37
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:30:13-103
+meta-data#backend:com.google.android.datatransport.cct.CctBackendFactory
+ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:32:13-34:39
+	android:value
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:34:17-36
+	android:name
+		ADDED from [com.google.android.datatransport:transport-backend-cct:2.3.3] /home/delve/.gradle/caches/8.11.1/transforms/1db46d28089a54035f6d1ceff14419da/transformed/transport-backend-cct-2.3.3/AndroidManifest.xml:33:17-94
+service#com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService
+ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:26:9-30:19
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:28:13-37
+	android:permission
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:29:13-69
+	android:name
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:27:13-117
+receiver#com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver
+ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:32:9-34:40
+	android:exported
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:34:13-37
+	android:name
+		ADDED from [com.google.android.datatransport:transport-runtime:2.2.6] /home/delve/.gradle/caches/8.11.1/transforms/b54563580a0b1a5048be2ebd674c1bae/transformed/transport-runtime-2.2.6/AndroidManifest.xml:33:13-132
