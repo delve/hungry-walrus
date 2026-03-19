@@ -6,7 +6,7 @@ And your pipeline execution order is:
 
 1. Architect — produces architecture.md
 1. You review
-1. Designer — produces design.md
+1. Design — produces design.md
 1. You review
 1. Developer session 00 — project scaffolding
 1. Developer session 01 — data layer
@@ -25,3 +25,4 @@ And your pipeline execution order is:
 1. You review
 
 
+TODO: As per 8.4 in design.md, add serving size to the food cache
