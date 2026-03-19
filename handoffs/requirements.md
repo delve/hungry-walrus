@@ -52,7 +52,7 @@ The app does not generate or recommend plans.
 - All food entries require a weight input from the user, whether the
   item comes from a recipe, an API lookup, or manual entry. This weight
   input is used only to scale the nutritional values of the food reference
-  data based on the amount consumed.
+  data based on the amount consumed. Weight for a log entry is not stored.
 - Each log entry records: food name (or recipe name), kilocalories,
   protein (g), carbohydrates (g), fat (g), and a timestamp.
 - After completing an entry, the user sees a validation summary with
