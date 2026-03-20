@@ -4,19 +4,19 @@ You → Architect → You → Designer → You → Developer → Code Review Age
 
 And your pipeline execution order is:
 
-1. Architect — produces architecture.md
+1. Architect — produces architecture.md `/pipeline:architect`
 1. You review
-1. Design — produces design.md
+1. Design — produces design.md `/pipeline:design`
 1. You review
-1. Developer session 00 — project scaffolding
-1. Developer session 01 — data layer
-1. Code Review session 01 — reviews data layer
+1. Developer session 00 — project scaffolding `/pipeline:scaffold`
+1. Developer session 01 — data layer `/pipeline:develop 01  "data layer"`
+1. Code Review session 01 — reviews data layer `/pipeline:codereview 01  "data layer"`
 1. You review, send fixes back to Developer if needed
-1. Developer session 02 — domain layer
-1. Code Review session 02 — reviews that layer
+1. Developer session 02 — domain layer `/pipeline:develop 02  "domain layer"`
+1. Code Review session 02 — reviews that layer `/pipeline:codereview 02  "domain layer"`
 1. You review
-1. Developer session 03 — UI layer
-1. Code Review session 03 — reviews UI layer (include design spec)
+1. Developer session 03 — UI layer `/pipeline:develop 03  "ui layer"`
+1. Code Review session 03 — reviews UI layer `/pipeline:codereview 03  "ui layer"`
 1. You review
 1. QA — integration tests, additional unit tests, full report
 1. You review, send bugs back to Developer if needed
