@@ -7,6 +7,9 @@ I am not certain if that was the developer agent doing it, of a 'base' claude ag
 `Review other tests to ensure we are only testing the behavior of our own code.` additional tests removed
 `update your handoff to note the deleted tests and why.` handoff updated.
 
+## permissions
+developer needs DELETE, or else it can't clean up code files that should be removed and leaves stubs behind.
+
 # App notes
 ## initial manual pipeline
 You → Architect → You → Designer → You → Developer → Code Review Agent → You → QA → You → Developer (if fixes needed) → You → DevOps → You.
@@ -19,13 +22,16 @@ And your pipeline execution order is:
 1. You review
 1. Developer session 00 — project scaffolding `/pipeline:scaffold`
 1. Developer session 01 — data layer `/pipeline:develop 01  "data layer"`
-1. Code Review session 01 — reviews data layer `/pipeline:codereview 01  "data layer"`
+1. Start a new session. Code Review session 01 — reviews data layer `/pipeline:codereview 01  "data layer"`
+1. OPTIONAL: Start a new session. Run fix for review findings `/pipeline:fix 01  "data layer"` then repeat previous step.
 1. You review, send fixes back to Developer if needed
 1. Developer session 02 — domain layer `/pipeline:develop 02  "domain layer"`
-1. Code Review session 02 — reviews that layer `/pipeline:codereview 02  "domain layer"`
+1. Start a new session. Code Review session 02 — reviews that layer `/pipeline:codereview 02  "domain layer"`
+1. OPTIONAL: Start a new session. Run fix for review findings `/pipeline:fix 02  "domain layer"` then repeat previous step.
 1. You review
 1. Developer session 03 — UI layer `/pipeline:develop 03  "ui layer"`
-1. Code Review session 03 — reviews UI layer `/pipeline:codereview 03  "ui layer"`
+1. Start a new session. Code Review session 03 — reviews UI layer `/pipeline:codereview 03  "ui layer"`
+1. OPTIONAL: Start a new session. Run fix for review findings `/pipeline:fix 03  "ui layer"` then repeat previous step.
 1. You review
 1. QA — integration tests, additional unit tests, full report
 1. You review, send bugs back to Developer if needed

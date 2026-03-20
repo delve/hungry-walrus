@@ -103,3 +103,108 @@ Two test cases were removed during review for testing third-party or standard li
 1. **`LogEntryRepositoryTest` — `date to epoch conversion produces correct values for known date`**: Computed epoch millis directly using `java.time` and asserted properties of the result (e.g. `endMillis - startMillis == 86_399_999`). This verified that `java.time.LocalDate` and `ZoneOffset.UTC` work correctly, which is not our responsibility. The repository's actual date conversion behaviour is already covered by `getEntriesForDate converts date to correct epoch millis range`, which mocks the DAO with the expected millis and confirms the repository passes them through.
 
 2. **`FoodSearchResultTest.kt` (entire file, 4 tests)**: `FoodSearchResult` is a plain data class with no logic — `missingFields` is a constructor parameter, not computed. Tests asserting `result.missingFields.isEmpty()` or `result.missingFields.size == 2` only verified Kotlin data class storage. Two further tests called `FoodSource.valueOf("USDA")` and checked `FoodSource.entries.size`, which test Java's enum API. The meaningful coverage — that mappers correctly compute and populate `missingFields` — is already provided by `UsdaResponseMapperTest` and `OffResponseMapperTest`.
+
+---
+
+## Fix Session Notes — Code Review 01
+
+### Findings addressed
+
+**Critical #1 — One-millisecond gap in day-boundary queries (fixed)**
+Changed `LogEntryRepositoryImpl.getEntriesForDate` and `getEntriesForRange` to compute the upper bound as `date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()` instead of `date.atTime(23:59:59.999)`. The `LocalTime` import was removed. The `LogEntryRepositoryTest` expected-value calculations were updated to match.
+
+**Critical #2 — Non-atomic recipe update/save (fixed)**
+`RecipeRepositoryImpl` now injects `HungryWalrusDatabase` and wraps the multi-step DAO calls in `database.withTransaction {}`. Both `saveRecipe` and `updateRecipe` are now atomic. If any step fails, the transaction rolls back and the database is never left in a torn state.
+
+**Major #3 — USDA API key sent twice (fixed)**
+Removed `@Query("api_key")` parameter from `UsdaApiService.searchFoods`. The OkHttp interceptor in `NetworkModule` is now the sole path for appending the API key. The explicit `apiKey` argument was removed from `FoodLookupRepositoryImpl.searchUsda`.
+
+**Major #4 — `FoodLookupRepositoryImpl` importing `NetworkModule` (fixed)**
+Since the explicit `apiKey` parameter was removed from `searchUsda`, `FoodLookupRepositoryImpl` no longer needs `encryptedPrefs` or the `NetworkModule` import. Both were removed. The constructor no longer takes `SharedPreferences`.
+
+**Major #5 — `RecipeRepository.saveRecipe` returns `Unit` (fixed)**
+Interface changed to `suspend fun saveRecipe(...): Long`. `RecipeRepositoryImpl` now returns the DAO-generated ID from inside the `withTransaction` block.
+
+**Minor #6 — `NutritionPlan.id` has no default (fixed)**
+Added `val id: Long = 0` default to match the pattern used by `LogEntry`, `Recipe`, and `RecipeIngredient`.
+
+**Minor #7 — `RecipeIngredient` missing pre-condition documentation (fixed)**
+Added KDoc comment on `RecipeIngredient` documenting that all per-100g nutrition fields must be populated before construction, and that `FoodSearchResult` items with missing fields require caller-supplied estimates.
+
+**Minor #8 — `OfflineException` package location (fixed)**
+`OfflineException` now lives in `com.delve.hungrywalrus.domain`. `data/repository/OfflineException.kt` has been deleted. `FoodLookupRepositoryImpl` and `FoodLookupRepositoryImplTest` import from the `domain` package. ViewModels can catch `OfflineException` without taking a dependency on `data.repository`.
+
+**Minor #9 — TOCTOU preflight network checks (fixed)**
+Removed the `isNetworkAvailable()` pre-flight checks from `searchUsda` and `searchOpenFoodFacts`. These were a race (network could change between check and call), and the existing `IOException` catch blocks already handle the offline case correctly. The check is kept in `lookupBarcode` where it gates the cache-fallback path.
+
+**Minor #10 — `UsdaFood.fdcId` typed as `Int` (fixed)**
+Changed `fdcId: Int` to `fdcId: Long` in `UsdaDto.kt`. The `UsdaResponseMapper` already uses `fdcId` only in a string template, which works identically with `Long`. Test literals (e.g. `fdcId = 12345`) required no `L` suffix because Kotlin widens integer literals to `Long` in assignment contexts.
+
+**Minor #11 — `coerceInputValues = true` in `Json` config (not changed)**
+No DTOs use enum fields, so this setting has no current effect. Left in place to preserve existing behaviour; the review noted it is safe to keep.
+
+### New tests added
+
+**`FoodLookupRepositoryImplTest.kt` (11 tests)**
+- `lookupBarcode` returns cached result without network call when cache is fresh
+- `lookupBarcode` returns `Result.success(null)` when API returns `status == 0`
+- `lookupBarcode` returns expired cache when device is offline
+- `searchUsda` returns `Result.failure(OfflineException)` on `IOException`
+- `searchUsda` returns failure with "Invalid API key" message on HTTP 403
+- `searchUsda` returns failure with "Too many requests" message on HTTP 429
+- `searchUsda` caches each result after successful search
+- `searchOpenFoodFacts` caches results after successful search
+- `searchOpenFoodFacts` returns `Result.failure(OfflineException)` on `IOException`
+- Cache older than 30 days is treated as expired and network is attempted
+- Cache within 30 days is not expired and network is not called
+
+**`RecipeRepositoryImplTest.kt` (6 tests)**
+- `saveRecipe` uses DAO-generated ID for ingredient inserts, not the `Recipe.id` field
+- `saveRecipe` returns the DAO-generated recipe ID
+- `updateRecipe` deletes old ingredients before inserting new ones (order verified with `coVerifyOrder`)
+- `updateRecipe` inserts new ingredients with the recipe's ID
+- `getRecipeWithIngredients` returns `null` in flow when recipe does not exist
+- `getRecipeWithIngredients` returns mapped domain model when recipe exists
+
+**`NutritionPlanRepositoryTest.kt` — strengthened `savePlan` assertion**
+The `effectiveFrom > 0` check was replaced with `captured.effectiveFrom in beforeCall..afterCall`, bracketing the call with `System.currentTimeMillis()` before and after to verify the timestamp is within the actual call window.
+
+**Total: 55 tests, all passing** (up from 20).
+
+### Implementation notes for next session
+
+- **`OfflineException` package move**: Before writing any ViewModel that catches `OfflineException`, delete `data/repository/OfflineException.kt` and move the class to `com.delve.hungrywalrus.domain`. Update the import in `FoodLookupRepositoryImpl` accordingly.
+- **`RecipeRepositoryImpl` now requires `HungryWalrusDatabase`**: This is injected by Hilt via `DatabaseModule`. No changes to DI modules are required.
+- **`FoodLookupRepositoryImpl` no longer takes `SharedPreferences`**: The `RepositoryModule` `@Binds` binding is unaffected (no constructor args declared there), but any manual construction in tests must be updated.
+- **`RecipeRepository.saveRecipe` now returns `Long`**: The `CreateRecipeViewModel` should use this ID to navigate to the recipe detail screen after a successful save.
+
+---
+
+## Fix Session 02 — 2026-03-20: OfflineException package move
+
+**Minor #8 completed** — The `OfflineException` package move that was deferred in Fix Session 01 is now done.
+
+Changes made:
+- `domain/OfflineException.kt` — placeholder replaced with the real class (`package com.delve.hungrywalrus.domain`), KDoc preserved.
+- `data/repository/OfflineException.kt` — deleted.
+- `data/repository/FoodLookupRepositoryImpl.kt` — added `import com.delve.hungrywalrus.domain.OfflineException`; the class was previously resolved by same-package lookup.
+- `data/repository/FoodLookupRepositoryImplTest.kt` — added `import com.delve.hungrywalrus.domain.OfflineException`; same reason.
+
+No new tests required — the `FoodLookupRepositoryImplTest` tests that assert `is OfflineException` already cover the moved class. All 55 tests pass after the change.
+
+---
+
+## Fix Session Verification — 2026-03-20
+
+All source-level fixes from the previous fix session were confirmed present in the codebase. No additional code changes were required. All tests were re-executed from scratch (forced rerun, no cache):
+
+- `OffResponseMapperTest`: 6 passed
+- `UsdaResponseMapperTest`: 5 passed
+- `FoodLookupRepositoryImplTest`: 11 passed
+- `LogEntryRepositoryTest`: 5 passed
+- `NutritionPlanRepositoryTest`: 5 passed
+- `RecipeRepositoryImplTest`: 6 passed
+
+**Total: 38 data-layer tests, 0 failures, 0 errors.**
+
+(Additional 17 tests from scaffold layer — `BottomNavItemTest`, `RoutesTest`, `FormatterTest` — also passed.)

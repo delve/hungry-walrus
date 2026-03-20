@@ -1,7 +1,6 @@
 package com.delve.hungrywalrus.data.repository
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.delve.hungrywalrus.data.local.dao.FoodCacheDao
@@ -10,7 +9,7 @@ import com.delve.hungrywalrus.data.remote.openfoodfacts.OffApiService
 import com.delve.hungrywalrus.data.remote.openfoodfacts.OffResponseMapper
 import com.delve.hungrywalrus.data.remote.usda.UsdaApiService
 import com.delve.hungrywalrus.data.remote.usda.UsdaResponseMapper
-import com.delve.hungrywalrus.di.NetworkModule
+import com.delve.hungrywalrus.domain.OfflineException
 import com.delve.hungrywalrus.domain.model.FoodSearchResult
 import com.delve.hungrywalrus.domain.model.FoodSource
 import com.delve.hungrywalrus.domain.model.NutritionField
@@ -24,7 +23,6 @@ class FoodLookupRepositoryImpl @Inject constructor(
     private val usdaApiService: UsdaApiService,
     private val offApiService: OffApiService,
     private val foodCacheDao: FoodCacheDao,
-    private val encryptedPrefs: SharedPreferences,
     @ApplicationContext private val context: Context,
 ) : FoodLookupRepository {
 
@@ -34,11 +32,7 @@ class FoodLookupRepositoryImpl @Inject constructor(
 
     override suspend fun searchUsda(query: String): Result<List<FoodSearchResult>> {
         return try {
-            if (!isNetworkAvailable()) {
-                return Result.failure(OfflineException())
-            }
-            val apiKey = encryptedPrefs.getString(NetworkModule.USDA_API_KEY_PREF, "") ?: ""
-            val response = usdaApiService.searchFoods(query = query, apiKey = apiKey)
+            val response = usdaApiService.searchFoods(query = query)
             val results = UsdaResponseMapper.mapFoods(response.foods)
             results.forEach { cacheResult(it) }
             Result.success(results)
@@ -53,9 +47,6 @@ class FoodLookupRepositoryImpl @Inject constructor(
 
     override suspend fun searchOpenFoodFacts(query: String): Result<List<FoodSearchResult>> {
         return try {
-            if (!isNetworkAvailable()) {
-                return Result.failure(OfflineException())
-            }
             val response = offApiService.searchProducts(searchTerms = query)
             val results = OffResponseMapper.mapProducts(response.products)
             results.forEach { cacheResult(it) }

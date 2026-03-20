@@ -99,14 +99,17 @@ class NutritionPlanRepositoryTest {
         val entitySlot = slot<NutritionPlanEntity>()
         coEvery { dao.insert(capture(entitySlot)) } returns Unit
 
+        val beforeCall = System.currentTimeMillis()
         repository.savePlan(kcal = 2200, proteinG = 160.0, carbsG = 280.0, fatG = 75.0)
+        val afterCall = System.currentTimeMillis()
 
         val captured = entitySlot.captured
         assertEquals(2200, captured.kcalTarget)
         assertEquals(160.0, captured.proteinTargetG, 0.001)
         assertEquals(280.0, captured.carbsTargetG, 0.001)
         assertEquals(75.0, captured.fatTargetG, 0.001)
-        // effectiveFrom should be roughly current time
-        assert(captured.effectiveFrom > 0)
+        assert(captured.effectiveFrom in beforeCall..afterCall) {
+            "effectiveFrom ${captured.effectiveFrom} was not in range [$beforeCall, $afterCall]"
+        }
     }
 }

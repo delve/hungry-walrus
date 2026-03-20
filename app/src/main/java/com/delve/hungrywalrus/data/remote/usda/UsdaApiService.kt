@@ -10,6 +10,5 @@ interface UsdaApiService {
         @Query("query") query: String,
         @Query("dataType") dataType: String = "Foundation,SR Legacy",
         @Query("pageSize") pageSize: Int = 25,
-        @Query("api_key") apiKey: String,
     ): UsdaSearchResponse
 }

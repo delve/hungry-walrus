@@ -9,7 +9,7 @@ data class UsdaSearchResponse(
 
 @Serializable
 data class UsdaFood(
-    val fdcId: Int,
+    val fdcId: Long,
     val description: String,
     val foodNutrients: List<UsdaNutrient> = emptyList(),
 )

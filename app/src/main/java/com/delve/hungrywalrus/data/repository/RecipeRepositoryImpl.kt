@@ -1,5 +1,7 @@
 package com.delve.hungrywalrus.data.repository
 
+import androidx.room.withTransaction
+import com.delve.hungrywalrus.data.local.HungryWalrusDatabase
 import com.delve.hungrywalrus.data.local.dao.RecipeDao
 import com.delve.hungrywalrus.data.local.dao.RecipeIngredientDao
 import com.delve.hungrywalrus.data.local.entity.RecipeEntity
@@ -12,6 +14,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RecipeRepositoryImpl @Inject constructor(
+    private val database: HungryWalrusDatabase,
     private val recipeDao: RecipeDao,
     private val ingredientDao: RecipeIngredientDao,
 ) : RecipeRepository {
@@ -33,17 +36,22 @@ class RecipeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveRecipe(recipe: Recipe, ingredients: List<RecipeIngredient>) {
-        val recipeId = recipeDao.insert(recipe.toEntity())
-        val ingredientEntities = ingredients.map { it.toEntity(recipeId) }
-        ingredientDao.insertAll(ingredientEntities)
+    override suspend fun saveRecipe(recipe: Recipe, ingredients: List<RecipeIngredient>): Long {
+        return database.withTransaction {
+            val recipeId = recipeDao.insert(recipe.toEntity())
+            val ingredientEntities = ingredients.map { it.toEntity(recipeId) }
+            ingredientDao.insertAll(ingredientEntities)
+            recipeId
+        }
     }
 
     override suspend fun updateRecipe(recipe: Recipe, ingredients: List<RecipeIngredient>) {
-        recipeDao.update(recipe.toEntity())
-        ingredientDao.deleteByRecipeId(recipe.id)
-        val ingredientEntities = ingredients.map { it.toEntity(recipe.id) }
-        ingredientDao.insertAll(ingredientEntities)
+        database.withTransaction {
+            recipeDao.update(recipe.toEntity())
+            ingredientDao.deleteByRecipeId(recipe.id)
+            val ingredientEntities = ingredients.map { it.toEntity(recipe.id) }
+            ingredientDao.insertAll(ingredientEntities)
+        }
     }
 
     override suspend fun deleteRecipe(id: Long) {

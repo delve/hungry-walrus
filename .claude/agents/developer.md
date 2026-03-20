@@ -3,7 +3,7 @@ name: developer
 description: Implements the Hungry Walrus Android app. Works one layer or
   component at a time across multiple sessions. Reads architecture and design
   documents and produces working Kotlin code with unit tests.
-tools: Read, Glob, Grep, Write, Bash
+tools: Read, Glob, Grep, Write, Delete, Bash
 model: opus
 ---
 

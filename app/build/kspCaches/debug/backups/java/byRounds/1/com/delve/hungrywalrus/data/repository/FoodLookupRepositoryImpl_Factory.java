@@ -1,7 +1,6 @@
 package com.delve.hungrywalrus.data.repository;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import com.delve.hungrywalrus.data.local.dao.FoodCacheDao;
 import com.delve.hungrywalrus.data.remote.openfoodfacts.OffApiService;
 import com.delve.hungrywalrus.data.remote.usda.UsdaApiService;
@@ -35,35 +34,31 @@ public final class FoodLookupRepositoryImpl_Factory implements Factory<FoodLooku
 
   private final Provider<FoodCacheDao> foodCacheDaoProvider;
 
-  private final Provider<SharedPreferences> encryptedPrefsProvider;
-
   private final Provider<Context> contextProvider;
 
   public FoodLookupRepositoryImpl_Factory(Provider<UsdaApiService> usdaApiServiceProvider,
       Provider<OffApiService> offApiServiceProvider, Provider<FoodCacheDao> foodCacheDaoProvider,
-      Provider<SharedPreferences> encryptedPrefsProvider, Provider<Context> contextProvider) {
+      Provider<Context> contextProvider) {
     this.usdaApiServiceProvider = usdaApiServiceProvider;
     this.offApiServiceProvider = offApiServiceProvider;
     this.foodCacheDaoProvider = foodCacheDaoProvider;
-    this.encryptedPrefsProvider = encryptedPrefsProvider;
     this.contextProvider = contextProvider;
   }
 
   @Override
   public FoodLookupRepositoryImpl get() {
-    return newInstance(usdaApiServiceProvider.get(), offApiServiceProvider.get(), foodCacheDaoProvider.get(), encryptedPrefsProvider.get(), contextProvider.get());
+    return newInstance(usdaApiServiceProvider.get(), offApiServiceProvider.get(), foodCacheDaoProvider.get(), contextProvider.get());
   }
 
   public static FoodLookupRepositoryImpl_Factory create(
       Provider<UsdaApiService> usdaApiServiceProvider,
       Provider<OffApiService> offApiServiceProvider, Provider<FoodCacheDao> foodCacheDaoProvider,
-      Provider<SharedPreferences> encryptedPrefsProvider, Provider<Context> contextProvider) {
-    return new FoodLookupRepositoryImpl_Factory(usdaApiServiceProvider, offApiServiceProvider, foodCacheDaoProvider, encryptedPrefsProvider, contextProvider);
+      Provider<Context> contextProvider) {
+    return new FoodLookupRepositoryImpl_Factory(usdaApiServiceProvider, offApiServiceProvider, foodCacheDaoProvider, contextProvider);
   }
 
   public static FoodLookupRepositoryImpl newInstance(UsdaApiService usdaApiService,
-      OffApiService offApiService, FoodCacheDao foodCacheDao, SharedPreferences encryptedPrefs,
-      Context context) {
-    return new FoodLookupRepositoryImpl(usdaApiService, offApiService, foodCacheDao, encryptedPrefs, context);
+      OffApiService offApiService, FoodCacheDao foodCacheDao, Context context) {
+    return new FoodLookupRepositoryImpl(usdaApiService, offApiService, foodCacheDao, context);
   }
 }
