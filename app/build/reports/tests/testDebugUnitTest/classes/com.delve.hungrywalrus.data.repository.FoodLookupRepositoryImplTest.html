@@ -23,7 +23,7 @@
 <tr>
 <td>
 <div class="infoBox" id="tests">
-<div class="counter">11</div>
+<div class="counter">20</div>
 <p>tests</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">3.170s</div>
+<div class="counter">2.558s</div>
 <p>duration</p>
 </div>
 </td>
@@ -76,57 +76,102 @@
 </thead>
 <tr>
 <td class="success">cache older than 30 days is treated as expired and network is attempted</td>
-<td class="success">0.015s</td>
+<td class="success">0.017s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">cache within 30 days is not expired and network is not called</td>
-<td class="success">0.006s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">lookupBarcode returns cached result without network call when cache is fresh</td>
-<td class="success">0.007s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">lookupBarcode returns expired cache when device is offline</td>
-<td class="success">0.006s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">lookupBarcode returns success null when API returns status 0</td>
-<td class="success">0.199s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">searchOpenFoodFacts caches results after successful search</td>
-<td class="success">0.090s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">searchOpenFoodFacts returns failure with OfflineException on IOException</td>
-<td class="success">0.011s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">searchUsda caches each result after successful search</td>
 <td class="success">0.008s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">searchUsda returns failure with OfflineException on IOException</td>
-<td class="success">0.005s</td>
+<td class="success">lookupBarcode caches entity with source OFF and barcode set</td>
+<td class="success">1.972s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">searchUsda returns failure with invalid API key message on HTTP 403</td>
+<td class="success">lookupBarcode populates missingFields when API response has null nutriments</td>
 <td class="success">0.007s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
+<td class="success">lookupBarcode returns cached result without network call when cache is fresh</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">lookupBarcode returns expired cache when device is offline</td>
+<td class="success">0.007s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">lookupBarcode returns failure on HttpException when cache is expired, not stale cache</td>
+<td class="success">0.011s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">lookupBarcode returns failure on HttpException when no cache</td>
+<td class="success">0.011s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">lookupBarcode returns failure on unexpected Exception even when cache is expired</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">lookupBarcode returns success null on HTTP 404 even when cache is expired</td>
+<td class="success">0.011s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">lookupBarcode returns success null when API returns status 0</td>
+<td class="success">0.010s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">searchOpenFoodFacts returns failure with OfflineException on IOException</td>
+<td class="success">0.044s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">searchOpenFoodFacts returns failure with generic message on unexpected Exception</td>
+<td class="success">0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">searchOpenFoodFacts returns failure with mapped message on HttpException</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">searchOpenFoodFacts returns mapped results without caching</td>
+<td class="success">0.009s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">searchUsda returns failure with OfflineException on IOException</td>
+<td class="success">0.007s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">searchUsda returns failure with generic message on unexpected Exception</td>
+<td class="success">0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">searchUsda returns failure with invalid API key message on HTTP 403</td>
+<td class="success">0.010s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
 <td class="success">searchUsda returns failure with too many requests message on HTTP 429</td>
-<td class="success">2.816s</td>
+<td class="success">0.387s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">searchUsda returns mapped results without caching</td>
+<td class="success">0.010s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -139,7 +184,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 8.11.1</a> at Mar 20, 2026, 8:52:21 AM</p>
+<a href="http://www.gradle.org">Gradle 8.11.1</a> at Mar 20, 2026, 11:36:34 AM</p>
 </div>
 </div>
 </body>

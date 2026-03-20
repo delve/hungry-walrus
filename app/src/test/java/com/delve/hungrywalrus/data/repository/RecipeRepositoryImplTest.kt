@@ -127,6 +127,43 @@ class RecipeRepositoryImplTest {
         assertEquals(7L, ingredientSlot.captured[0].recipeId)
     }
 
+    // --- getAllRecipes ---
+
+    @Test
+    fun `getAllRecipes returns mapped domain list from DAO`() = runTest {
+        val entities = listOf(
+            RecipeEntity(
+                id = 1L,
+                name = "Oat Porridge",
+                totalWeightG = 250.0,
+                totalKcal = 300.0,
+                totalProteinG = 12.0,
+                totalCarbsG = 50.0,
+                totalFatG = 6.0,
+                createdAt = 1000L,
+                updatedAt = 2000L,
+            ),
+        )
+        coEvery { recipeDao.getAll() } returns flowOf(entities)
+
+        repository.getAllRecipes().test {
+            val result = awaitItem()
+            assertEquals(1, result.size)
+            assertEquals("Oat Porridge", result[0].name)
+            assertEquals(1L, result[0].id)
+            awaitComplete()
+        }
+    }
+
+    // --- deleteRecipe ---
+
+    @Test
+    fun `deleteRecipe calls DAO with correct id`() = runTest {
+        repository.deleteRecipe(42L)
+
+        coVerify(exactly = 1) { recipeDao.deleteById(42L) }
+    }
+
     // --- getRecipeWithIngredients ---
 
     @Test

@@ -194,6 +194,60 @@ No new tests required — the `FoodLookupRepositoryImplTest` tests that assert `
 
 ---
 
+## Fix Session 03 — 2026-03-20: Code Review 01 Round 2 findings
+
+### M1 (Major) — `searchUsda` silent empty results when API key not configured
+
+**Product Owner Override: not fixed.** The review finding was overridden by the Product Owner: "The Domain layer prevents attempted lookup when the key is missing." No code change made. This decision is recorded here so the ViewModel layer knows not to rely on the repository to surface an unconfigured-key failure — gating must happen in the Domain or UI layer before `searchUsda` is called.
+
+### m1 (Minor) — `getCurrentPlan` snapshot-at-collection-time behaviour
+
+**Fixed.** Added KDoc comments to `NutritionPlanRepository.getCurrentPlan()` (interface) and `NutritionPlanRepositoryImpl.getCurrentPlan()` (impl) documenting that `System.currentTimeMillis()` is captured once at collection time. Room re-executes the query on database changes but the timestamp predicate is fixed to that initial value. The `DailyProgressViewModel` must re-collect the flow (e.g. on navigation) to pick up plans whose `effectiveFrom` falls after the original collection instant.
+
+### m2 (Minor) — TOCTOU `isNetworkAvailable()` preflight in `lookupBarcode`
+
+**Already fixed in the current codebase.** Inspection of `FoodLookupRepositoryImpl.kt` confirmed the `isNetworkAvailable()` call was not present — it had been removed in a prior session. However, `FoodLookupRepositoryImplTest` still held stale scaffolding from when the check existed: `Context` and `ConnectivityManager` fields, a `setNetworkAvailable()` helper, and a 4-argument constructor call that would not compile against the current 3-argument constructor. These were cleaned up:
+
+- Removed `import android.content.Context`, `ConnectivityManager`, `Network`, `NetworkCapabilities`
+- Removed `context` and `connectivityManager` fields from setUp
+- Changed constructor call to `FoodLookupRepositoryImpl(usdaApiService, offApiService, foodCacheDao)`
+- Removed `setNetworkAvailable()` helper
+- Updated `lookupBarcode returns expired cache when device is offline` to throw `IOException` from the API mock instead of relying on the removed network check
+
+### m3 (Minor) — `cacheResult` called for every search result item
+
+**Fixed.** Removed `results.forEach { cacheResult(it) }` from both `searchUsda` and `searchOpenFoodFacts`. Caching is now deferred to the point where the user selects a specific food item (i.e. `lookupBarcode`), matching the architecture document's cache strategy (section 6.2). Two existing tests that asserted `coVerify(exactly = 1) { foodCacheDao.insert(any()) }` for search paths were updated to assert `coVerify(exactly = 0) { foodCacheDao.insert(any()) }` and renamed accordingly.
+
+### New tests added
+
+**`FoodLookupRepositoryImplTest.kt` — 5 new tests (11 → 16)**
+
+- `searchOpenFoodFacts returns failure with mapped message on HttpException` — verifies the `mapHttpError` path for OFF search
+- `searchOpenFoodFacts returns failure with generic message on unexpected Exception` — verifies the catch-all Exception path for OFF search
+- `lookupBarcode returns failure on HttpException when no cache` — covers HTTP 5xx with no cached fallback
+- `lookupBarcode populates missingFields when API response has null nutriments` — asserts all 4 fields are in `missingFields` for a null-nutriments barcode response
+- `lookupBarcode caches entity with source OFF and barcode set` — verifies `cacheResult` entity content: `source == "OFF"` and `barcode == <scanned barcode>`
+
+**`RecipeRepositoryImplTest.kt` — 2 new tests (6 → 8)**
+
+- `getAllRecipes returns mapped domain list from DAO` — verifies entity-to-domain mapping for the recipe list flow
+- `deleteRecipe calls DAO with correct id` — verifies `recipeDao.deleteById` is called with the correct ID
+
+### Test run results
+
+All data-layer tests passed:
+
+- `FoodLookupRepositoryImplTest`: 16 passed
+- `RecipeRepositoryImplTest`: 8 passed
+- `NutritionPlanRepositoryTest`: 5 passed
+- `LogEntryRepositoryTest`: 5 passed
+- `UsdaResponseMapperTest`: 5 passed
+- `OffResponseMapperTest`: 6 passed
+
+**Total: 45 data-layer tests, 0 failures, 0 errors.**
+
+---
+
 ## Fix Session Verification — 2026-03-20
 
 All source-level fixes from the previous fix session were confirmed present in the codebase. No additional code changes were required. All tests were re-executed from scratch (forced rerun, no cache):
@@ -208,3 +262,97 @@ All source-level fixes from the previous fix session were confirmed present in t
 **Total: 38 data-layer tests, 0 failures, 0 errors.**
 
 (Additional 17 tests from scaffold layer — `BottomNavItemTest`, `RoutesTest`, `FormatterTest` — also passed.)
+
+---
+
+## Fix Session 04 — 2026-03-20: Code Review 01 Round 3 findings
+
+### m1 — `lookupBarcode` returns stale cache on `HttpException` (fixed)
+
+Changed the `HttpException` catch block in `FoodLookupRepositoryImpl.lookupBarcode` to no longer fall back to a stale (expired) cached entry. The server was reachable, so the offline justification does not apply. New behaviour:
+
+- HTTP 404 → `Result.success(null)` — product not found on the server, same semantics as `status == 0`
+- Any other `HttpException` → `Result.failure(Exception(mapHttpError(e.code())))` — server error propagated to caller
+
+The `IOException` path is unchanged: it still returns the stale cache when available, as the offline case is explicitly allowed by architecture section 6.2.
+
+### m2 — DAO provider methods not `@Singleton` scoped (fixed)
+
+Added `@Singleton` to all five DAO provider methods in `DatabaseModule` (`provideNutritionPlanDao`, `provideLogEntryDao`, `provideRecipeDao`, `provideRecipeIngredientDao`, `provideFoodCacheDao`). This is consistent with the `@Singleton` scoping used for `provideDatabase` and all providers in `NetworkModule`, eliminates unnecessary DAO wrapper object churn, and removes ambiguity for anyone tracing the DI graph.
+
+### m3 — Missing `HttpException`-with-expired-cache test (fixed)
+
+Added tests to `FoodLookupRepositoryImplTest` covering the corrected `HttpException` paths in `lookupBarcode`:
+
+- `lookupBarcode returns failure on HttpException when cache is expired, not stale cache` — expired entity in cache, API throws HTTP 500; asserts `Result.isFailure` with "Service temporarily unavailable" message.
+- `lookupBarcode returns success null on HTTP 404 even when cache is expired` — expired entity in cache, API throws HTTP 404; asserts `Result.success(null)`.
+
+### Additional test gaps (fixed)
+
+Per the review's "Remaining gaps" section:
+
+- **`searchUsda returns failure with generic message on unexpected Exception`** — added to `FoodLookupRepositoryImplTest`. Makes coverage symmetric with the equivalent `searchOpenFoodFacts` test that was already present.
+
+- **`getPlanForDate` full field assertions** — strengthened `getPlanForDate converts date to epoch millis and returns mapped plan` in `NutritionPlanRepositoryTest` to assert all mapped fields: `proteinTargetG`, `carbsTargetG`, `fatTargetG`, and `effectiveFrom` in addition to `id` and `kcalTarget`.
+
+- **`getEntriesForDate` full field assertions** — strengthened `getEntriesForDate converts date to correct epoch millis range` in `LogEntryRepositoryTest` to assert `id`, `proteinG`, `carbsG`, `fatG`, and `timestamp` in addition to `foodName` and `kcal`.
+
+### Test run results
+
+All data-layer tests passed:
+
+- `OffResponseMapperTest`: 6 passed
+- `UsdaResponseMapperTest`: 5 passed
+- `FoodLookupRepositoryImplTest`: 19 passed (was 16; +3 new tests)
+- `LogEntryRepositoryTest`: 5 passed
+- `NutritionPlanRepositoryTest`: 5 passed
+- `RecipeRepositoryImplTest`: 8 passed
+
+**Total: 48 data-layer tests, 0 failures, 0 errors.**
+
+---
+
+## Fix Session 05 — 2026-03-20: Code Review 01 Round 4 findings
+
+### m1 — `lookupBarcode` catch-all `Exception` block still returns stale cache on non-network errors (fixed)
+
+Removed the stale-cache fallback from the catch-all `Exception` block in `FoodLookupRepositoryImpl.lookupBarcode`. The block previously returned `Result.success(cached.toDomain())` when `cached != null` (including expired entries), which is the same class of problem that was fixed for `HttpException` in Fix Session 04. A serialisation or other unexpected error means the server was reachable enough to produce a response, so the offline justification for serving stale data does not apply.
+
+**Before:**
+```kotlin
+} catch (e: Exception) {
+    if (cached != null) {
+        Result.success(cached.toDomain())
+    } else {
+        Result.failure(Exception("Could not read food data"))
+    }
+}
+```
+
+**After:**
+```kotlin
+} catch (e: Exception) {
+    Result.failure(Exception("Could not read food data"))
+}
+```
+
+### New test added
+
+**`FoodLookupRepositoryImplTest.kt` — 1 new test (19 → 20)**
+
+- `lookupBarcode returns failure on unexpected Exception even when cache is expired` — sets up an expired cache entity (31-day-old `cachedAt`), throws `RuntimeException("serialisation error")` from `offApiService.getProductByBarcode`, and asserts `result.isFailure` with "Could not read food data" message. Mirrors the pattern of `lookupBarcode returns failure on HttpException when cache is expired, not stale cache`.
+
+### Test run results
+
+All data-layer tests passed:
+
+- `OffResponseMapperTest`: 6 passed
+- `UsdaResponseMapperTest`: 5 passed
+- `FoodLookupRepositoryImplTest`: 20 passed (was 19; +1 new test)
+- `LogEntryRepositoryTest`: 5 passed
+- `NutritionPlanRepositoryTest`: 5 passed
+- `RecipeRepositoryImplTest`: 8 passed
+
+**Total: 49 data-layer tests, 0 failures, 0 errors.**
+
+The data layer is complete. All findings across all review rounds have been addressed. The layer is ready to support UI layer development.

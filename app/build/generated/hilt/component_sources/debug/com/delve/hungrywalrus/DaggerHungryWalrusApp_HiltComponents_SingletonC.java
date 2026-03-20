@@ -501,20 +501,16 @@ public final class DaggerHungryWalrusApp_HiltComponents_SingletonC {
 
     private dagger.internal.Provider<HungryWalrusDatabase> provideDatabaseProvider;
 
+    private dagger.internal.Provider<LogEntryDao> provideLogEntryDaoProvider;
+
+    private dagger.internal.Provider<FoodCacheDao> provideFoodCacheDaoProvider;
+
     private dagger.internal.Provider<DataRetentionWorker_AssistedFactory> dataRetentionWorker_AssistedFactoryProvider;
 
     private SingletonCImpl(ApplicationContextModule applicationContextModuleParam) {
       this.applicationContextModule = applicationContextModuleParam;
       initialize(applicationContextModuleParam);
 
-    }
-
-    private LogEntryDao logEntryDao() {
-      return DatabaseModule_ProvideLogEntryDaoFactory.provideLogEntryDao(provideDatabaseProvider.get());
-    }
-
-    private FoodCacheDao foodCacheDao() {
-      return DatabaseModule_ProvideFoodCacheDaoFactory.provideFoodCacheDao(provideDatabaseProvider.get());
     }
 
     private Map<String, Provider<WorkerAssistedFactory<? extends ListenableWorker>>> mapOfStringAndProviderOfWorkerAssistedFactoryOf(
@@ -528,7 +524,9 @@ public final class DaggerHungryWalrusApp_HiltComponents_SingletonC {
 
     @SuppressWarnings("unchecked")
     private void initialize(final ApplicationContextModule applicationContextModuleParam) {
-      this.provideDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<HungryWalrusDatabase>(singletonCImpl, 1));
+      this.provideDatabaseProvider = DoubleCheck.provider(new SwitchingProvider<HungryWalrusDatabase>(singletonCImpl, 2));
+      this.provideLogEntryDaoProvider = DoubleCheck.provider(new SwitchingProvider<LogEntryDao>(singletonCImpl, 1));
+      this.provideFoodCacheDaoProvider = DoubleCheck.provider(new SwitchingProvider<FoodCacheDao>(singletonCImpl, 3));
       this.dataRetentionWorker_AssistedFactoryProvider = SingleCheck.provider(new SwitchingProvider<DataRetentionWorker_AssistedFactory>(singletonCImpl, 0));
     }
 
@@ -575,12 +573,18 @@ public final class DaggerHungryWalrusApp_HiltComponents_SingletonC {
           return (T) new DataRetentionWorker_AssistedFactory() {
             @Override
             public DataRetentionWorker create(Context context, WorkerParameters params) {
-              return new DataRetentionWorker(context, params, singletonCImpl.logEntryDao(), singletonCImpl.foodCacheDao());
+              return new DataRetentionWorker(context, params, singletonCImpl.provideLogEntryDaoProvider.get(), singletonCImpl.provideFoodCacheDaoProvider.get());
             }
           };
 
-          case 1: // com.delve.hungrywalrus.data.local.HungryWalrusDatabase 
+          case 1: // com.delve.hungrywalrus.data.local.dao.LogEntryDao 
+          return (T) DatabaseModule_ProvideLogEntryDaoFactory.provideLogEntryDao(singletonCImpl.provideDatabaseProvider.get());
+
+          case 2: // com.delve.hungrywalrus.data.local.HungryWalrusDatabase 
           return (T) DatabaseModule_ProvideDatabaseFactory.provideDatabase(ApplicationContextModule_ProvideContextFactory.provideContext(singletonCImpl.applicationContextModule));
+
+          case 3: // com.delve.hungrywalrus.data.local.dao.FoodCacheDao 
+          return (T) DatabaseModule_ProvideFoodCacheDaoFactory.provideFoodCacheDao(singletonCImpl.provideDatabaseProvider.get());
 
           default: throw new AssertionError(id);
         }

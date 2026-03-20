@@ -13,6 +13,12 @@ class NutritionPlanRepositoryImpl @Inject constructor(
     private val dao: NutritionPlanDao,
 ) : NutritionPlanRepository {
 
+    /**
+     * NOTE: [System.currentTimeMillis] is captured once when the Flow is first collected.
+     * Room re-runs the underlying query on database changes, but the timestamp predicate is fixed
+     * to that initial value. Re-collect the Flow (e.g. on screen navigation) to pick up plans
+     * whose effectiveFrom falls after the original collection instant.
+     */
     override fun getCurrentPlan(): Flow<NutritionPlan?> {
         return dao.getCurrentPlan(System.currentTimeMillis()).map { entity ->
             entity?.toDomain()

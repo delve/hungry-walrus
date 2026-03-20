@@ -10,7 +10,7 @@ import dagger.internal.ScopeMetadata;
 import javax.annotation.processing.Generated;
 import javax.inject.Provider;
 
-@ScopeMetadata
+@ScopeMetadata("javax.inject.Singleton")
 @QualifierMetadata
 @DaggerGenerated
 @Generated(

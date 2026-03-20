@@ -1,8 +1,5 @@
 package com.delve.hungrywalrus.data.repository
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import com.delve.hungrywalrus.data.local.dao.FoodCacheDao
 import com.delve.hungrywalrus.data.local.entity.FoodCacheEntity
 import com.delve.hungrywalrus.data.remote.openfoodfacts.OffApiService
@@ -13,7 +10,6 @@ import com.delve.hungrywalrus.domain.OfflineException
 import com.delve.hungrywalrus.domain.model.FoodSearchResult
 import com.delve.hungrywalrus.domain.model.FoodSource
 import com.delve.hungrywalrus.domain.model.NutritionField
-import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.HttpException
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -23,7 +19,6 @@ class FoodLookupRepositoryImpl @Inject constructor(
     private val usdaApiService: UsdaApiService,
     private val offApiService: OffApiService,
     private val foodCacheDao: FoodCacheDao,
-    @ApplicationContext private val context: Context,
 ) : FoodLookupRepository {
 
     companion object {
@@ -34,7 +29,6 @@ class FoodLookupRepositoryImpl @Inject constructor(
         return try {
             val response = usdaApiService.searchFoods(query = query)
             val results = UsdaResponseMapper.mapFoods(response.foods)
-            results.forEach { cacheResult(it) }
             Result.success(results)
         } catch (e: IOException) {
             Result.failure(OfflineException("Network error: unable to reach USDA service"))
@@ -49,7 +43,6 @@ class FoodLookupRepositoryImpl @Inject constructor(
         return try {
             val response = offApiService.searchProducts(searchTerms = query)
             val results = OffResponseMapper.mapProducts(response.products)
-            results.forEach { cacheResult(it) }
             Result.success(results)
         } catch (e: IOException) {
             Result.failure(OfflineException("Network error: unable to reach Open Food Facts service"))
@@ -68,13 +61,6 @@ class FoodLookupRepositoryImpl @Inject constructor(
         }
 
         return try {
-            if (!isNetworkAvailable()) {
-                // Return cached data if available even if expired, otherwise fail
-                if (cached != null) {
-                    return Result.success(cached.toDomain())
-                }
-                return Result.failure(OfflineException())
-            }
             val response = offApiService.getProductByBarcode(barcode)
             if (response.status == 0 || response.product == null) {
                 Result.success(null)
@@ -90,26 +76,14 @@ class FoodLookupRepositoryImpl @Inject constructor(
                 Result.failure(OfflineException("Network error: unable to reach Open Food Facts service"))
             }
         } catch (e: HttpException) {
-            if (cached != null) {
-                Result.success(cached.toDomain())
+            if (e.code() == 404) {
+                Result.success(null)
             } else {
                 Result.failure(Exception(mapHttpError(e.code())))
             }
         } catch (e: Exception) {
-            if (cached != null) {
-                Result.success(cached.toDomain())
-            } else {
-                Result.failure(Exception("Could not read food data"))
-            }
+            Result.failure(Exception("Could not read food data"))
         }
-    }
-
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = connectivityManager.activeNetwork ?: return false
-        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
     private fun isCacheExpired(cachedAt: Long): Boolean {

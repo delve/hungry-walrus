@@ -79,7 +79,11 @@ class NutritionPlanRepositoryTest {
         val plan = repository.getPlanForDate(date)
 
         assertEquals(2L, plan!!.id)
-        assertEquals(1800, plan.kcalTarget)
+        assertEquals(1800, plan!!.kcalTarget)
+        assertEquals(130.0, plan!!.proteinTargetG, 0.001)
+        assertEquals(200.0, plan!!.carbsTargetG, 0.001)
+        assertEquals(60.0, plan!!.fatTargetG, 0.001)
+        assertEquals(expectedMillis - 86400000L, plan!!.effectiveFrom)
         coVerify { dao.getPlanForDate(expectedMillis) }
     }
 

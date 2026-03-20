@@ -48,8 +48,13 @@ class LogEntryRepositoryTest {
         repository.getEntriesForDate(date).test {
             val entries = awaitItem()
             assertEquals(1, entries.size)
+            assertEquals(1L, entries[0].id)
             assertEquals("Apple", entries[0].foodName)
             assertEquals(52.0, entries[0].kcal, 0.001)
+            assertEquals(0.3, entries[0].proteinG, 0.001)
+            assertEquals(14.0, entries[0].carbsG, 0.001)
+            assertEquals(0.2, entries[0].fatG, 0.001)
+            assertEquals(expectedStart + 3600000L, entries[0].timestamp)
             awaitComplete()
         }
     }
