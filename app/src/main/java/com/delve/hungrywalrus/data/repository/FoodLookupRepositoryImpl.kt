@@ -1,0 +1,179 @@
+package com.delve.hungrywalrus.data.repository
+
+import android.content.Context
+import android.content.SharedPreferences
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import com.delve.hungrywalrus.data.local.dao.FoodCacheDao
+import com.delve.hungrywalrus.data.local.entity.FoodCacheEntity
+import com.delve.hungrywalrus.data.remote.openfoodfacts.OffApiService
+import com.delve.hungrywalrus.data.remote.openfoodfacts.OffResponseMapper
+import com.delve.hungrywalrus.data.remote.usda.UsdaApiService
+import com.delve.hungrywalrus.data.remote.usda.UsdaResponseMapper
+import com.delve.hungrywalrus.di.NetworkModule
+import com.delve.hungrywalrus.domain.model.FoodSearchResult
+import com.delve.hungrywalrus.domain.model.FoodSource
+import com.delve.hungrywalrus.domain.model.NutritionField
+import dagger.hilt.android.qualifiers.ApplicationContext
+import retrofit2.HttpException
+import java.io.IOException
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+
+class FoodLookupRepositoryImpl @Inject constructor(
+    private val usdaApiService: UsdaApiService,
+    private val offApiService: OffApiService,
+    private val foodCacheDao: FoodCacheDao,
+    private val encryptedPrefs: SharedPreferences,
+    @ApplicationContext private val context: Context,
+) : FoodLookupRepository {
+
+    companion object {
+        private val CACHE_DURATION_MILLIS = TimeUnit.DAYS.toMillis(30)
+    }
+
+    override suspend fun searchUsda(query: String): Result<List<FoodSearchResult>> {
+        return try {
+            if (!isNetworkAvailable()) {
+                return Result.failure(OfflineException())
+            }
+            val apiKey = encryptedPrefs.getString(NetworkModule.USDA_API_KEY_PREF, "") ?: ""
+            val response = usdaApiService.searchFoods(query = query, apiKey = apiKey)
+            val results = UsdaResponseMapper.mapFoods(response.foods)
+            results.forEach { cacheResult(it) }
+            Result.success(results)
+        } catch (e: IOException) {
+            Result.failure(OfflineException("Network error: unable to reach USDA service"))
+        } catch (e: HttpException) {
+            Result.failure(Exception(mapHttpError(e.code())))
+        } catch (e: Exception) {
+            Result.failure(Exception("Could not read food data"))
+        }
+    }
+
+    override suspend fun searchOpenFoodFacts(query: String): Result<List<FoodSearchResult>> {
+        return try {
+            if (!isNetworkAvailable()) {
+                return Result.failure(OfflineException())
+            }
+            val response = offApiService.searchProducts(searchTerms = query)
+            val results = OffResponseMapper.mapProducts(response.products)
+            results.forEach { cacheResult(it) }
+            Result.success(results)
+        } catch (e: IOException) {
+            Result.failure(OfflineException("Network error: unable to reach Open Food Facts service"))
+        } catch (e: HttpException) {
+            Result.failure(Exception(mapHttpError(e.code())))
+        } catch (e: Exception) {
+            Result.failure(Exception("Could not read food data"))
+        }
+    }
+
+    override suspend fun lookupBarcode(barcode: String): Result<FoodSearchResult?> {
+        // Check cache first
+        val cached = foodCacheDao.getByBarcode(barcode)
+        if (cached != null && !isCacheExpired(cached.cachedAt)) {
+            return Result.success(cached.toDomain())
+        }
+
+        return try {
+            if (!isNetworkAvailable()) {
+                // Return cached data if available even if expired, otherwise fail
+                if (cached != null) {
+                    return Result.success(cached.toDomain())
+                }
+                return Result.failure(OfflineException())
+            }
+            val response = offApiService.getProductByBarcode(barcode)
+            if (response.status == 0 || response.product == null) {
+                Result.success(null)
+            } else {
+                val result = OffResponseMapper.mapProduct(response.product)
+                cacheResult(result, barcode)
+                Result.success(result)
+            }
+        } catch (e: IOException) {
+            if (cached != null) {
+                Result.success(cached.toDomain())
+            } else {
+                Result.failure(OfflineException("Network error: unable to reach Open Food Facts service"))
+            }
+        } catch (e: HttpException) {
+            if (cached != null) {
+                Result.success(cached.toDomain())
+            } else {
+                Result.failure(Exception(mapHttpError(e.code())))
+            }
+        } catch (e: Exception) {
+            if (cached != null) {
+                Result.success(cached.toDomain())
+            } else {
+                Result.failure(Exception("Could not read food data"))
+            }
+        }
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
+    private fun isCacheExpired(cachedAt: Long): Boolean {
+        return System.currentTimeMillis() - cachedAt > CACHE_DURATION_MILLIS
+    }
+
+    private suspend fun cacheResult(result: FoodSearchResult, barcode: String? = null) {
+        val entity = FoodCacheEntity(
+            cacheKey = result.id,
+            foodName = result.name,
+            kcalPer100g = result.kcalPer100g,
+            proteinPer100g = result.proteinPer100g,
+            carbsPer100g = result.carbsPer100g,
+            fatPer100g = result.fatPer100g,
+            source = when (result.source) {
+                FoodSource.USDA -> "USDA"
+                FoodSource.OPEN_FOOD_FACTS -> "OFF"
+                FoodSource.MANUAL -> "MANUAL"
+            },
+            barcode = barcode,
+            cachedAt = System.currentTimeMillis(),
+        )
+        foodCacheDao.insert(entity)
+    }
+
+    private fun mapHttpError(code: Int): String {
+        return when (code) {
+            400 -> "Invalid request"
+            403 -> "Invalid API key"
+            429 -> "Too many requests, please try again later"
+            in 500..599 -> "Service temporarily unavailable"
+            else -> "Unexpected error (HTTP $code)"
+        }
+    }
+
+    private fun FoodCacheEntity.toDomain(): FoodSearchResult {
+        val missingFields = buildSet {
+            if (kcalPer100g == null) add(NutritionField.KCAL)
+            if (proteinPer100g == null) add(NutritionField.PROTEIN)
+            if (carbsPer100g == null) add(NutritionField.CARBS)
+            if (fatPer100g == null) add(NutritionField.FAT)
+        }
+        return FoodSearchResult(
+            id = cacheKey,
+            name = foodName,
+            source = when (source) {
+                "USDA" -> FoodSource.USDA
+                "OFF" -> FoodSource.OPEN_FOOD_FACTS
+                else -> FoodSource.MANUAL
+            },
+            kcalPer100g = kcalPer100g,
+            proteinPer100g = proteinPer100g,
+            carbsPer100g = carbsPer100g,
+            fatPer100g = fatPer100g,
+            missingFields = missingFields,
+        )
+    }
+}

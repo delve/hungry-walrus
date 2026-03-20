@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.delve.hungrywalrus.data.remote.openfoodfacts.OffResponseMapperTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-03-20T06:59:38" hostname="ravenclaw" time="0.009">
+  <properties/>
+  <testcase name="mapProduct with some missing nutrients returns nulls and populates missingFields" classname="com.delve.hungrywalrus.data.remote.openfoodfacts.OffResponseMapperTest" time="0.007"/>
+  <testcase name="mapProduct with all nutrients missing returns all nulls and full missingFields" classname="com.delve.hungrywalrus.data.remote.openfoodfacts.OffResponseMapperTest" time="0.001"/>
+  <testcase name="mapProduct with all nutrients present returns complete result" classname="com.delve.hungrywalrus.data.remote.openfoodfacts.OffResponseMapperTest" time="0.0"/>
+  <testcase name="mapProducts maps list of products correctly" classname="com.delve.hungrywalrus.data.remote.openfoodfacts.OffResponseMapperTest" time="0.0"/>
+  <testcase name="mapProduct with blank product name falls back to code" classname="com.delve.hungrywalrus.data.remote.openfoodfacts.OffResponseMapperTest" time="0.0"/>
+  <testcase name="mapProduct with null product name falls back to code" classname="com.delve.hungrywalrus.data.remote.openfoodfacts.OffResponseMapperTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

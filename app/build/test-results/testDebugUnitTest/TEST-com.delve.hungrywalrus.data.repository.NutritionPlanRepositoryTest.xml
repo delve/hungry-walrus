@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-03-20T06:59:38" hostname="ravenclaw" time="0.158">
+  <properties/>
+  <testcase name="getPlanForDate returns null when no plan exists for date" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.12"/>
+  <testcase name="getPlanForDate converts date to epoch millis and returns mapped plan" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.007"/>
+  <testcase name="getCurrentPlan emits mapped domain model when entity exists" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.007"/>
+  <testcase name="getCurrentPlan emits null when no entity exists" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.007"/>
+  <testcase name="savePlan inserts entity with correct values" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.017"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

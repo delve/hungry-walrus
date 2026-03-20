@@ -1,5 +1,14 @@
-initial manual pipeline
+# Learning
+## excessive testing
+The developer agent write tests to validate the behavior of some base Java (like, java.time) and 3rd party packages and had to be corrected. I had to tell it to check that tests were all testing our code. And explicitly to update its handoff to reflect the test removals. It's POSSIBLE the codereview agent would have caught it, and if i see this behavior again i'll check to see. but if one agent was able to make this mistake a review agent is equally likely. maybe a note in its definition to verify tests only cover our own code would help there.
 
+I am not certain if that was the developer agent doing it, of a 'base' claude agent. i typed the prompts into the same claude panel used to invoke the pipeline slash commands.
+`Why are the tests verifying the behavior of a base Java package?` - java.time test in open in focus file removed
+`Review other tests to ensure we are only testing the behavior of our own code.` additional tests removed
+`update your handoff to note the deleted tests and why.` handoff updated.
+
+# App notes
+## initial manual pipeline
 You → Architect → You → Designer → You → Developer → Code Review Agent → You → QA → You → Developer (if fixes needed) → You → DevOps → You.
 
 And your pipeline execution order is:
@@ -23,5 +32,5 @@ And your pipeline execution order is:
 1. DevOps — CI/CD pipeline, signing docs, build commands
 1. You review
 
-
+# TODOs
 TODO: As per 8.4 in design.md, add serving size to the food cache
