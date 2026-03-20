@@ -23,20 +23,25 @@ class ScaleNutritionUseCase @Inject constructor() {
         carbsPer100g: Double,
         fatPer100g: Double,
         weightG: Double,
-    ): NutritionValues = NutritionValues(
-        kcal = (kcalPer100g / 100.0) * weightG,
-        proteinG = (proteinPer100g / 100.0) * weightG,
-        carbsG = (carbsPer100g / 100.0) * weightG,
-        fatG = (fatPer100g / 100.0) * weightG,
-    )
+    ): NutritionValues {
+        require(weightG >= 0.0) { "weightG must not be negative" }
+        return NutritionValues(
+            kcal = (kcalPer100g / 100.0) * weightG,
+            proteinG = (proteinPer100g / 100.0) * weightG,
+            carbsG = (carbsPer100g / 100.0) * weightG,
+            fatG = (fatPer100g / 100.0) * weightG,
+        )
+    }
 
     /**
      * Scale a [recipe] to a [portionWeightG] gram portion.
      * Formula: scaledValue = (recipeTotalValue / recipeTotalWeightG) * portionWeightG
      *
      * @throws IllegalArgumentException if [recipe].totalWeightG is not positive.
+     * @throws IllegalArgumentException if [portionWeightG] is negative.
      */
     fun scaleRecipePortion(recipe: Recipe, portionWeightG: Double): NutritionValues {
+        require(portionWeightG >= 0.0) { "portionWeightG must not be negative" }
         require(recipe.totalWeightG > 0.0) { "Recipe totalWeightG must be positive" }
         return NutritionValues(
             kcal = (recipe.totalKcal / recipe.totalWeightG) * portionWeightG,

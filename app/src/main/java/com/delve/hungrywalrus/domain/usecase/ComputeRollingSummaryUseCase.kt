@@ -26,6 +26,7 @@ class ComputeRollingSummaryUseCase @Inject constructor() {
         start: LocalDate,
         end: LocalDate,
     ): RollingSummary {
+        require(!start.isAfter(end)) { "start must not be after end" }
         val periodDays = (ChronoUnit.DAYS.between(start, end) + 1).toInt()
 
         // Sum intake
@@ -40,8 +41,8 @@ class ComputeRollingSummaryUseCase @Inject constructor() {
             fatG = totalFat,
         )
 
-        // Sum targets day by day
-        var hasAnyPlan = false
+        // Sum targets day by day. totalTarget is null unless every day in the period has a plan.
+        var planCoveredDays = 0
         var targetKcal = 0.0
         var targetProtein = 0.0
         var targetCarbs = 0.0
@@ -51,7 +52,7 @@ class ComputeRollingSummaryUseCase @Inject constructor() {
         while (!date.isAfter(end)) {
             val plan = dailyPlans[date]
             if (plan != null) {
-                hasAnyPlan = true
+                planCoveredDays++
                 targetKcal += plan.kcalTarget
                 targetProtein += plan.proteinTargetG
                 targetCarbs += plan.carbsTargetG
@@ -60,7 +61,7 @@ class ComputeRollingSummaryUseCase @Inject constructor() {
             date = date.plusDays(1)
         }
 
-        val totalTarget = if (hasAnyPlan) {
+        val totalTarget = if (planCoveredDays == periodDays) {
             NutritionValues(
                 kcal = targetKcal,
                 proteinG = targetProtein,

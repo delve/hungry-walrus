@@ -130,4 +130,31 @@ class ComputeRollingSummaryUseCaseTest {
         assertEquals(start, result.startDate)
         assertEquals(end, result.endDate)
     }
+
+    @Test
+    fun `returns null target when only some days have a plan`() {
+        // 3 of 7 days covered — partial coverage should yield null totalTarget
+        val plans = buildMap<LocalDate, NutritionPlan?> {
+            for (i in 0L..2L) put(start.plusDays(i), planA)
+        }
+        val result = useCase(emptyList(), plans, start, end)
+        assertNull(result.totalTarget)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `throws when start is after end`() {
+        useCase(emptyList(), emptyMap(), end, start)
+    }
+
+    @Test
+    fun `single-day period has periodDays 1 and dailyAverage equals totalIntake`() {
+        val singleDay = LocalDate.of(2026, 3, 20)
+        val entries = listOf(entry(400.0, 30.0, 50.0, 15.0))
+        val result = useCase(entries, emptyMap(), singleDay, singleDay)
+        assertEquals(1, result.periodDays)
+        assertEquals(result.totalIntake.kcal, result.dailyAverage.kcal, 0.001)
+        assertEquals(result.totalIntake.proteinG, result.dailyAverage.proteinG, 0.001)
+        assertEquals(result.totalIntake.carbsG, result.dailyAverage.carbsG, 0.001)
+        assertEquals(result.totalIntake.fatG, result.dailyAverage.fatG, 0.001)
+    }
 }

@@ -79,6 +79,33 @@ class ScaleNutritionUseCaseTest {
     }
 
     @Test(expected = IllegalArgumentException::class)
+    fun `invoke throws for negative weight`() {
+        useCase(
+            kcalPer100g = 250.0,
+            proteinPer100g = 20.0,
+            carbsPer100g = 30.0,
+            fatPer100g = 10.0,
+            weightG = -1.0,
+        )
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `scaleRecipePortion throws for negative portionWeightG`() {
+        val recipe = Recipe(
+            id = 1,
+            name = "Test Recipe",
+            totalWeightG = 500.0,
+            totalKcal = 1000.0,
+            totalProteinG = 80.0,
+            totalCarbsG = 120.0,
+            totalFatG = 40.0,
+            createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis(),
+        )
+        useCase.scaleRecipePortion(recipe, portionWeightG = -1.0)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
     fun `scaleRecipePortion throws for zero recipe weight`() {
         val recipe = Recipe(
             id = 1,
