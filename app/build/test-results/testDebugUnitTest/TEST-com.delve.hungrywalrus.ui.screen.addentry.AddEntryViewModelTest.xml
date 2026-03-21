@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" tests="24" skipped="0" failures="0" errors="0" timestamp="2026-03-21T19:35:15" hostname="ravenclaw" time="0.339">
+<testsuite name="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" tests="24" skipped="0" failures="0" errors="0" timestamp="2026-03-21T20:06:14" hostname="ravenclaw" time="0.17">
   <properties/>
-  <testcase name="lookupBarcode emits BarcodeResult found=false isError=true and sets Error state on network failure" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.176"/>
-  <testcase name="lookupBarcode emits BarcodeResult found=false isError=false when product not in database" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.007"/>
-  <testcase name="saveEntry creates log entry and emits event" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.015"/>
+  <testcase name="lookupBarcode emits BarcodeResult found=false isError=true and sets Error state on network failure" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.012"/>
+  <testcase name="lookupBarcode emits BarcodeResult found=false isError=false when product not in database" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.008"/>
+  <testcase name="saveEntry creates log entry and emits event" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.009"/>
   <testcase name="selectFood stores food and returns false when complete" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.005"/>
   <testcase name="applyMissingValues updates selected food" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.004"/>
-  <testcase name="saveApiKey ignores blank key" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.008"/>
-  <testcase name="events Channel delivers EntrySaved to exactly one collector" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.007"/>
-  <testcase name="selectRecipe stores recipe and sets recipe source" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.005"/>
+  <testcase name="saveApiKey ignores blank key" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.006"/>
+  <testcase name="events Channel delivers EntrySaved to exactly one collector" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.012"/>
+  <testcase name="selectRecipe stores recipe and sets recipe source" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.007"/>
   <testcase name="getIngredientData returns ingredient data for selected food with weight" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.006"/>
-  <testcase name="setWeight computes scaled nutrition for recipe" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.005"/>
-  <testcase name="ingredientMode defaults to false" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.006"/>
-  <testcase name="setIngredientMode updates ingredientMode in uiState" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.005"/>
-  <testcase name="searchUsda with empty results sets NoResults state" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.011"/>
-  <testcase name="lookupBarcode emits BarcodeResult found=true isError=false on successful lookup" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.009"/>
-  <testcase name="resetState clears all state and resets ingredientMode" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.006"/>
-  <testcase name="setWeight with invalid value clears scaled nutrition" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.006"/>
-  <testcase name="searchUsda with error sets Error state" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.008"/>
-  <testcase name="getIngredientData returns null when no food selected" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.006"/>
-  <testcase name="selectFood returns true when food has missing values" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.005"/>
-  <testcase name="saveApiKey stores key and updates hasUsdaKey state" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.011"/>
-  <testcase name="searchUsda updates state with results" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.011"/>
-  <testcase name="initial state has empty search and no USDA key" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.006"/>
+  <testcase name="setWeight computes scaled nutrition for recipe" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.004"/>
+  <testcase name="ingredientMode defaults to false" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.004"/>
+  <testcase name="setIngredientMode updates ingredientMode in uiState" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.007"/>
+  <testcase name="searchUsda with empty results sets NoResults state" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.008"/>
+  <testcase name="lookupBarcode emits BarcodeResult found=true isError=false on successful lookup" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.008"/>
+  <testcase name="resetState clears all state and resets ingredientMode" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.004"/>
+  <testcase name="setWeight with invalid value clears scaled nutrition" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.008"/>
+  <testcase name="searchUsda with error sets Error state" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.006"/>
+  <testcase name="getIngredientData returns null when no food selected" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.004"/>
+  <testcase name="selectFood returns true when food has missing values" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.004"/>
+  <testcase name="saveApiKey stores key and updates hasUsdaKey state" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.007"/>
+  <testcase name="searchUsda updates state with results" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.005"/>
+  <testcase name="initial state has empty search and no USDA key" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.005"/>
   <testcase name="getIngredientData converts recipe to per-100g equivalent" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.005"/>
-  <testcase name="setWeight computes scaled nutrition for food" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.006"/>
+  <testcase name="setWeight computes scaled nutrition for food" classname="com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModelTest" time="0.012"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

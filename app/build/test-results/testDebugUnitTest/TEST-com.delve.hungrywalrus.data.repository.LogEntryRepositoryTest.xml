@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-03-21T19:35:14" hostname="ravenclaw" time="0.177">
+<testsuite name="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-03-21T20:06:12" hostname="ravenclaw" time="0.189">
   <properties/>
-  <testcase name="getEntriesForDate converts date to correct epoch millis range" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.142"/>
-  <testcase name="addEntry maps domain model to entity and inserts" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.017"/>
-  <testcase name="getEntriesForDate returns empty list when no entries exist" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.004"/>
-  <testcase name="getEntriesForRange converts dates to correct epoch millis" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.005"/>
-  <testcase name="deleteEntry calls dao deleteById with correct id" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.008"/>
+  <testcase name="getEntriesForDate converts date to correct epoch millis range" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.149"/>
+  <testcase name="addEntry maps domain model to entity and inserts" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.018"/>
+  <testcase name="getEntriesForDate returns empty list when no entries exist" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.006"/>
+  <testcase name="getEntriesForRange converts dates to correct epoch millis" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.008"/>
+  <testcase name="deleteEntry calls dao deleteById with correct id" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.007"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

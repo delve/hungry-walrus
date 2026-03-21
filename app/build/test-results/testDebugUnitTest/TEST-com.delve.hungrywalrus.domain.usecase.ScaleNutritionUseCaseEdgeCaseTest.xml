@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseEdgeCaseTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-03-21T20:06:13" hostname="ravenclaw" time="0.002">
+  <properties/>
+  <testcase name="zero per-100g reference values produce zero scaled values for any weight" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseEdgeCaseTest" time="0.001"/>
+  <testcase name="portion weight equal to total recipe weight returns full recipe totals" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseEdgeCaseTest" time="0.0"/>
+  <testcase name="very large weight produces proportionally large values" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseEdgeCaseTest" time="0.0"/>
+  <testcase name="portion larger than total recipe weight scales above 100 percent" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseEdgeCaseTest" time="0.0"/>
+  <testcase name="zero portion weight returns all zero nutrition" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseEdgeCaseTest" time="0.0"/>
+  <testcase name="zero recipe totalWeightG throws IllegalArgumentException" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseEdgeCaseTest" time="0.001"/>
+  <testcase name="negative portionWeightG throws IllegalArgumentException" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseEdgeCaseTest" time="0.0"/>
+  <testcase name="exactly 100g weight returns per-100g reference values unchanged" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseEdgeCaseTest" time="0.0"/>
+  <testcase name="negative weightG throws IllegalArgumentException" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseEdgeCaseTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

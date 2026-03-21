@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.delve.hungrywalrus.integration.NutritionCalculationIntegrationTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-03-21T20:06:14" hostname="ravenclaw" time="0.004">
+  <properties/>
+  <testcase name="food with missing kcal is not complete until override supplied" classname="com.delve.hungrywalrus.integration.NutritionCalculationIntegrationTest" time="0.001"/>
+  <testcase name="7-day summary correctly accumulates intake over 7 days" classname="com.delve.hungrywalrus.integration.NutritionCalculationIntegrationTest" time="0.002"/>
+  <testcase name="50 percent of recipe gives half of recipe totals" classname="com.delve.hungrywalrus.integration.NutritionCalculationIntegrationTest" time="0.0"/>
+  <testcase name="scale 200g chicken breast from 100g reference gives correct values" classname="com.delve.hungrywalrus.integration.NutritionCalculationIntegrationTest" time="0.0"/>
+  <testcase name="28-day summary correctly accumulates intake and targets" classname="com.delve.hungrywalrus.integration.NutritionCalculationIntegrationTest" time="0.001"/>
+  <testcase name="scale 50g oats from 100g reference gives half the reference values" classname="com.delve.hungrywalrus.integration.NutritionCalculationIntegrationTest" time="0.0"/>
+  <testcase name="daily totals computed by summing individual scaled entries" classname="com.delve.hungrywalrus.integration.NutritionCalculationIntegrationTest" time="0.0"/>
+  <testcase name="25 percent of recipe gives quarter of recipe totals" classname="com.delve.hungrywalrus.integration.NutritionCalculationIntegrationTest" time="0.0"/>
+  <testcase name="scaling two ingredients and summing matches manually computed totals" classname="com.delve.hungrywalrus.integration.NutritionCalculationIntegrationTest" time="0.0"/>
+  <testcase name="totalTarget is null in 7-day summary when plan missing for one day" classname="com.delve.hungrywalrus.integration.NutritionCalculationIntegrationTest" time="0.0"/>
+  <testcase name="food with all four missing fields requires all four overrides" classname="com.delve.hungrywalrus.integration.NutritionCalculationIntegrationTest" time="0.0"/>
+  <testcase name="scale 0g of any food returns all zeros" classname="com.delve.hungrywalrus.integration.NutritionCalculationIntegrationTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
