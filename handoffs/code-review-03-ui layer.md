@@ -50,3 +50,26 @@ The coupling can be fully eliminated by adding `val missingFields: Set<Nutrition
 **PASS**
 
 All previous open findings have been resolved or downgraded. The residual `selectedFood` snapshot read (O1) is safe given the current implementation and carries no realistic refactor risk in its present causal context. No blocking issues remain.
+
+## Product Owner Findings
+
+### P01. "No plan" notice does not disappear when a plan is entered
+Tapping the warning and saving a plan does not remove the warning.
+
+### P02. Cannot add branded foods to a recipe
+When creating a recipe and adding food from OFF the flow stops at weight entry. Adding a weight does not update the nutrient values onscreen and does not enable the "Add Ingredient" button.
+
+### P03. Nutrition plan should should appear in 'Settings'
+The nutrition plan should be visible and updateable on the Settings screen. When adding hte initial plan the warning message can simply open the settings tab instead of having a special screen.
+
+### P04. Adding custom values does not require weight
+When adding custom nutrition values manually do not ask for the weight. The user should enter the precise values that are consumed or that go into a recipe.
+
+### P05. The Today screen does not show totals for the day
+There should be a display of running nutrition values on the Today screen. There is not.
+
+### P06. Summaries don't show plan values
+The Summaries screen shows consumption but does not show the plan amounts for the summary period.
+
+### P07. Summaries page does not update
+The summary doesn't update for logged food unless you change the summary period. Opening the Today tab to log a meal should cause Summaries to recalculate when the tab is re-opened.
