@@ -10,6 +10,20 @@ I am not certain if that was the developer agent doing it, of a 'base' claude ag
 ## permissions
 developer needs DELETE, or else it can't clean up code files that should be removed and leaves stubs behind.
 
+## code review
+include verbiage about identifying findings to improve reference stability. "consistently label findings as C## for critical, W## for warnings, or O## for observations which may not need remediation."
+
+Include explicit instruction to ignore deferred findings. Not sure how to handle deferrence where the fix agent was wrong. perhaps manual update to the initial review saying don't defer, then rerun fix?
+/pipeline:codereview 03  "ui layer" Where findings from previous sessions were deferred consider the rationale and it it is sound do not re-raise the same finding.
+
+# Agent notes
+i have 6 agents
+architect, codereview, designer, developer, devops, and qa
+
+multiple slash commands can invoke the same agent. i tend to use the agent name and the command name interchangably.
+
+the developer agent seems to work best with a clean session, the codereview agent seems to work best reusing the same session
+
 # App notes
 ## initial manual pipeline
 You → Architect → You → Designer → You → Developer → Code Review Agent → You → QA → You → Developer (if fixes needed) → You → DevOps → You.
@@ -30,7 +44,7 @@ And your pipeline execution order is:
 1. Developer session 03 — UI layer `/pipeline:develop 03  "ui layer"`
 1. Start a new session. Code Review session 03 — reviews UI layer `/pipeline:codereview 03  "ui layer"`
 1. You review, send fixes back to Developer if needed - OPTIONAL: Start a new session. Run fix for review findings `/pipeline:fix 03  "ui layer"` then repeat previous step.
-1. QA — integration tests, additional unit tests, full report
+1. QA — integration tests, additional unit tests, full report `/pipeline:test`
 1. You review, send bugs back to Developer if needed
 1. DevOps — CI/CD pipeline, signing docs, build commands
 1. You review
