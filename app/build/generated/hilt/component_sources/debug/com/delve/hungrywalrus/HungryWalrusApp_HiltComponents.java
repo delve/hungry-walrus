@@ -4,6 +4,14 @@ import androidx.hilt.work.HiltWrapper_WorkerFactoryModule;
 import com.delve.hungrywalrus.di.DatabaseModule;
 import com.delve.hungrywalrus.di.NetworkModule;
 import com.delve.hungrywalrus.di.RepositoryModule;
+import com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModel_HiltModules;
+import com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModel_HiltModules;
+import com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModel_HiltModules;
+import com.delve.hungrywalrus.ui.screen.plan.PlanViewModel_HiltModules;
+import com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModel_HiltModules;
+import com.delve.hungrywalrus.ui.screen.recipes.RecipeListViewModel_HiltModules;
+import com.delve.hungrywalrus.ui.screen.settings.SettingsViewModel_HiltModules;
+import com.delve.hungrywalrus.ui.screen.summaries.SummariesViewModel_HiltModules;
 import com.delve.hungrywalrus.worker.DataRetentionWorker_HiltModule;
 import dagger.Binds;
 import dagger.Component;
@@ -160,10 +168,18 @@ public final class HungryWalrusApp_HiltComponents {
 
   @Subcomponent(
       modules = {
+          AddEntryViewModel_HiltModules.KeyModule.class,
+          CreateRecipeViewModel_HiltModules.KeyModule.class,
+          DailyProgressViewModel_HiltModules.KeyModule.class,
           HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class,
           HiltWrapper_SavedStateHandleModule.class,
           ActivityCBuilderModule.class,
-          ViewModelCBuilderModule.class
+          ViewModelCBuilderModule.class,
+          PlanViewModel_HiltModules.KeyModule.class,
+          RecipeDetailViewModel_HiltModules.KeyModule.class,
+          RecipeListViewModel_HiltModules.KeyModule.class,
+          SettingsViewModel_HiltModules.KeyModule.class,
+          SummariesViewModel_HiltModules.KeyModule.class
       }
   )
   @ActivityRetainedScoped
@@ -198,7 +214,17 @@ public final class HungryWalrusApp_HiltComponents {
   }
 
   @Subcomponent(
-      modules = HiltWrapper_HiltViewModelFactory_ViewModelModule.class
+      modules = {
+          AddEntryViewModel_HiltModules.BindsModule.class,
+          CreateRecipeViewModel_HiltModules.BindsModule.class,
+          DailyProgressViewModel_HiltModules.BindsModule.class,
+          HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
+          PlanViewModel_HiltModules.BindsModule.class,
+          RecipeDetailViewModel_HiltModules.BindsModule.class,
+          RecipeListViewModel_HiltModules.BindsModule.class,
+          SettingsViewModel_HiltModules.BindsModule.class,
+          SummariesViewModel_HiltModules.BindsModule.class
+      }
   )
   @ViewModelScoped
   public abstract static class ViewModelC implements ViewModelComponent,

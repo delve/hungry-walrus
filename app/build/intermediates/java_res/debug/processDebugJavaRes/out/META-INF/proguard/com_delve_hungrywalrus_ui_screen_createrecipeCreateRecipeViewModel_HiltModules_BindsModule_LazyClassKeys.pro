@@ -1,0 +1,1 @@
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModel

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.delve.hungrywalrus.ui.screen.summaries.SummariesViewModelTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-03-21T19:35:15" hostname="ravenclaw" time="0.057">
+  <properties/>
+  <testcase name="selectTab switches to 28 day and reloads" classname="com.delve.hungrywalrus.ui.screen.summaries.SummariesViewModelTest" time="0.035"/>
+  <testcase name="dailyAverage is total intake divided by period days" classname="com.delve.hungrywalrus.ui.screen.summaries.SummariesViewModelTest" time="0.005"/>
+  <testcase name="initial state is Loading" classname="com.delve.hungrywalrus.ui.screen.summaries.SummariesViewModelTest" time="0.004"/>
+  <testcase name="loads summary with plan as Content state" classname="com.delve.hungrywalrus.ui.screen.summaries.SummariesViewModelTest" time="0.006"/>
+  <testcase name="loads 7 day summary with no plan as NoPlan state" classname="com.delve.hungrywalrus.ui.screen.summaries.SummariesViewModelTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

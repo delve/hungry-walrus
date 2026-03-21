@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModelTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-03-21T19:35:15" hostname="ravenclaw" time="0.044">
+  <properties/>
+  <testcase name="saveRecipe in edit mode calls updateRecipe with original createdAt" classname="com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModelTest" time="0.023"/>
+  <testcase name="edit mode loads existing recipe and preserves originalCreatedAt" classname="com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModelTest" time="0.003"/>
+  <testcase name="removeIngredient updates ingredients and recomputes totals" classname="com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModelTest" time="0.002"/>
+  <testcase name="saveRecipe does nothing when name empty" classname="com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModelTest" time="0.002"/>
+  <testcase name="initial state is create mode with empty data" classname="com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModelTest" time="0.002"/>
+  <testcase name="saveRecipe calls repository and emits event" classname="com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModelTest" time="0.006"/>
+  <testcase name="saveRecipe does nothing when no ingredients" classname="com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModelTest" time="0.001"/>
+  <testcase name="setRecipeName updates state" classname="com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModelTest" time="0.001"/>
+  <testcase name="addIngredient updates ingredients and recomputes totals" classname="com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModelTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

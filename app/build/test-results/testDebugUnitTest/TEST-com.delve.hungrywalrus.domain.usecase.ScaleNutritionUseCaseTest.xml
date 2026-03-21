@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-03-20T12:49:29" hostname="ravenclaw" time="0.002">
+<testsuite name="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-03-21T19:35:14" hostname="ravenclaw" time="0.001">
   <properties/>
-  <testcase name="scaleRecipePortion throws for zero recipe weight" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseTest" time="0.001"/>
+  <testcase name="scaleRecipePortion throws for zero recipe weight" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseTest" time="0.0"/>
   <testcase name="scaleRecipePortion with full recipe weight returns total values" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseTest" time="0.0"/>
   <testcase name="invoke returns zero values for zero weight" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseTest" time="0.0"/>
   <testcase name="invoke throws for negative weight" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseTest" time="0.0"/>
   <testcase name="invoke scales per-100g values by weight" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseTest" time="0.0"/>
-  <testcase name="scaleRecipePortion throws for negative portionWeightG" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseTest" time="0.001"/>
+  <testcase name="scaleRecipePortion throws for negative portionWeightG" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseTest" time="0.0"/>
   <testcase name="scaleRecipePortion scales recipe correctly" classname="com.delve.hungrywalrus.domain.usecase.ScaleNutritionUseCaseTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

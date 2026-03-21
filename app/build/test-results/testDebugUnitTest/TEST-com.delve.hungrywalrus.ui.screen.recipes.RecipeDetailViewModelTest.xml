@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModelTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-03-21T19:35:15" hostname="ravenclaw" time="0.026">
+  <properties/>
+  <testcase name="emits NotFound when recipe is null" classname="com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModelTest" time="0.009"/>
+  <testcase name="initial state is Loading" classname="com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModelTest" time="0.005"/>
+  <testcase name="emits Content when recipe found" classname="com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModelTest" time="0.005"/>
+  <testcase name="deleteRecipe calls repository and emits event" classname="com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModelTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

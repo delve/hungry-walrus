@@ -1,0 +1,16 @@
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.plan.PlanViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.plan.PlanViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.summaries.SummariesViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.summaries.SummariesViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.recipes.RecipeListViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.recipes.RecipeListViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.settings.SettingsViewModel
+-keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.settings.SettingsViewModel
