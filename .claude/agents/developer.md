@@ -29,6 +29,8 @@ build upon consistently.
   established in the architecture document.
 - Write unit tests alongside your code. Test the behaviour of what you
   build, not just that it compiles.
+- Write tests only for code in this project. Do not write tests for 3rd
+  party libraries or builtin language libraries.
 - Follow the dependency injection framework specified in the architecture
   document.
 - Where you are building on existing code from a previous session,
