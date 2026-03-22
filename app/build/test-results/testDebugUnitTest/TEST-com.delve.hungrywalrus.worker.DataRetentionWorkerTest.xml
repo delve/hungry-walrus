@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-03-21T20:06:15" hostname="ravenclaw" time="0.043">
+<testsuite name="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-03-22T14:56:11" hostname="ravenclaw" time="0.044">
   <properties/>
-  <testcase name="log retention threshold is greater than cache retention threshold" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.009"/>
+  <testcase name="log retention threshold is greater than cache retention threshold" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.007"/>
   <testcase name="doWork passes cache retention threshold of approximately 30 days ago" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.009"/>
-  <testcase name="doWork calls logEntryDao deleteOlderThan exactly once" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.004"/>
-  <testcase name="doWork calls foodCacheDao deleteOlderThan exactly once" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.005"/>
-  <testcase name="doWork returns retry when logEntryDao throws" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.004"/>
+  <testcase name="doWork calls logEntryDao deleteOlderThan exactly once" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.005"/>
+  <testcase name="doWork calls foodCacheDao deleteOlderThan exactly once" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.004"/>
+  <testcase name="doWork returns retry when logEntryDao throws" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.005"/>
   <testcase name="doWork passes log retention threshold of approximately 730 days ago" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.005"/>
-  <testcase name="doWork returns retry when foodCacheDao throws" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.004"/>
-  <testcase name="doWork returns success when both DAOs succeed" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.002"/>
+  <testcase name="doWork returns retry when foodCacheDao throws" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.006"/>
+  <testcase name="doWork returns success when both DAOs succeed" classname="com.delve.hungrywalrus.worker.DataRetentionWorkerTest" time="0.003"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

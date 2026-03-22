@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2026-03-21T20:06:09" hostname="ravenclaw" time="2.772">
+<testsuite name="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2026-03-22T14:56:06" hostname="ravenclaw" time="2.643">
   <properties/>
-  <testcase name="lookupBarcode caches entity with source OFF and barcode set" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="2.098"/>
-  <testcase name="searchUsda returns failure with too many requests message on HTTP 429" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.473"/>
-  <testcase name="searchOpenFoodFacts returns failure with OfflineException on IOException" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.038"/>
+  <testcase name="lookupBarcode caches entity with source OFF and barcode set" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="2.061"/>
+  <testcase name="searchUsda returns failure with too many requests message on HTTP 429" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.386"/>
+  <testcase name="searchOpenFoodFacts returns failure with OfflineException on IOException" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.046"/>
   <testcase name="lookupBarcode returns success null when API returns status 0" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.011"/>
   <testcase name="cache older than 30 days is treated as expired and network is attempted" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.019"/>
   <testcase name="lookupBarcode returns failure on HttpException when no cache" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.011"/>
-  <testcase name="lookupBarcode returns failure on HttpException when cache is expired, not stale cache" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.011"/>
-  <testcase name="searchUsda returns failure with invalid API key message on HTTP 403" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.01"/>
-  <testcase name="cache within 30 days is not expired and network is not called" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.009"/>
-  <testcase name="lookupBarcode returns cached result without network call when cache is fresh" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.008"/>
-  <testcase name="searchOpenFoodFacts returns mapped results without caching" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.009"/>
-  <testcase name="searchOpenFoodFacts returns failure with generic message on unexpected Exception" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.006"/>
-  <testcase name="searchOpenFoodFacts returns failure with mapped message on HttpException" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.008"/>
-  <testcase name="searchUsda returns failure with OfflineException on IOException" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.007"/>
-  <testcase name="searchUsda returns mapped results without caching" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.009"/>
-  <testcase name="lookupBarcode returns success null on HTTP 404 even when cache is expired" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.011"/>
-  <testcase name="lookupBarcode returns failure on unexpected Exception even when cache is expired" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.008"/>
-  <testcase name="searchUsda returns failure with generic message on unexpected Exception" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.006"/>
-  <testcase name="lookupBarcode populates missingFields when API response has null nutriments" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.008"/>
-  <testcase name="lookupBarcode returns expired cache when device is offline" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.008"/>
+  <testcase name="lookupBarcode returns failure on HttpException when cache is expired, not stale cache" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.01"/>
+  <testcase name="searchUsda returns failure with invalid API key message on HTTP 403" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.008"/>
+  <testcase name="cache within 30 days is not expired and network is not called" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.006"/>
+  <testcase name="lookupBarcode returns cached result without network call when cache is fresh" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.006"/>
+  <testcase name="searchOpenFoodFacts returns mapped results without caching" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.012"/>
+  <testcase name="searchOpenFoodFacts returns failure with generic message on unexpected Exception" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.013"/>
+  <testcase name="searchOpenFoodFacts returns failure with mapped message on HttpException" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.009"/>
+  <testcase name="searchUsda returns failure with OfflineException on IOException" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.005"/>
+  <testcase name="searchUsda returns mapped results without caching" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.006"/>
+  <testcase name="lookupBarcode returns success null on HTTP 404 even when cache is expired" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.008"/>
+  <testcase name="lookupBarcode returns failure on unexpected Exception even when cache is expired" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.006"/>
+  <testcase name="searchUsda returns failure with generic message on unexpected Exception" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.004"/>
+  <testcase name="lookupBarcode populates missingFields when API response has null nutriments" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.006"/>
+  <testcase name="lookupBarcode returns expired cache when device is offline" classname="com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImplTest" time="0.006"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

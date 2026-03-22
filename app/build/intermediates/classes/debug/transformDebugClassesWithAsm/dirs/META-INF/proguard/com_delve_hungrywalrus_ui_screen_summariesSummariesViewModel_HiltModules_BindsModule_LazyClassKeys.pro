@@ -1,5 +1,3 @@
 -keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModel
 -keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModel
--keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.plan.PlanViewModel
--keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.plan.PlanViewModel
 -keep,allowobfuscation,allowshrinking class com.delve.hungrywalrus.ui.screen.summaries.SummariesViewModel

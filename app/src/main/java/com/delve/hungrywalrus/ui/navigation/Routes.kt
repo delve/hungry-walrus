@@ -5,7 +5,6 @@ package com.delve.hungrywalrus.ui.navigation
  */
 object Routes {
     const val DAILY_PROGRESS = "daily_progress"
-    const val PLAN = "plan"
 
     // Meal logging flow (nested graph)
     const val LOG_GRAPH = "log"

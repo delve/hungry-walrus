@@ -58,10 +58,6 @@ import com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModel;
 import com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModel_HiltModules;
 import com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModel_HiltModules_BindsModule_Binds_LazyMapKey;
 import com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModel_HiltModules_KeyModule_Provide_LazyMapKey;
-import com.delve.hungrywalrus.ui.screen.plan.PlanViewModel;
-import com.delve.hungrywalrus.ui.screen.plan.PlanViewModel_HiltModules;
-import com.delve.hungrywalrus.ui.screen.plan.PlanViewModel_HiltModules_BindsModule_Binds_LazyMapKey;
-import com.delve.hungrywalrus.ui.screen.plan.PlanViewModel_HiltModules_KeyModule_Provide_LazyMapKey;
 import com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModel;
 import com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModel_HiltModules;
 import com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModel_HiltModules_BindsModule_Binds_LazyMapKey;
@@ -445,7 +441,7 @@ public final class DaggerHungryWalrusApp_HiltComponents_SingletonC {
 
     @Override
     public Map<Class<?>, Boolean> getViewModelKeys() {
-      return LazyClassKeyMap.<Boolean>of(MapBuilder.<String, Boolean>newMapBuilder(8).put(AddEntryViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, AddEntryViewModel_HiltModules.KeyModule.provide()).put(CreateRecipeViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, CreateRecipeViewModel_HiltModules.KeyModule.provide()).put(DailyProgressViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, DailyProgressViewModel_HiltModules.KeyModule.provide()).put(PlanViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, PlanViewModel_HiltModules.KeyModule.provide()).put(RecipeDetailViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, RecipeDetailViewModel_HiltModules.KeyModule.provide()).put(RecipeListViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, RecipeListViewModel_HiltModules.KeyModule.provide()).put(SettingsViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, SettingsViewModel_HiltModules.KeyModule.provide()).put(SummariesViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, SummariesViewModel_HiltModules.KeyModule.provide()).build());
+      return LazyClassKeyMap.<Boolean>of(MapBuilder.<String, Boolean>newMapBuilder(7).put(AddEntryViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, AddEntryViewModel_HiltModules.KeyModule.provide()).put(CreateRecipeViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, CreateRecipeViewModel_HiltModules.KeyModule.provide()).put(DailyProgressViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, DailyProgressViewModel_HiltModules.KeyModule.provide()).put(RecipeDetailViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, RecipeDetailViewModel_HiltModules.KeyModule.provide()).put(RecipeListViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, RecipeListViewModel_HiltModules.KeyModule.provide()).put(SettingsViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, SettingsViewModel_HiltModules.KeyModule.provide()).put(SummariesViewModel_HiltModules_KeyModule_Provide_LazyMapKey.lazyClassKeyName, SummariesViewModel_HiltModules.KeyModule.provide()).build());
     }
 
     @Override
@@ -479,8 +475,6 @@ public final class DaggerHungryWalrusApp_HiltComponents_SingletonC {
 
     private Provider<DailyProgressViewModel> dailyProgressViewModelProvider;
 
-    private Provider<PlanViewModel> planViewModelProvider;
-
     private Provider<RecipeDetailViewModel> recipeDetailViewModelProvider;
 
     private Provider<RecipeListViewModel> recipeListViewModelProvider;
@@ -505,16 +499,15 @@ public final class DaggerHungryWalrusApp_HiltComponents_SingletonC {
       this.addEntryViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 0);
       this.createRecipeViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 1);
       this.dailyProgressViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 2);
-      this.planViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 3);
-      this.recipeDetailViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 4);
-      this.recipeListViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 5);
-      this.settingsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 6);
-      this.summariesViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 7);
+      this.recipeDetailViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 3);
+      this.recipeListViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 4);
+      this.settingsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 5);
+      this.summariesViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 6);
     }
 
     @Override
     public Map<Class<?>, javax.inject.Provider<ViewModel>> getHiltViewModelMap() {
-      return LazyClassKeyMap.<javax.inject.Provider<ViewModel>>of(MapBuilder.<String, javax.inject.Provider<ViewModel>>newMapBuilder(8).put(AddEntryViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) addEntryViewModelProvider)).put(CreateRecipeViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) createRecipeViewModelProvider)).put(DailyProgressViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) dailyProgressViewModelProvider)).put(PlanViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) planViewModelProvider)).put(RecipeDetailViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) recipeDetailViewModelProvider)).put(RecipeListViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) recipeListViewModelProvider)).put(SettingsViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) settingsViewModelProvider)).put(SummariesViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) summariesViewModelProvider)).build());
+      return LazyClassKeyMap.<javax.inject.Provider<ViewModel>>of(MapBuilder.<String, javax.inject.Provider<ViewModel>>newMapBuilder(7).put(AddEntryViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) addEntryViewModelProvider)).put(CreateRecipeViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) createRecipeViewModelProvider)).put(DailyProgressViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) dailyProgressViewModelProvider)).put(RecipeDetailViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) recipeDetailViewModelProvider)).put(RecipeListViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) recipeListViewModelProvider)).put(SettingsViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) settingsViewModelProvider)).put(SummariesViewModel_HiltModules_BindsModule_Binds_LazyMapKey.lazyClassKeyName, ((Provider) summariesViewModelProvider)).build());
     }
 
     @Override
@@ -552,19 +545,16 @@ public final class DaggerHungryWalrusApp_HiltComponents_SingletonC {
           case 2: // com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModel 
           return (T) new DailyProgressViewModel(singletonCImpl.bindNutritionPlanRepositoryProvider.get(), singletonCImpl.bindLogEntryRepositoryProvider.get());
 
-          case 3: // com.delve.hungrywalrus.ui.screen.plan.PlanViewModel 
-          return (T) new PlanViewModel(singletonCImpl.bindNutritionPlanRepositoryProvider.get());
-
-          case 4: // com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModel 
+          case 3: // com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModel 
           return (T) new RecipeDetailViewModel(singletonCImpl.bindRecipeRepositoryProvider.get(), viewModelCImpl.savedStateHandle);
 
-          case 5: // com.delve.hungrywalrus.ui.screen.recipes.RecipeListViewModel 
+          case 4: // com.delve.hungrywalrus.ui.screen.recipes.RecipeListViewModel 
           return (T) new RecipeListViewModel(singletonCImpl.bindRecipeRepositoryProvider.get());
 
-          case 6: // com.delve.hungrywalrus.ui.screen.settings.SettingsViewModel 
-          return (T) new SettingsViewModel(singletonCImpl.apiKeyStoreProvider.get());
+          case 5: // com.delve.hungrywalrus.ui.screen.settings.SettingsViewModel 
+          return (T) new SettingsViewModel(singletonCImpl.apiKeyStoreProvider.get(), singletonCImpl.bindNutritionPlanRepositoryProvider.get());
 
-          case 7: // com.delve.hungrywalrus.ui.screen.summaries.SummariesViewModel 
+          case 6: // com.delve.hungrywalrus.ui.screen.summaries.SummariesViewModel 
           return (T) new SummariesViewModel(singletonCImpl.bindLogEntryRepositoryProvider.get(), singletonCImpl.bindNutritionPlanRepositoryProvider.get(), new ComputeRollingSummaryUseCase());
 
           default: throw new AssertionError(id);

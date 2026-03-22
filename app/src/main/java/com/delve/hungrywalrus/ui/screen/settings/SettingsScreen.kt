@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
@@ -33,12 +35,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.delve.hungrywalrus.ui.component.ConfirmationDialog
 import com.delve.hungrywalrus.ui.theme.Spacing
+import com.delve.hungrywalrus.util.Formatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +55,27 @@ fun SettingsScreen(
 
     var keyInput by rememberSaveable { mutableStateOf("") }
     var showClearDialog by rememberSaveable { mutableStateOf(false) }
+
+    // Plan fields
+    var kcalInput by rememberSaveable { mutableStateOf("") }
+    var proteinInput by rememberSaveable { mutableStateOf("") }
+    var carbsInput by rememberSaveable { mutableStateOf("") }
+    var fatInput by rememberSaveable { mutableStateOf("") }
+    var planFieldsInitialised by rememberSaveable { mutableStateOf(false) }
+
+    // Pre-populate plan fields when the plan loads for the first time
+    LaunchedEffect(uiState.planLoading, uiState.currentPlan) {
+        if (!planFieldsInitialised && !uiState.planLoading) {
+            val plan = uiState.currentPlan
+            if (plan != null) {
+                kcalInput = plan.kcalTarget.toString()
+                proteinInput = plan.proteinTargetG.toString()
+                carbsInput = plan.carbsTargetG.toString()
+                fatInput = plan.fatTargetG.toString()
+            }
+            planFieldsInitialised = true
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -65,6 +90,9 @@ fun SettingsScreen(
                 }
                 is SettingsUiEvent.ReadError -> {
                     snackbarHostState.showSnackbar(event.message)
+                }
+                SettingsUiEvent.PlanSaved -> {
+                    snackbarHostState.showSnackbar("Plan updated")
                 }
             }
         }
@@ -169,6 +197,104 @@ fun SettingsScreen(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(Spacing.xl))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Spacer(modifier = Modifier.height(Spacing.lg))
+
+            // Nutrition plan section
+            Text(
+                text = "Nutrition Plan",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Spacer(modifier = Modifier.height(Spacing.sm))
+
+            val effectiveDateText = if (!uiState.planLoading) {
+                val plan = uiState.currentPlan
+                if (plan != null) "Effective from: ${Formatter.formatDate(plan.effectiveFrom)}"
+                else "No plan configured"
+            } else ""
+            Text(
+                text = effectiveDateText,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(modifier = Modifier.height(Spacing.lg))
+
+            val planErrors = uiState.planValidationErrors
+
+            OutlinedTextField(
+                value = kcalInput,
+                onValueChange = { kcalInput = it },
+                label = { Text("Daily kilocalories") },
+                suffix = { Text("kcal") },
+                isError = planErrors.containsKey("kcal"),
+                supportingText = planErrors["kcal"]?.let { { Text(it) } },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+            )
+            Spacer(modifier = Modifier.height(Spacing.md))
+
+            OutlinedTextField(
+                value = proteinInput,
+                onValueChange = { proteinInput = it },
+                label = { Text("Protein") },
+                suffix = { Text("g") },
+                isError = planErrors.containsKey("protein"),
+                supportingText = planErrors["protein"]?.let { { Text(it) } },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+            )
+            Spacer(modifier = Modifier.height(Spacing.md))
+
+            OutlinedTextField(
+                value = carbsInput,
+                onValueChange = { carbsInput = it },
+                label = { Text("Carbohydrates") },
+                suffix = { Text("g") },
+                isError = planErrors.containsKey("carbs"),
+                supportingText = planErrors["carbs"]?.let { { Text(it) } },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+            )
+            Spacer(modifier = Modifier.height(Spacing.md))
+
+            OutlinedTextField(
+                value = fatInput,
+                onValueChange = { fatInput = it },
+                label = { Text("Fat") },
+                suffix = { Text("g") },
+                isError = planErrors.containsKey("fat"),
+                supportingText = planErrors["fat"]?.let { { Text(it) } },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+            )
+            Spacer(modifier = Modifier.height(Spacing.xl))
+
+            val isPlanInputValid = kcalInput.isNotBlank() && proteinInput.isNotBlank() &&
+                carbsInput.isNotBlank() && fatInput.isNotBlank()
+
+            Button(
+                onClick = {
+                    viewModel.savePlan(kcalInput, proteinInput, carbsInput, fatInput)
+                },
+                enabled = isPlanInputValid,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text("Save Plan")
+            }
+            Spacer(modifier = Modifier.height(Spacing.sm))
+
+            Text(
+                text = "Changes apply from today forward. Historical data is not affected.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
 
             Spacer(modifier = Modifier.height(Spacing.xl))
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)

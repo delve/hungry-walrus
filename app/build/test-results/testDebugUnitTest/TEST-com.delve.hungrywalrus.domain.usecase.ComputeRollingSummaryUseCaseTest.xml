@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.delve.hungrywalrus.domain.usecase.ComputeRollingSummaryUseCaseTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-03-21T20:06:13" hostname="ravenclaw" time="0.005">
+<testsuite name="com.delve.hungrywalrus.domain.usecase.ComputeRollingSummaryUseCaseTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-03-22T14:56:10" hostname="ravenclaw" time="0.005">
   <properties/>
   <testcase name="throws when start is after end" classname="com.delve.hungrywalrus.domain.usecase.ComputeRollingSummaryUseCaseTest" time="0.001"/>
   <testcase name="computes correct daily average" classname="com.delve.hungrywalrus.domain.usecase.ComputeRollingSummaryUseCaseTest" time="0.0"/>
@@ -7,7 +7,7 @@
   <testcase name="sums per-day targets when plan exists for every day" classname="com.delve.hungrywalrus.domain.usecase.ComputeRollingSummaryUseCaseTest" time="0.002"/>
   <testcase name="returns zero intake when no entries" classname="com.delve.hungrywalrus.domain.usecase.ComputeRollingSummaryUseCaseTest" time="0.0"/>
   <testcase name="handles plan changes mid-period" classname="com.delve.hungrywalrus.domain.usecase.ComputeRollingSummaryUseCaseTest" time="0.0"/>
-  <testcase name="periodDays is inclusive of start and end" classname="com.delve.hungrywalrus.domain.usecase.ComputeRollingSummaryUseCaseTest" time="0.001"/>
+  <testcase name="periodDays is inclusive of start and end" classname="com.delve.hungrywalrus.domain.usecase.ComputeRollingSummaryUseCaseTest" time="0.0"/>
   <testcase name="returns null target when only some days have a plan" classname="com.delve.hungrywalrus.domain.usecase.ComputeRollingSummaryUseCaseTest" time="0.0"/>
   <testcase name="computes correct total intake from entries" classname="com.delve.hungrywalrus.domain.usecase.ComputeRollingSummaryUseCaseTest" time="0.0"/>
   <testcase name="returns null target when dailyPlans has no non-null values" classname="com.delve.hungrywalrus.domain.usecase.ComputeRollingSummaryUseCaseTest" time="0.0"/>

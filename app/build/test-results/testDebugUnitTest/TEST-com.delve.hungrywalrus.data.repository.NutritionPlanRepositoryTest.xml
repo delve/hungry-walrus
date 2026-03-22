@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-03-21T20:06:12" hostname="ravenclaw" time="0.133">
+<testsuite name="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-03-22T14:56:09" hostname="ravenclaw" time="0.113">
   <properties/>
-  <testcase name="getPlanForDate returns null when no plan exists for date" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.096"/>
+  <testcase name="getPlanForDate returns null when no plan exists for date" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.082"/>
   <testcase name="getPlanForDate converts date to epoch millis and returns mapped plan" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.007"/>
-  <testcase name="getCurrentPlan emits mapped domain model when entity exists" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.008"/>
-  <testcase name="getCurrentPlan emits null when no entity exists" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.006"/>
-  <testcase name="savePlan inserts entity with correct values" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.016"/>
+  <testcase name="getCurrentPlan emits mapped domain model when entity exists" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.006"/>
+  <testcase name="getCurrentPlan emits null when no entity exists" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.005"/>
+  <testcase name="savePlan inserts entity with correct values" classname="com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryTest" time="0.013"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -30,7 +30,6 @@ import com.delve.hungrywalrus.ui.screen.createrecipe.IngredientDraft
 import com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressScreen
 import com.delve.hungrywalrus.ui.screen.foodsearch.FoodSearchScreen
 import com.delve.hungrywalrus.ui.screen.manualentry.ManualEntryScreen
-import com.delve.hungrywalrus.ui.screen.plan.PlanScreen
 import com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailScreen
 import com.delve.hungrywalrus.ui.screen.recipes.RecipeListScreen
 import com.delve.hungrywalrus.ui.screen.settings.SettingsScreen
@@ -93,17 +92,11 @@ fun HungryWalrusNavHost(
         composable(Routes.DAILY_PROGRESS) {
             DailyProgressScreen(
                 onNavigateToPlan = {
-                    navController.navigate(Routes.PLAN)
+                    navController.navigate(Routes.SETTINGS)
                 },
                 onNavigateToLogMethod = {
                     navController.navigate(Routes.LOG_GRAPH)
                 },
-            )
-        }
-
-        composable(Routes.PLAN) {
-            PlanScreen(
-                onNavigateBack = { navController.popBackStack() },
             )
         }
 

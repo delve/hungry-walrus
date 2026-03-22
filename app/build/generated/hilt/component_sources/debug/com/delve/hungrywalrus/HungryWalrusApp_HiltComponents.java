@@ -7,7 +7,6 @@ import com.delve.hungrywalrus.di.RepositoryModule;
 import com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModel_HiltModules;
 import com.delve.hungrywalrus.ui.screen.createrecipe.CreateRecipeViewModel_HiltModules;
 import com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModel_HiltModules;
-import com.delve.hungrywalrus.ui.screen.plan.PlanViewModel_HiltModules;
 import com.delve.hungrywalrus.ui.screen.recipes.RecipeDetailViewModel_HiltModules;
 import com.delve.hungrywalrus.ui.screen.recipes.RecipeListViewModel_HiltModules;
 import com.delve.hungrywalrus.ui.screen.settings.SettingsViewModel_HiltModules;
@@ -175,7 +174,6 @@ public final class HungryWalrusApp_HiltComponents {
           HiltWrapper_SavedStateHandleModule.class,
           ActivityCBuilderModule.class,
           ViewModelCBuilderModule.class,
-          PlanViewModel_HiltModules.KeyModule.class,
           RecipeDetailViewModel_HiltModules.KeyModule.class,
           RecipeListViewModel_HiltModules.KeyModule.class,
           SettingsViewModel_HiltModules.KeyModule.class,
@@ -219,7 +217,6 @@ public final class HungryWalrusApp_HiltComponents {
           CreateRecipeViewModel_HiltModules.BindsModule.class,
           DailyProgressViewModel_HiltModules.BindsModule.class,
           HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
-          PlanViewModel_HiltModules.BindsModule.class,
           RecipeDetailViewModel_HiltModules.BindsModule.class,
           RecipeListViewModel_HiltModules.BindsModule.class,
           SettingsViewModel_HiltModules.BindsModule.class,

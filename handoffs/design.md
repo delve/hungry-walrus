@@ -122,7 +122,6 @@ Each screen has a `TopAppBar` (Material 3 small top app bar, `surface` backgroun
 | Meal logging flow (first step: method)   | Pop entire nested graph, return to daily_progress |
 | Entry confirmation -> back               | Pop to weight entry (or manual entry)          |
 | Recipe create/edit                       | Discard confirmation dialog, then pop          |
-| Plan screen                              | Pop to daily_progress                          |
 
 ---
 
@@ -168,12 +167,12 @@ Each screen has a `TopAppBar` (Material 3 small top app bar, `surface` backgroun
 
 **Elements**:
 
-1. **Top app bar**: Title "Today" left-aligned. Current date displayed right-aligned in `bodySmall` / `onSurfaceVariant`. A text button "Plan" in `primary` colour at the trailing edge navigates to `plan`.
+1. **Top app bar**: Title "Today" left-aligned. Current date displayed right-aligned in `bodySmall` / `onSurfaceVariant`. A text button "Plan" in `primary` colour at the trailing edge navigates to `settings`.
 
 2. **Progress summary section** (non-scrollable, pinned above the list):
    - **Kilocalories row**: A single horizontal `LinearProgressIndicator` spanning full width. Fill colour: `progressKcal`. Track: `progressTrack`. Above the bar: left-aligned "X / Y kcal" in `titleMedium`, right-aligned "Remaining: Z kcal" in `bodyMedium` / `onSurfaceVariant`. If intake exceeds target, the remaining text changes to "Over: Z kcal" in `overage` colour, and the progress bar fill uses `overage` colour for the portion exceeding 100%.
    - **Macro row**: Three equal-width columns, one for each macro (Protein, Carbs, Fat). Each column contains: a label in `labelSmall` / `onSurfaceVariant`, a value "X / Yg" in `bodyMedium`, and a thin `LinearProgressIndicator` with its respective semantic colour. Progress bars clamp visually at 100% but the numeric value shows the true amount.
-   - If no plan is configured, this section shows a card: "No nutrition plan set. Tap to configure." The card is tappable and navigates to `plan`.
+   - If no plan is configured, this section shows a card: "No nutrition plan set. Tap to configure." The card is tappable and navigates to `settings`.
 
 3. **Log entries list**: `LazyColumn` filling the remaining vertical space. Each item is a `Card` on `surface`:
    - Left side: food name in `titleSmall`, macro values below in `bodySmall` / `onSurfaceVariant` formatted as "P: Xg  C: Xg  F: Xg".
@@ -197,68 +196,9 @@ Each screen has a `TopAppBar` (Material 3 small top app bar, `surface` backgroun
 
 ---
 
-### 3.2 Nutrition Plan (`plan`)
+### 3.2 Nutrition Plan
 
-**Purpose**: View and edit daily nutrition targets. Accessed from daily progress screen. Infrequent operation -- favour clarity.
-
-**ViewModel**: `PlanViewModel`
-
-**Route**: `plan`
-
-**Layout**:
-
-```
-+----------------------------------------------+
-| TopAppBar: <- "Nutrition Plan"               |
-+----------------------------------------------+
-| Current plan (if set):                        |
-|  Effective from: 01/01/2026                  |
-|                                               |
-| Daily kilocalories                            |
-| [       2,000        ] kcal                  |
-|                                               |
-| Protein                                       |
-| [        150.0       ] g                     |
-|                                               |
-| Carbohydrates                                 |
-| [        250.0       ] g                     |
-|                                               |
-| Fat                                           |
-| [         65.0       ] g                     |
-|                                               |
-| [       Save Plan       ]                    |
-|                                               |
-| Note: Changes apply from today forward.      |
-| Historical data is not affected.             |
-+----------------------------------------------+
-```
-
-**Elements**:
-
-1. **Top app bar**: Back arrow navigates to `daily_progress`. Title: "Nutrition Plan".
-
-2. **Effective date line**: If a plan exists, show "Effective from: {date}" in `bodySmall` / `onSurfaceVariant`. If no plan exists, show "No plan configured" in `bodyMedium` / `onSurfaceVariant`.
-
-3. **Input fields**: Four `OutlinedTextField` components, each with:
-   - Label above: "Daily kilocalories", "Protein", "Carbohydrates", "Fat".
-   - Trailing text: unit label ("kcal" or "g") as a suffix inside the field.
-   - Keyboard type: decimal number (kcal field uses number-only since targets are integers per the entity definition; macro fields allow decimals).
-   - If a current plan exists, fields pre-populate with current values.
-   - If no plan exists, fields are empty with placeholder text showing example values.
-   - Validation: all fields must be positive numbers. Empty fields or non-numeric input shows inline error text below the field: "Enter a valid number".
-
-4. **Save button**: Full-width `FilledButton` in `primary`. Text: "Save Plan". Disabled (greyed out) if any field is empty or invalid. On tap, saves via `PlanViewModel.savePlan()` which inserts a new `NutritionPlan` row with `effectiveFrom = now`. Shows a brief `Snackbar`: "Plan updated" and navigates back to `daily_progress`.
-
-5. **Note text**: `bodySmall` / `onSurfaceVariant`. Static informational text.
-
-**States**:
-
-| State    | Behaviour                                                    |
-|----------|--------------------------------------------------------------|
-| Loading  | Fields show shimmer placeholders.                            |
-| No plan  | Fields empty, effective date line shows "No plan configured".|
-| Plan exists | Fields populated with current values.                     |
-| Validation error | Inline error text below invalid fields. Save button disabled. |
+> **Removed.** The dedicated `plan` route and screen have been removed (architecture change P03). Nutrition plan management has been consolidated into the Settings screen. See Section 3.15.
 
 ---
 
@@ -448,16 +388,16 @@ Each screen has a `TopAppBar` (Material 3 small top app bar, `surface` backgroun
 | Food name                                     |
 | [                                          ] |
 |                                               |
-| Kilocalories (per 100g)                       |
+| Kilocalories consumed                         |
 | [                    ] kcal                  |
 |                                               |
-| Protein (per 100g)                            |
+| Protein consumed                              |
 | [                    ] g                     |
 |                                               |
-| Carbohydrates (per 100g)                      |
+| Carbohydrates consumed                        |
 | [                    ] g                     |
 |                                               |
-| Fat (per 100g)                                |
+| Fat consumed                                  |
 | [                    ] g                     |
 |                                               |
 | [          Next          ]                   |
@@ -471,12 +411,14 @@ Each screen has a `TopAppBar` (Material 3 small top app bar, `surface` backgroun
 2. **Food name field**: `OutlinedTextField`. Label: "Food name". Keyboard type: text. Required. Auto-focused on screen entry.
 
 3. **Nutrition fields**: Four `OutlinedTextField` components for kcal, protein, carbs, fat. Each has:
-   - Label indicating "per 100g" context.
+   - Label indicating the values are for the amount consumed (e.g. "Kilocalories consumed"). No per-100g qualifier -- the user enters final as-consumed values.
    - Trailing unit suffix.
    - Keyboard type: decimal number.
    - Required. Validation: must be zero or positive. Inline error: "Enter a valid number".
 
-4. **Next button**: Full-width `FilledButton`. Text: "Next". Disabled if any field is empty or invalid. On tap: stores the per-100g reference values in `AddEntryViewModel` (source: `MANUAL`) and navigates to `log/weight_entry`.
+4. **Next button**: Full-width `FilledButton`. Text: "Next". Disabled if any field is empty or invalid. On tap: stores the as-consumed values directly in `AddEntryViewModel` (source: `MANUAL`, no scaling performed) and navigates to `log/confirm`. The weight entry step (`log/weight_entry`) is skipped entirely for manual entries.
+
+**Note on ingredient mode**: When this screen is used in ingredient-addition mode during recipe creation, the field labels change to indicate per-100g context ("Kilocalories per 100g", etc.) and a weight field is also shown. This is because ingredients require per-100g reference values for proportional scaling of portions. The ingredient sub-flow returns to the recipe creation screen after weight entry rather than proceeding to `log/confirm`.
 
 **States**:
 
@@ -959,9 +901,9 @@ Both buttons are deliberately large per the product decision for easy-to-hit con
 
 ### 3.15 Settings (`settings`)
 
-**Purpose**: USDA API key management. Top-level tab destination.
+**Purpose**: USDA API key management and nutrition plan management. Top-level tab destination.
 
-**ViewModel**: `SettingsViewModel`
+**ViewModel**: `SettingsViewModel` (handles both USDA key and nutrition plan; `PlanViewModel` has been merged in).
 
 **Route**: `settings`
 
@@ -980,6 +922,31 @@ Both buttons are deliberately large per the product decision for easy-to-hit con
 | Get a free key at fdc.nal.usda.gov           |
 |                                               |
 | [Save Key]  [Clear Key]                      |
+|                                               |
+| -------------------------------------------- |
+|                                               |
+| Nutrition Plan                                |
+|                                               |
+| Effective from: 01/01/2026  (or No plan set) |
+|                                               |
+| Daily kilocalories                            |
+| [       2,000        ] kcal                  |
+|                                               |
+| Protein                                       |
+| [        150.0       ] g                     |
+|                                               |
+| Carbohydrates                                 |
+| [        250.0       ] g                     |
+|                                               |
+| Fat                                           |
+| [         65.0       ] g                     |
+|                                               |
+| [       Save Plan       ]                    |
+|                                               |
+| Changes apply from today forward.            |
+| Historical data is not affected.             |
+|                                               |
+| -------------------------------------------- |
 |                                               |
 | About                                         |
 | Hungry Walrus v1.0                            |
@@ -1003,15 +970,31 @@ Both buttons are deliberately large per the product decision for easy-to-hit con
      - "Save Key": `FilledButton`. Disabled if the field is empty. On tap: saves to `EncryptedSharedPreferences`. Snackbar: "API key saved".
      - "Clear Key": `OutlinedButton`. Only shown if a key is stored. On tap: confirmation dialog "Clear your USDA API key? USDA search will be disabled." On confirm: clears the key. Snackbar: "API key cleared".
 
-3. **About section**: Simple informational block. App name and version in `bodyMedium`. Privacy note: "Data stored locally on this device only." in `bodySmall` / `onSurfaceVariant`.
+3. **Nutrition Plan section**:
+   - Section header: "Nutrition Plan" in `titleMedium`.
+   - **Effective date line**: If a plan exists, show "Effective from: {dd/MM/yyyy}" in `bodySmall` / `onSurfaceVariant`. If no plan exists, show "No plan configured" in `bodySmall` / `onSurfaceVariant`.
+   - **Input fields**: Four `OutlinedTextField` components:
+     - "Daily kilocalories" with "kcal" suffix. Keyboard type: number (integer). Must be greater than zero.
+     - "Protein" with "g" suffix. Keyboard type: decimal. Must be zero or greater.
+     - "Carbohydrates" with "g" suffix. Keyboard type: decimal. Must be zero or greater.
+     - "Fat" with "g" suffix. Keyboard type: decimal. Must be zero or greater.
+     - If a current plan exists, fields pre-populate with current values. If no plan exists, fields are empty with example placeholder text.
+     - Validation: kcal must be a positive integer greater than zero. Macro fields must be zero or positive. Invalid or empty fields show inline error text: "Enter a valid number".
+   - **Save Plan button**: Full-width `FilledButton` in `primary`. Text: "Save Plan". Disabled if any field is empty or invalid. On tap: saves via `SettingsViewModel.savePlan()`, inserting a new `NutritionPlan` row with `effectiveFrom = now`. Snackbar: "Plan updated". The daily progress screen reflects the change immediately without requiring navigation away.
+   - **Note text**: "Changes apply from today forward. Historical data is not affected." in `bodySmall` / `onSurfaceVariant`.
+
+4. **About section**: Simple informational block. App name and version in `bodyMedium`. Privacy note: "Data stored locally on this device only." in `bodySmall` / `onSurfaceVariant`.
 
 **States**:
 
 | State    | Behaviour                                          |
 |----------|----------------------------------------------------|
-| Key stored | Status shows "Configured". Field masked. Clear Key button visible. |
-| No key | Status shows "Not set". Field empty. Clear Key button hidden. |
+| Key stored | API key status shows "Configured". Field masked. Clear Key button visible. |
+| No key | API key status shows "Not set". Field empty. Clear Key button hidden. |
 | Key corrupted (EncryptedSharedPreferences failure) | Status shows "Not set". Snackbar: "Could not read stored key. Please re-enter." Field empty. |
+| Plan exists | Plan fields pre-populated. Effective date shown. |
+| No plan | Plan fields empty. Effective date line shows "No plan configured". |
+| Plan validation error | Inline error text below invalid plan fields. Save Plan button disabled. |
 
 ---
 
@@ -1051,13 +1034,11 @@ Identical flow to 4.1 but the user selects "Search branded products (OFF)" in st
 
 1. User taps **FAB (+)** on Daily Progress. -> `log/method`
 2. User taps **"Enter manually"**. -> `log/manual`
-3. User fills in food name, kcal, protein, carbs, fat (all per 100g).
-4. User taps **"Next"**. -> `log/weight_entry`
-5. User enters weight or taps quick-select chip. Preview updates.
-6. User taps **"Confirm"**. -> `log/confirm`
-7. User taps **"Save Entry"**. -> Pops to `daily_progress`.
+3. User fills in food name and exact nutritional values as consumed (kcal, protein, carbs, fat).
+4. User taps **"Next"**. -> `log/confirm` (weight entry step is skipped entirely).
+5. User taps **"Save Entry"**. -> Pops to `daily_progress`.
 
-**Total taps**: FAB + Manual option + Next + weight chip + Confirm + Save = **6 taps + typing 5 fields**.
+**Total taps**: FAB + Manual option + Next + Save = **4 taps + typing 5 fields**.
 
 ### 4.5 Meal Logging -- Recipe Portion
 
@@ -1091,9 +1072,9 @@ Identical flow to 4.1 but the user selects "Search branded products (OFF)" in st
 
 ### 4.8 Nutrition Plan Setup
 
-1. User navigates to plan screen via "Plan" button on Daily Progress (or from the "No nutrition plan set" card).
-2. User fills in kcal, protein, carbs, fat targets.
-3. User taps **"Save Plan"**. -> Saved. Snackbar confirmation. Returns to Daily Progress.
+1. User navigates to `settings` via the "Plan" button on Daily Progress top bar, or by tapping the "No nutrition plan set" card, or by tapping the Settings tab in the bottom navigation.
+2. User scrolls to the Nutrition Plan section and fills in kcal, protein, carbs, fat targets.
+3. User taps **"Save Plan"**. -> Saved. Snackbar: "Plan updated". Daily Progress updates reactively.
 
 ### 4.9 Log Entry Deletion
 
@@ -1249,3 +1230,17 @@ The design specifies a bottom sheet for ingredient method selection during recip
 ### 8.4 100% Button Applicability
 
 The 100% quick-select button for packaged foods depends on whether the API response includes a defined serving/package size. Open Food Facts often includes `serving_size` but not always. USDA Foundation/SR Legacy data does not have a standard package size. The 100% button should only appear when a reference total weight is available (recipes always have `totalWeightG`; API results only when a serving size is present in the response). The architecture does not currently store a serving size in `FoodCache`. This means the 100% button will primarily be useful for recipe portions. If packaged food serving sizes are desired, a `servingSizeG` nullable field would need to be added to `FoodCache`.
+
+---
+
+## 9. Revision History
+
+### Revision 2 -- 2026-03-22
+
+Amendments based on updated requirements (P03, P04) and architecture Revision 1.
+
+#### Changes
+
+1. **Nutrition plan management moved to Settings (P03).** The dedicated `plan` route and `PlanViewModel` have been removed. Section 3.2 is replaced with a tombstone note. Section 3.15 (Settings) is expanded with a full Nutrition Plan sub-section including the plan input fields, effective date, save button, and validation rules. `SettingsViewModel` now owns both USDA API key management and plan management. References in Section 3.1 (Daily Progress) updated so the "Plan" button and "No nutrition plan set" card both navigate to `settings` instead of `plan`. The "Plan screen" row removed from the back-behaviour table in Section 2.3. Section 4.8 updated to reflect plan setup now occurs within the Settings screen.
+
+2. **Manual entry accepts as-consumed values, skips weight entry (P04).** Section 3.6 (Manual Entry) updated: field labels changed from "per 100g" context to "as consumed" (e.g. "Kilocalories consumed"). The Next button now navigates directly to `log/confirm`, bypassing `log/weight_entry`. A note is added to clarify that in ingredient-addition mode (recipe creation), the same screen still presents per-100g labels and a weight field, as recipes require per-100g reference data for proportional scaling. Section 4.4 interaction flow updated to remove the weight entry step, reducing the tap count from 6 to 4 (plus typing).

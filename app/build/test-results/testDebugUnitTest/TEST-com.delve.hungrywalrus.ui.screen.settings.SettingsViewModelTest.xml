@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-03-21T20:06:15" hostname="ravenclaw" time="0.02">
+<testsuite name="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-03-22T14:56:11" hostname="ravenclaw" time="0.059">
   <properties/>
-  <testcase name="initial state reflects stored key" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.004"/>
-  <testcase name="saveKey with blank string does nothing" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.003"/>
-  <testcase name="initial state reflects no key" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.003"/>
-  <testcase name="saveKey stores key and emits event" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.005"/>
-  <testcase name="clearKey removes key and emits event" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.005"/>
+  <testcase name="savePlan rejects non-numeric input for macros" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.005"/>
+  <testcase name="savePlan rejects negative kcal" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.002"/>
+  <testcase name="savePlan rejects zero kcal" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.002"/>
+  <testcase name="initial state reflects stored key" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.003"/>
+  <testcase name="saveKey with blank string does nothing" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.004"/>
+  <testcase name="currentPlan reflects plan from repository" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.002"/>
+  <testcase name="initial state reflects no key" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.002"/>
+  <testcase name="saveKey stores key and emits event" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.007"/>
+  <testcase name="savePlan with invalid input sets planValidationErrors" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.003"/>
+  <testcase name="initial plan state is loading before getCurrentPlan emits" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.003"/>
+  <testcase name="clearKey removes key and emits event" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.006"/>
+  <testcase name="currentPlan is null when no plan configured" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.002"/>
+  <testcase name="savePlan accepts zero for macros" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.004"/>
+  <testcase name="savePlan with valid input calls repository and emits PlanSaved event" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.006"/>
+  <testcase name="savePlan clears validation errors on next valid save" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.003"/>
+  <testcase name="savePlan rejects empty string for all fields" classname="com.delve.hungrywalrus.ui.screen.settings.SettingsViewModelTest" time="0.003"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
