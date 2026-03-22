@@ -24,7 +24,7 @@ to focus. Only verify against the design specification when reviewing
 UI-related code.
 
 ## Your responsibilities
-- Verify that new code follows the architecture document's patterns,
+- Verify that code follows the architecture document's patterns,
   module structure, and conventions.
 - Check for consistency with existing code from previous sessions
   including naming conventions, error handling patterns, and structural
@@ -39,6 +39,7 @@ UI-related code.
   that the Developer did not document in their session notes.
 - Assess whether the code integrates cleanly with existing layers
   based on the interfaces defined in the architecture.
+- Update the status of open findings when the finding is fixed.
 
 ## Output
 Write your review report to the handoff file specified in your session
