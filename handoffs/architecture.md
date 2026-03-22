@@ -16,6 +16,8 @@ This document defines the app architecture, data models, API integration pattern
 
 Rationale: Android 15 (API 35) is the current stable release as of early 2026. Targeting it ensures access to the latest platform behaviours and satisfies Google Play's target API level requirements. The min SDK of 29 provides access to scoped storage, `ConnectivityManager.getNetworkCapabilities()`, and all modern Jetpack APIs without compatibility workarounds.
 
+**Important**: The `compileSdk` value in `app/build.gradle.kts` must match this specification (35). Using a higher value (e.g. 36) may produce build warnings with the current Android Gradle Plugin version and is not sanctioned by this architecture.
+
 ---
 
 ## 3. Architecture Pattern
@@ -81,9 +83,8 @@ com.delve.hungrywalrus/
       manualentry/     -- Manual food entry screen
       recipes/         -- Recipe list + detail screens + ViewModel
       createrecipe/    -- Recipe creation/editing screen + ViewModel
-      plan/            -- Nutrition plan screen + ViewModel
       summaries/       -- Rolling summary screen (7-day / 28-day tabs) + ViewModel
-      settings/        -- USDA API key management screen + ViewModel
+      settings/        -- USDA API key management + nutrition plan management screen + ViewModel
     component/         -- Shared UI components (progress bars, nutrition cards, confirmation dialogs)
     theme/             -- Material 3 dark theme, colours, typography
   util/                -- Formatting helpers (UK date, number rounding, locale)
@@ -166,6 +167,8 @@ com.delve.hungrywalrus/
 
 The current plan is the row with the latest `effectiveFrom` that is not in the future. When a user updates their plan, a new row is inserted with `effectiveFrom = now`. This preserves historical plan data for summary calculations across periods where the plan changed.
 
+**Validation rules**: `kcalTarget` must be greater than zero. `proteinTargetG`, `carbsTargetG`, and `fatTargetG` must be zero or greater. These rules are enforced at the ViewModel level before saving.
+
 #### LogEntry
 
 | Column     | Type    | Notes                                     |
@@ -178,9 +181,9 @@ The current plan is the row with the latest `effectiveFrom` that is not in the f
 | fatG       | Double  | Final calculated fat in grams             |
 | timestamp  | Long    | Epoch millis (UTC) when the entry was created |
 
-Log entries store only final calculated values (already scaled to the consumed weight). No foreign key to Recipe or FoodCache -- this makes entries fully self-contained and immune to recipe edits or cache eviction, as required.
+Log entries store only final calculated values (already scaled to the consumed weight, or entered directly for manual entries). No foreign key to Recipe or FoodCache -- this makes entries fully self-contained and immune to recipe edits or cache eviction, as required.
 
-**Important**: The consumed weight is not stored in the log entry. Per the requirements, weight is used only to scale the per-100g reference values during entry creation. Once the scaled nutritional values are computed and saved, the weight is discarded.
+**Important**: The consumed weight is not stored in the log entry. For API-sourced and recipe-based entries, weight is used only to scale the per-100g reference values during entry creation. For manual entries, the user provides final values directly and no weight is involved. Once the nutritional values are determined and saved, any intermediate weight input is discarded.
 
 #### Recipe
 
@@ -330,7 +333,11 @@ lookupBarcode(barcode: String): Result<FoodSearchResult?>
 1. **Barcode lookups**: Check `FoodCacheDao.getByBarcode(barcode)` first. If a valid (non-expired) cached entry exists, return it immediately. Otherwise, query the Open Food Facts API.
 2. **Text searches**: Always hit the network. Individual food items from search results are not pre-cached; they are cached when the user selects a specific item and its per-100g data is resolved.
 3. **On network success**: Cache each resolved food item in `FoodCache` using `OnConflictStrategy.REPLACE`.
-4. **On network failure**: Return cached data if available. If no cache exists, return `Result.failure()` with a descriptive error. The ViewModel maps this to a UI state that displays a clear error message suggesting manual entry.
+4. **On network failure (IOException / offline)**: Return cached data if available, even if expired. If no cache exists, return `Result.failure()` with a descriptive error. The ViewModel maps this to a UI state that displays a clear error message suggesting manual entry.
+5. **On server error (HttpException)**: Do **not** fall back to stale cached data. An `HttpException` indicates the server was reachable, so the offline justification does not apply. Handle specific HTTP status codes as defined in Section 8.4:
+   - HTTP 404 on barcode lookup: return `Result.success(null)` (product not found).
+   - HTTP 4xx/5xx: return `Result.failure()` with the appropriate user-facing error message.
+   This distinction between `IOException` (offline, stale cache acceptable) and `HttpException` (server reachable, stale cache not acceptable) must be maintained consistently.
 
 ### 6.3 Domain Models
 
@@ -377,16 +384,26 @@ enum class NutritionField { KCAL, PROTEIN, CARBS, FAT }
 
 | ViewModel                  | Screens                                         | Responsibilities                                                  |
 |----------------------------|--------------------------------------------------|-------------------------------------------------------------------|
-| `DailyProgressViewModel`   | Daily Progress                                  | Load today's entries + active plan; compute totals and remaining; handle entry deletion |
-| `AddEntryViewModel`        | Log Method, Food Search, Barcode Scan, Manual Entry, Weight Entry, Missing Values, Entry Confirmation | Manage selected food state across multi-step flow; compute scaled values from weight input; prompt for missing values; save entry |
+| `DailyProgressViewModel`   | Daily Progress                                  | Load today's entries + active plan; compute totals and remaining; handle entry deletion. Must observe the plan as a reactive Flow so that a newly created plan or log entry is reflected immediately without requiring navigation. |
+| `AddEntryViewModel`        | Log Method, Food Search, Barcode Scan, Manual Entry, Weight Entry, Missing Values, Entry Confirmation | Manage selected food state across multi-step flow; compute scaled values from weight input; accept direct values for manual entry (no scaling); prompt for missing values; save entry |
 | `RecipeListViewModel`      | Recipe List                                     | Load all recipes; handle recipe deletion with confirmation        |
 | `RecipeDetailViewModel`    | Recipe Detail                                   | Load single recipe with ingredients                               |
-| `CreateRecipeViewModel`    | Create/Edit Recipe                              | Manage ingredient list; compute live running totals; save/update recipe |
-| `SummariesViewModel`       | Summaries (7-day and 28-day tabs)               | Load entries for rolling periods; compute cumulative totals; load per-day plan targets and sum them for the period |
-| `PlanViewModel`            | Nutrition Plan                                  | Load current plan; validate and save updated plan                 |
-| `SettingsViewModel`        | Settings                                        | Read/write USDA API key from EncryptedSharedPreferences           |
+| `CreateRecipeViewModel`    | Create/Edit Recipe                              | Manage ingredient list; compute live running totals; save/update recipe. Must support ingredients sourced from USDA, Open Food Facts searches, barcode scan, and manual entry. |
+| `SummariesViewModel`       | Summaries (7-day and 28-day tabs)               | Load entries for rolling periods; compute cumulative totals; load per-day plan targets and sum them for the period; display both cumulative intake and cumulative plan targets. Must reload data each time the screen becomes visible (not use a stale snapshot from a previous visit). |
+| `SettingsViewModel`        | Settings                                        | Read/write USDA API key from EncryptedSharedPreferences; load current nutrition plan; validate and save updated plan |
 
-### 7.3 Display Formatting
+### 7.3 Manual Entry Flow
+
+When the user selects manual entry, the flow is different from API-sourced entries:
+
+1. The user enters a food name and the exact nutritional values (kcal, protein, carbs, fat) as consumed.
+2. No weight input is requested. No per-100g scaling is performed.
+3. The entered values are stored directly in the `LogEntry` as-is.
+4. The confirmation screen still shows the values for review before saving.
+
+This applies both when logging a standalone food item and when adding an ingredient to a recipe. When adding a manual ingredient to a recipe, the user enters the ingredient name, weight, and per-100g nutritional values (since the recipe needs per-100g reference data for proportional scaling of portions).
+
+### 7.4 Display Formatting
 
 All display formatting is handled in the UI layer:
 
@@ -397,6 +414,14 @@ All display formatting is handled in the UI layer:
 - **Theme**: dark mode only. The theme does not include a light colour scheme. Use `darkColorScheme()` exclusively in the Material 3 theme definition.
 
 Stored values in Room retain full `Double` precision to avoid compounding rounding errors across summaries.
+
+### 7.5 Reactivity Requirements
+
+Certain screens must be reactive to data changes occurring elsewhere in the app:
+
+- **DailyProgressViewModel**: The plan observation (`getCurrentPlan()`) must be a continuously collected `Flow`, not a one-shot `.first()` snapshot. This ensures that when a user creates or updates their nutrition plan from Settings, the daily progress screen reflects the change immediately upon returning, without requiring a full screen re-creation.
+
+- **SummariesViewModel**: The summary data must be reloaded each time the summaries screen becomes visible (e.g. when the user switches to the Summaries tab from another tab). Using `.first()` to collect a single snapshot at ViewModel creation time is insufficient -- if the user logs a meal on the Daily Progress tab and then switches to Summaries, the summary must include the newly logged entry. The recommended approach is to trigger `loadSummary()` from a `LaunchedEffect` keyed to the screen's lifecycle or tab selection, so it fires on every visit.
 
 ---
 
@@ -477,11 +502,14 @@ All network calls are wrapped in `try/catch` at the repository level. Errors are
 |--------------------|--------------------------------------------------------------------------------------------------|
 | No network (IOException) | Check cache first. If no cached result, return `Result.failure(OfflineException)`.        |
 | HTTP 400/403       | Return `Result.failure()` with a user-friendly message (e.g. "Invalid API key" for 403).        |
+| HTTP 404 (barcode) | Return `Result.success(null)`. UI shows "product not found" with manual entry option.           |
 | HTTP 429           | Return `Result.failure()` with a "too many requests, try again later" message.                   |
-| HTTP 5xx           | Return `Result.failure()` with a "service temporarily unavailable" message.                      |
-| Timeout            | Treat as network error. Same cache-then-error flow.                                              |
+| HTTP 5xx           | Return `Result.failure()` with a "service temporarily unavailable" message. Do not fall back to stale cached data. |
+| Timeout            | Treat as network error (IOException). Same cache-then-error flow.                                |
 | Malformed response | Return `Result.failure()` with a "could not read food data" message. Log the parsing exception.  |
 | Barcode not found  | For Open Food Facts (status 0 in response): return `Result.success(null)`. UI shows "product not found" with manual entry option. |
+
+**Important distinction**: `IOException` (device is offline or network is unreachable) permits fallback to stale/expired cached data, because no fresher data can be obtained. `HttpException` (server responded with an error) does **not** permit fallback to stale cached data, because the server was reachable and the error may indicate the product no longer exists (404) or a transient server issue (5xx). Serving stale data in these cases would be misleading.
 
 Network connectivity is checked using `ConnectivityManager.getNetworkCapabilities()` (available on API 29+).
 
@@ -567,22 +595,21 @@ The app is fully functional without a USDA API key -- Open Food Facts search, ba
 
 | Route                      | Screen                    | Description                                                  |
 |----------------------------|---------------------------|--------------------------------------------------------------|
-| `daily_progress`           | Daily Progress            | Home screen. Today's intake vs plan. List of today's entries. Start destination. |
-| `plan`                     | Nutrition Plan            | View/edit daily targets.                                     |
+| `daily_progress`           | Daily Progress            | Home screen. Today's intake vs plan. List of today's entries. Running totals. Start destination. |
 | `log/method`               | Log Method Selection      | Choose: recipe, USDA search, OFF search, barcode, manual.   |
 | `log/search/{source}`      | Food Search               | Search USDA or OFF. `source` is "usda" or "off".            |
 | `log/barcode`              | Barcode Scanner           | Camera viewfinder. Auto-navigates on scan.                   |
-| `log/manual`               | Manual Entry              | Enter food name and nutrition values directly.               |
+| `log/manual`               | Manual Entry              | Enter food name and nutrition values directly. No weight required. |
 | `log/recipe_select`        | Recipe Selection          | Pick a saved recipe to log a portion of.                     |
-| `log/weight_entry`         | Weight Entry              | Enter weight consumed. Shows scaled nutrition preview.       |
+| `log/weight_entry`         | Weight Entry              | Enter weight consumed. Shows scaled nutrition preview. Used for API-sourced and recipe-based entries only. |
 | `log/missing_values`       | Missing Values Prompt     | Shown when API data is incomplete. User fills gaps.          |
 | `log/confirm`              | Entry Confirmation        | Validation summary. Confirm or go back to edit.              |
 | `recipes`                  | Recipe List               | All saved recipes with delete option.                        |
 | `recipes/detail/{id}`      | Recipe Detail             | View a recipe and its ingredients. Options to edit or delete.|
 | `recipes/create`           | Create Recipe             | Add ingredients, see live running totals.                    |
 | `recipes/edit/{id}`        | Edit Recipe               | Edit an existing recipe.                                     |
-| `summaries`                | Rolling Summaries         | Tabs for 7-day and 28-day views.                             |
-| `settings`                 | Settings                  | USDA API key management.                                     |
+| `summaries`                | Rolling Summaries         | Tabs for 7-day and 28-day views. Shows both intake and plan targets. |
+| `settings`                 | Settings                  | USDA API key management and nutrition plan management.       |
 
 ### 11.3 Navigation Flow Diagram
 
@@ -590,40 +617,45 @@ The app is fully functional without a USDA API key -- Open Food Facts search, ba
                         +------------------+
                         | Daily Progress   |  <-- Start destination
                         +------------------+
-                       /    |     |     \    \
-                      v     v     v      v    v
-               +------+ +-----+ +-------+ +-------+ +--------+
-               | Plan | | Log | |Recipes| |Summary| |Settings|
-               +------+ |Method| +-------+ +-------+ +--------+
-                         +-----+    |
-                        / | | \ \    +-> Recipe Detail
-                       v  v v  v  v       +-> Edit Recipe
-            +------+ +---+ +---+ +------+ +--------+
-            | USDA | |OFF| |Bar| |Manual| |Recipe  |
-            |Search| |Srch| |code| |Entry | |Select  |
-            +------+ +---+ +---+ +------+ +--------+
-                \      |    |      /          /
-                 v     v    v     v          v
-              +----------------------------+
-              |     Weight Entry            |
-              +----------------------------+
-                          |
-                 (if missing values)
-                          v
-              +----------------------------+
-              |   Missing Values Prompt    |
-              +----------------------------+
-                          |
-                          v
-              +----------------------------+
-              |     Entry Confirmation     |
-              +----------------------------+
-                          |
-                          v
-              +----------------------------+
-              |  Daily Progress (pop back) |
-              +----------------------------+
+                       /         |          \
+                      v          v           v
+               +----------+ +-------+ +--------+
+               | Log      | |Recipes| |Summary |
+               | Method   | +-------+ +--------+
+               +----------+    |
+              / | | \ \        +-> Recipe Detail
+             v  v v  v  v          +-> Edit Recipe
+  +------+ +---+ +---+ +------+ +--------+
+  | USDA | |OFF| |Bar| |Manual| |Recipe  |
+  |Search| |Srch| |code| |Entry | |Select  |
+  +------+ +---+ +---+ +------+ +--------+
+      \      |    |        |          /
+       v     v    v        |         v
+    +-----------------+    |   +-----------------+
+    |  Weight Entry   |    |   |  Weight Entry   |
+    +-----------------+    |   +-----------------+
+            |              |          |
+   (if missing values)     |          |
+            v              |          |
+    +-----------------+    |          |
+    | Missing Values  |    |          |
+    +-----------------+    |          |
+            |              |          |
+            v              v          v
+    +-------------------------------------------+
+    |          Entry Confirmation                |
+    +-------------------------------------------+
+                        |
+                        v
+    +-------------------------------------------+
+    |       Daily Progress (pop back)           |
+    +-------------------------------------------+
+
+Bottom Navigation:
+  [Daily Progress]  [Recipes]  [Summaries]  [Settings]
 ```
+
+Note: Manual entry skips the Weight Entry step and proceeds directly to Entry Confirmation after the user enters the food name and nutritional values.
 
 ### 11.4 Bottom Navigation
 
@@ -633,7 +665,7 @@ A bottom navigation bar is present on the four top-level destinations:
 - **Summaries** (chart icon)
 - **Settings** (gear icon)
 
-The "Plan" screen is accessed from within the Daily Progress screen (e.g. via a button or card). The meal logging flow (`log/*`) is a nested navigation graph that hides the bottom bar, providing a focused multi-step experience.
+The nutrition plan is managed within the Settings screen. The meal logging flow (`log/*`) is a nested navigation graph that hides the bottom bar, providing a focused multi-step experience.
 
 ---
 
@@ -641,7 +673,7 @@ The "Plan" screen is accessed from within the Daily Progress screen (e.g. via a 
 
 ### 12.1 Scaling from Per-100g Reference
 
-When a user enters a weight for a food item:
+When a user enters a weight for a food item sourced from an API:
 
 ```
 scaledValue = (valuePer100g / 100.0) * weightG
@@ -655,9 +687,13 @@ When a user enters a weight for a recipe portion:
 scaledValue = (recipeTotalValue / recipeTotalWeightG) * portionWeightG
 ```
 
-### 12.3 Storage
+### 12.3 Manual Entry (No Scaling)
 
-The final scaled values are stored in the `LogEntry`. The per-100g reference values remain in `FoodCache` (for API-sourced items) and `RecipeIngredient` (for recipe ingredients). The consumed weight is not stored in the log entry.
+When a user manually enters nutritional values, no scaling is performed. The entered values are the final values stored in the `LogEntry`. The user is responsible for entering the values as consumed.
+
+### 12.4 Storage
+
+The final scaled values (or directly entered values for manual entries) are stored in the `LogEntry`. The per-100g reference values remain in `FoodCache` (for API-sourced items) and `RecipeIngredient` (for recipe ingredients). The consumed weight is not stored in the log entry.
 
 ---
 
@@ -677,7 +713,7 @@ The final scaled values are stored in the `LogEntry`. The per-100g reference val
 
 **DatabaseModule** (`@InstallIn(SingletonComponent::class)`):
 - Provides the Room `HungryWalrusDatabase` instance as a singleton.
-- Provides each DAO from the database instance.
+- Provides each DAO from the database instance. All DAO provider methods must be annotated `@Singleton` to be consistent with the rest of the DI configuration and avoid unnecessary object creation.
 
 **NetworkModule** (`@InstallIn(SingletonComponent::class)`):
 - Provides the USDA `OkHttpClient` and `Retrofit` instance.
@@ -711,6 +747,8 @@ A single `PeriodicWorkRequest` registered from `HungryWalrusApp.onCreate()`:
 2. Delete `FoodCache` rows where `cachedAt < (now - 30 days)`.
 
 Both operations are idempotent. Retry with default exponential backoff is safe.
+
+The worker must **never** delete recipes. Recipes are retained indefinitely per the requirements and are only removed via explicit user action.
 
 ---
 
@@ -826,7 +864,45 @@ While test implementation details are outside the scope of this document, the ar
 
 - **Repositories** are defined as interfaces, enabling fake implementations in ViewModel tests.
 - **ViewModels** receive dependencies via constructor injection, enabling unit testing with fakes.
-- **DAOs** can be tested using Room's in-memory database builder.
+- **DAOs** can be tested using Room's in-memory database builder. The `room-testing` dependency is included for this purpose. In-memory database tests are recommended for verifying SQL query correctness, particularly day-boundary queries in `LogEntryDao` and the plan-for-date ordering query in `NutritionPlanDao`.
 - **API services** can be tested using `MockWebServer` (OkHttp).
 - **Use cases** are pure functions/classes with no Android dependencies, trivially unit testable.
 - **Mappers** (DTO to domain) are pure functions, trivially unit testable.
+
+---
+
+## 20. Revision History
+
+### Revision 1 -- 2026-03-22
+
+Amendments based on QA report (2026-03-21), data layer code review (Session 01, Round 3), and UI layer code review (Session 03, Pass 13, including Product Owner findings P01--P07).
+
+#### Requirements changes
+
+1. **Manual entry no longer requires weight input (P04).** The requirements previously stated "All food entries require a weight input from the user." This has been revised: API-sourced and recipe-based entries still require weight for scaling, but manual entries accept final nutritional values directly without a weight input. The user enters the exact values consumed. This change is reflected in the Meal Logging section of requirements.md and in Sections 7.3, 11.2, 11.3, and 12.3 of this architecture document.
+
+2. **Nutrition plan managed from Settings screen, not a dedicated screen (P03).** The `plan` route has been removed from the navigation structure. The nutrition plan view/edit functionality is consolidated into the Settings screen. The `PlanViewModel` is merged into `SettingsViewModel`. The bottom navigation no longer needs a separate entry point for the plan -- it was already not in the bottom nav (it was accessed from Daily Progress), but now it is explicitly part of Settings.
+
+3. **Daily progress must show running totals (P05).** The requirements already specified "Displays the current day's total intake versus the plan" but this has been made more explicit: the daily progress screen must show a running total of kcal, protein, carbs, and fat consumed today. This was present in the architecture but the QA report found it missing from the implementation.
+
+4. **Summaries must display plan target values alongside intake (P06).** The requirements for rolling summaries already mentioned "cumulative plan targets" but this has been emphasised. The architecture now explicitly states that `SummariesViewModel` must display both cumulative intake and cumulative plan targets.
+
+5. **Summaries must refresh on each visit (P07, Bug 5).** The requirements now explicitly state that summary data must refresh when the user navigates to the summaries screen. The architecture adds Section 7.5 (Reactivity Requirements) specifying that `SummariesViewModel` must reload data on each screen visit rather than using a stale `.first()` snapshot.
+
+6. **"No plan" notice must update reactively (P01).** The requirements now specify that the "no plan" notice on the daily progress screen must disappear immediately when a plan is saved, without requiring navigation. The architecture adds a reactivity requirement for `DailyProgressViewModel` in Section 7.5.
+
+7. **Plan validation rules clarified (Bug 3).** The requirements now explicitly state that kcal targets must be greater than zero, while macronutrient targets must be zero or greater. This resolves the ambiguity found by QA where the asymmetric validation (kcal rejects zero, macros accept zero) was undocumented.
+
+#### Architecture changes
+
+8. **compileSdk enforced as 35 (Bug 2).** Added an explicit note in Section 2 that the `compileSdk` in `app/build.gradle.kts` must match the architecture specification of 35. The implementation had diverged to 36, producing AGP compatibility warnings.
+
+9. **HttpException vs IOException cache fallback clarified (m1 from data layer code review).** Section 6.2 now distinguishes between `IOException` (offline -- stale cache fallback permitted) and `HttpException` (server reachable -- stale cache fallback not permitted). Section 8.4 has been updated with the same distinction. Previously, the architecture described "network failure" generically without distinguishing these cases, leading to the implementation incorrectly falling back to stale cache on `HttpException`.
+
+10. **DAO providers must be @Singleton scoped (m2 from data layer code review).** Section 13.2 now explicitly states that all DAO provider methods in `DatabaseModule` must be annotated `@Singleton`.
+
+11. **Recipe ingredient flow must support Open Food Facts sources (P02).** The `CreateRecipeViewModel` entry in Section 7.2 now explicitly states it must support ingredients sourced from both USDA and Open Food Facts. The QA report found that adding branded foods (from OFF) to a recipe was broken -- the weight entry step did not function for OFF-sourced ingredients.
+
+12. **DataRetentionWorker recipe non-deletion contract documented (Bug 4).** Section 14.2 now explicitly states that the worker must never delete recipes. While the implementation was already correct (no `RecipeDao` injection), this contract was not documented in the architecture, leaving it vulnerable to accidental regression.
+
+13. **In-memory Room database testing recommended.** Section 19 now recommends in-memory Room database tests for SQL query correctness, particularly for day-boundary and plan-ordering queries, based on the QA coverage assessment.

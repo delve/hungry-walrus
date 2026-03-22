@@ -20,6 +20,11 @@ The app does not generate or recommend plans.
   tracking.
 - User can update their plan at any time. Changes apply from that point
   forward and do not alter historical data.
+- The nutrition plan is managed from the Settings screen. There is no
+  separate dedicated plan screen.
+- Kilocalorie targets must be greater than zero. Macronutrient targets
+  (protein, carbohydrates, fat) must be zero or greater. A zero value
+  for a macronutrient is valid (e.g. a zero-fat target).
 
 ### Recipes
 - User can create a recipe composed of multiple ingredients.
@@ -41,18 +46,24 @@ The app does not generate or recommend plans.
   - A portion of a saved recipe: user selects a recipe and enters the
     weight consumed. Nutritional values are calculated proportionally
     from the recipe's total weight.
-  - A single food item: user finds or enters a food item and enters
-    the weight consumed. Nutritional values are scaled from the per-100g
-    reference values to the entered weight.
+  - A single food item found via API: user finds a food item via search
+    or barcode scan and enters the weight consumed. Nutritional values
+    are scaled from the per-100g reference values to the entered weight.
+  - A manually entered food item: user enters the food name and the
+    exact nutritional values consumed directly. Manual entry does not
+    require a weight input -- the user provides the final kilocalorie
+    and macronutrient values as consumed.
 - Food items can be added via:
   - Generic/natural food search (USDA FoodData Central).
   - Branded product search (Open Food Facts).
   - Barcode scan using device camera (Open Food Facts only).
   - Manual entry of food name and nutritional values.
-- All food entries require a weight input from the user, whether the
-  item comes from a recipe, an API lookup, or manual entry. This weight
-  input is used only to scale the nutritional values of the food reference
-  data based on the amount consumed. Weight for a log entry is not stored.
+- For API-sourced and recipe-based entries, the user must provide a
+  weight input. This weight is used to scale the nutritional values of
+  the food reference data based on the amount consumed. Weight for a log
+  entry is not stored.
+- For manual entries, the user enters nutritional values directly as
+  consumed. No weight input is required and no scaling is performed.
 - Each log entry records: food name (or recipe name), kilocalories,
   protein (g), carbohydrates (g), fat (g), and a timestamp.
 - After completing an entry, the user sees a validation summary with
@@ -63,13 +74,26 @@ The app does not generate or recommend plans.
 
 ### Daily progress
 - Displays the current day's total intake versus the plan.
+- Shows a running total of kilocalories, protein, carbohydrates, and fat
+  consumed so far today.
 - Shows remaining allowance or overage for each metric.
 - Displayed as both progress bars and numeric values.
+- When no nutrition plan has been configured, the daily progress screen
+  displays a clear notice directing the user to set up a plan in Settings.
+  This notice must update immediately when a plan is subsequently saved
+  without requiring the user to navigate away and back.
 
 ### Rolling summaries
 - 7-day summary: cumulative total intake and cumulative plan targets
   over the last 7 days.
 - 28-day summary: same metrics over the last 28 days.
+- Both views display cumulative plan target values alongside cumulative
+  intake values so the user can compare consumption against their plan
+  for the period.
+- Summary data must refresh when the user navigates to the summaries
+  screen (e.g. by switching tabs). A stale snapshot from a previous
+  visit is not acceptable -- the user should see up-to-date totals
+  reflecting any entries logged since the last visit.
 
 ## Data sources
 - USDA FoodData Central: generic and natural food queries. Free API,
