@@ -71,5 +71,16 @@ or alternative approaches worth considering.
 - If the developer session notes flag a concern or deviation, verify
   whether the concern is valid and include your assessment in the
   report.
-- Do not review code from previous sessions unless it is relevant to
-  assessing the integration of the current session's work.
+- Do not review code from other layers unless it is relevant to
+  assessing the integration of the current layer's work.
+- Consistently label findings as C## for critical, W## for warnings, 
+  or O## for observations which may not need remediation. Use consistently
+  increasing numbers over multiple review passes such that each finding
+  from each review can be addressed uniquely. The product owner will add
+  their findings as P## in a similar fashion. Do not alter the product 
+  owner's input except to add resolution or similar notes.
+- If a finding is deferred or found to not be valid by the developer 
+  consider the rationale and if it is sound update the finding and do not
+  re-raise the same finding.
+- If a finding is deferred or found to not be valid by the product owner
+  update the finding and do not report that finding on later passes.
