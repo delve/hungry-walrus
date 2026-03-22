@@ -7,14 +7,20 @@ I am not certain if that was the developer agent doing it, of a 'base' claude ag
 `Review other tests to ensure we are only testing the behavior of our own code.` additional tests removed
 `update your handoff to note the deleted tests and why.` handoff updated.
 
+*Developer and QA agents updated with explicit instructions to test only project code.*
+
 ## permissions
 developer needs DELETE, or else it can't clean up code files that should be removed and leaves stubs behind.
 
 ## code review
 include verbiage about identifying findings to improve reference stability. "consistently label findings as C## for critical, W## for warnings, or O## for observations which may not need remediation."
 
-Include explicit instruction to ignore deferred findings. Not sure how to handle deferrence where the fix agent was wrong. perhaps manual update to the initial review saying don't defer, then rerun fix?
+Include explicit instruction to ignore deferred findings. 
 /pipeline:codereview 03  "ui layer" Where findings from previous sessions were deferred consider the rationale and it it is sound do not re-raise the same finding.
+
+*Code review agent updated to fomralize the above and to treat it's handoff as a running log for multiple review passes.*
+
+Not sure how to handle deferrence where the fix agent was wrong. perhaps manual update to the initial review saying don't defer, then rerun fix?
 
 # Agent notes
 i have 6 agents
@@ -26,7 +32,6 @@ the developer agent seems to work best with a clean session, the codereview agen
 
 # App notes
 ## initial manual pipeline
-You → Architect → You → Designer → You → Developer → Code Review Agent → You → QA → You → Developer (if fixes needed) → You → DevOps → You.
 
 And your pipeline execution order is:
 
@@ -46,6 +51,11 @@ And your pipeline execution order is:
 1. You review, send fixes back to Developer if needed - OPTIONAL: Start a new session. Run fix for review findings `/pipeline:fix 03  "ui layer"` then repeat previous step.
 1. QA — integration tests, additional unit tests, full report `/pipeline:test`
 1. You review, send bugs back to Developer if needed
+1. 1. Minor bugs can go to the developer if the correct layer can be identified.
+1. 1. Sending significant findings back through the process:
+1. 1. 1. `/pipeline:architect Review the findings in the QA handoff and update the requirements and architecture documents to remediate them`
+1. 1. 1. `/pipeline:design Review the updated the requirements and architecture documents. Update the design document to reflect the changes.`
+1. 1. 1. `/pipeline:develop 01  "data layer" Review the updated requirements, architecture, and design documents. Update the code and necessary to reflect the changes.`
 1. DevOps — CI/CD pipeline, signing docs, build commands
 1. You review
 
