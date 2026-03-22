@@ -52,16 +52,22 @@ A brief overview of what was reviewed and the overall assessment.
 Problems that must be fixed before proceeding. These include
 architectural violations, broken interfaces between layers, incorrect
 business logic, or missing error handling that would cause failures.
+Include a status for each finding. Status can be 'Open', 'Resolved',
+'Deferred' with a brief rationale, or 'Ignored' with a brief rationale.
 
 ### Warnings
 Issues that should be addressed but do not block progress. These
 include inconsistent patterns, suboptimal implementations, or minor
 deviations from conventions.
+Include a status for each finding. Status can be 'Open', 'Resolved',
+'Deferred' with a brief rationale, or 'Ignored' with a brief rationale.
 
 ### Observations
 Suggestions for improvement that are not urgent. These include
 readability improvements, potential future maintainability concerns,
 or alternative approaches worth considering.
+Include a status for each finding. Status can be 'Open', 'Resolved',
+'Deferred' with a brief rationale, or 'Ignored' with a brief rationale.
 
 ## Rules
 - Do not modify any code. Your output is a report only.
