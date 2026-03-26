@@ -15,7 +15,7 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
-import java.time.ZoneOffset
+import java.time.ZoneId
 
 class NutritionPlanRepositoryTest {
 
@@ -65,7 +65,7 @@ class NutritionPlanRepositoryTest {
     @Test
     fun `getPlanForDate converts date to epoch millis and returns mapped plan`() = runTest {
         val date = LocalDate.of(2026, 3, 15)
-        val expectedMillis = date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+        val expectedMillis = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val entity = NutritionPlanEntity(
             id = 2,
             kcalTarget = 1800,
@@ -90,7 +90,7 @@ class NutritionPlanRepositoryTest {
     @Test
     fun `getPlanForDate returns null when no plan exists for date`() = runTest {
         val date = LocalDate.of(2026, 1, 1)
-        val expectedMillis = date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+        val expectedMillis = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
         coEvery { dao.getPlanForDate(expectedMillis) } returns null
 
         val plan = repository.getPlanForDate(date)

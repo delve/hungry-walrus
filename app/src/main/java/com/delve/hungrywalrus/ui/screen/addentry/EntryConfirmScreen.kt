@@ -39,7 +39,7 @@ fun EntryConfirmScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(viewModel) {
         viewModel.events.collect { event ->
             when (event) {
                 is AddEntryUiEvent.EntrySaved -> onEntrySaved()

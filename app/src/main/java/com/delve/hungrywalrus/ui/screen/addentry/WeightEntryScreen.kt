@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.delve.hungrywalrus.ui.component.NutritionCard
 import com.delve.hungrywalrus.ui.component.QuickWeightSelector
 import com.delve.hungrywalrus.ui.theme.Spacing
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +56,10 @@ fun WeightEntryScreen(
         focusRequester.requestFocus()
     }
 
-    val weightVal = uiState.weightG.toIntOrNull()
+    // Parse weight as Double then round to Int for chip selection (O14) and +/- buttons (W07).
+    // This ensures decimal values like "100.0" still highlight the 100g chip, and +/- buttons
+    // correctly increment/decrement from a decimal base rather than falling back to 0.
+    val weightVal = uiState.weightG.toDoubleOrNull()?.roundToInt()
     val isRecipeSource = uiState.isRecipeSource
     val selectedRecipe = uiState.selectedRecipe
     val isIngredientMode = uiState.ingredientMode
@@ -104,7 +108,7 @@ fun WeightEntryScreen(
             ) {
                 IconButton(
                     onClick = {
-                        val current = uiState.weightG.toIntOrNull() ?: 0
+                        val current = uiState.weightG.toDoubleOrNull()?.roundToInt() ?: 0
                         if (current > 1) {
                             viewModel.setWeight((current - 1).toString())
                         }
@@ -132,7 +136,7 @@ fun WeightEntryScreen(
 
                 IconButton(
                     onClick = {
-                        val current = uiState.weightG.toIntOrNull() ?: 0
+                        val current = uiState.weightG.toDoubleOrNull()?.roundToInt() ?: 0
                         viewModel.setWeight((current + 1).toString())
                     },
                     modifier = Modifier.size(48.dp),

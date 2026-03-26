@@ -36,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -151,11 +150,7 @@ fun SettingsScreen(
                     if (uiState.hasKey) Text(uiState.keyMasked)
                     else Text("Enter your API key")
                 },
-                visualTransformation = if (keyInput.isEmpty() && uiState.hasKey) {
-                    PasswordVisualTransformation()
-                } else {
-                    VisualTransformation.None
-                },
+                visualTransformation = VisualTransformation.None,
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
             )

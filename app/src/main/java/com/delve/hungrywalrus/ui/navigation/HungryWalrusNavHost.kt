@@ -181,8 +181,14 @@ fun HungryWalrusNavHost(
             val logGraphEntry = remember(backStackEntry) {
                 navController.findBackStackEntry(Routes.LOG_GRAPH)
             }
-            val viewModel: AddEntryViewModel =
-                if (logGraphEntry != null) hiltViewModel(logGraphEntry) else hiltViewModel()
+            val ingredientScopeEntry = remember(backStackEntry) {
+                navController.recipeBackStackEntryOrNull()
+            }
+            val viewModel: AddEntryViewModel = when {
+                logGraphEntry != null -> hiltViewModel(logGraphEntry)
+                ingredientScopeEntry != null -> hiltViewModel(ingredientScopeEntry)
+                else -> hiltViewModel()
+            }
             val source = backStackEntry.arguments?.getString("source") ?: "off"
 
             FoodSearchScreen(
@@ -212,8 +218,14 @@ fun HungryWalrusNavHost(
             val logGraphEntry = remember(backStackEntry) {
                 navController.findBackStackEntry(Routes.LOG_GRAPH)
             }
-            val viewModel: AddEntryViewModel =
-                if (logGraphEntry != null) hiltViewModel(logGraphEntry) else hiltViewModel()
+            val ingredientScopeEntry = remember(backStackEntry) {
+                navController.recipeBackStackEntryOrNull()
+            }
+            val viewModel: AddEntryViewModel = when {
+                logGraphEntry != null -> hiltViewModel(logGraphEntry)
+                ingredientScopeEntry != null -> hiltViewModel(ingredientScopeEntry)
+                else -> hiltViewModel()
+            }
 
             BarcodeScanScreen(
                 viewModel = viewModel,
@@ -244,8 +256,37 @@ fun HungryWalrusNavHost(
             val logGraphEntry = remember(backStackEntry) {
                 navController.findBackStackEntry(Routes.LOG_GRAPH)
             }
-            val viewModel: AddEntryViewModel =
-                if (logGraphEntry != null) hiltViewModel(logGraphEntry) else hiltViewModel()
+            val manualRecipeEntry = remember(backStackEntry) {
+                navController.recipeBackStackEntryOrNull()
+            }
+            val viewModel: AddEntryViewModel = when {
+                logGraphEntry != null -> hiltViewModel(logGraphEntry)
+                manualRecipeEntry != null -> hiltViewModel(manualRecipeEntry)
+                else -> hiltViewModel()
+            }
+
+            val onIngredientAdded = remember(manualRecipeEntry) {
+                manualRecipeEntry?.let { recipeEntry ->
+                    {
+                        val data = viewModel.getIngredientData()
+                        if (data != null) {
+                            val bundle = Bundle().apply {
+                                putString("name", data.name)
+                                putDouble("weightG", data.weightG)
+                                putDouble("kcalPer100g", data.kcalPer100g)
+                                putDouble("proteinPer100g", data.proteinPer100g)
+                                putDouble("carbsPer100g", data.carbsPer100g)
+                                putDouble("fatPer100g", data.fatPer100g)
+                            }
+                            recipeEntry.savedStateHandle["newIngredient"] = bundle
+                            navController.popBackStack(
+                                recipeEntry.destination.route!!,
+                                inclusive = false,
+                            )
+                        }
+                    }
+                }
+            }
 
             ManualEntryScreen(
                 viewModel = viewModel,
@@ -257,9 +298,10 @@ fun HungryWalrusNavHost(
                         navController.popBackStack(Routes.DAILY_PROGRESS, inclusive = false)
                     }
                 },
-                onNavigateToWeightEntry = {
-                    navController.navigate(Routes.LOG_WEIGHT_ENTRY)
+                onNavigateToConfirm = {
+                    navController.navigate(Routes.LOG_CONFIRM)
                 },
+                onIngredientAdded = onIngredientAdded,
             )
         }
 
@@ -272,12 +314,13 @@ fun HungryWalrusNavHost(
             val logGraphEntry = remember(backStackEntry) {
                 navController.findBackStackEntry(Routes.LOG_GRAPH)
             }
-            val viewModel: AddEntryViewModel =
-                if (logGraphEntry != null) hiltViewModel(logGraphEntry) else hiltViewModel()
-
             val recipeBackStackEntry = remember(backStackEntry) {
-                navController.findBackStackEntry(Routes.RECIPE_CREATE)
-                    ?: navController.findBackStackEntry(Routes.RECIPE_EDIT)
+                navController.recipeBackStackEntryOrNull()
+            }
+            val viewModel: AddEntryViewModel = when {
+                logGraphEntry != null -> hiltViewModel(logGraphEntry)
+                recipeBackStackEntry != null -> hiltViewModel(recipeBackStackEntry)
+                else -> hiltViewModel()
             }
             SideEffect { viewModel.setIngredientMode(recipeBackStackEntry != null) }
 
@@ -325,8 +368,14 @@ fun HungryWalrusNavHost(
             val logGraphEntry = remember(backStackEntry) {
                 navController.findBackStackEntry(Routes.LOG_GRAPH)
             }
-            val viewModel: AddEntryViewModel =
-                if (logGraphEntry != null) hiltViewModel(logGraphEntry) else hiltViewModel()
+            val ingredientScopeEntry = remember(backStackEntry) {
+                navController.recipeBackStackEntryOrNull()
+            }
+            val viewModel: AddEntryViewModel = when {
+                logGraphEntry != null -> hiltViewModel(logGraphEntry)
+                ingredientScopeEntry != null -> hiltViewModel(ingredientScopeEntry)
+                else -> hiltViewModel()
+            }
 
             MissingValuesScreen(
                 viewModel = viewModel,

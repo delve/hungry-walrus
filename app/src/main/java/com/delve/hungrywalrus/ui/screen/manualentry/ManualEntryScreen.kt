@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModel
 import com.delve.hungrywalrus.ui.theme.Spacing
 
@@ -38,13 +39,16 @@ import com.delve.hungrywalrus.ui.theme.Spacing
 fun ManualEntryScreen(
     viewModel: AddEntryViewModel,
     onClose: () -> Unit,
-    onNavigateToWeightEntry: () -> Unit,
+    onNavigateToConfirm: () -> Unit,
+    onIngredientAdded: (() -> Unit)? = null,
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var foodName by rememberSaveable { mutableStateOf("") }
     var kcalInput by rememberSaveable { mutableStateOf("") }
     var proteinInput by rememberSaveable { mutableStateOf("") }
     var carbsInput by rememberSaveable { mutableStateOf("") }
     var fatInput by rememberSaveable { mutableStateOf("") }
+    var weightInput by rememberSaveable { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
@@ -56,7 +60,12 @@ fun ManualEntryScreen(
     val carbsValid = carbsInput.toDoubleOrNull()?.let { it >= 0 } == true
     val fatValid = fatInput.toDoubleOrNull()?.let { it >= 0 } == true
     val nameValid = foodName.isNotBlank()
-    val allValid = nameValid && kcalValid && proteinValid && carbsValid && fatValid
+
+    val isIngredientMode = uiState.ingredientMode
+    val weightValid = !isIngredientMode || (weightInput.toDoubleOrNull()?.let { it > 0 } == true)
+    val allValid = nameValid && kcalValid && proteinValid && carbsValid && fatValid && weightValid
+
+    val buttonLabel = if (isIngredientMode) "Add Ingredient" else "Next"
 
     Scaffold(
         topBar = {
@@ -93,7 +102,7 @@ fun ManualEntryScreen(
             OutlinedTextField(
                 value = kcalInput,
                 onValueChange = { kcalInput = it },
-                label = { Text("Kilocalories (per 100g)") },
+                label = { Text(if (isIngredientMode) "Kilocalories per 100g" else "Kilocalories consumed") },
                 suffix = { Text("kcal") },
                 isError = kcalInput.isNotEmpty() && !kcalValid,
                 supportingText = if (kcalInput.isNotEmpty() && !kcalValid) {
@@ -108,7 +117,7 @@ fun ManualEntryScreen(
             OutlinedTextField(
                 value = proteinInput,
                 onValueChange = { proteinInput = it },
-                label = { Text("Protein (per 100g)") },
+                label = { Text(if (isIngredientMode) "Protein per 100g" else "Protein consumed") },
                 suffix = { Text("g") },
                 isError = proteinInput.isNotEmpty() && !proteinValid,
                 supportingText = if (proteinInput.isNotEmpty() && !proteinValid) {
@@ -123,7 +132,7 @@ fun ManualEntryScreen(
             OutlinedTextField(
                 value = carbsInput,
                 onValueChange = { carbsInput = it },
-                label = { Text("Carbohydrates (per 100g)") },
+                label = { Text(if (isIngredientMode) "Carbohydrates per 100g" else "Carbohydrates consumed") },
                 suffix = { Text("g") },
                 isError = carbsInput.isNotEmpty() && !carbsValid,
                 supportingText = if (carbsInput.isNotEmpty() && !carbsValid) {
@@ -138,7 +147,7 @@ fun ManualEntryScreen(
             OutlinedTextField(
                 value = fatInput,
                 onValueChange = { fatInput = it },
-                label = { Text("Fat (per 100g)") },
+                label = { Text(if (isIngredientMode) "Fat per 100g" else "Fat consumed") },
                 suffix = { Text("g") },
                 isError = fatInput.isNotEmpty() && !fatValid,
                 supportingText = if (fatInput.isNotEmpty() && !fatValid) {
@@ -148,23 +157,53 @@ fun ManualEntryScreen(
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
             )
+
+            if (isIngredientMode) {
+                Spacer(modifier = Modifier.height(Spacing.md))
+                OutlinedTextField(
+                    value = weightInput,
+                    onValueChange = { weightInput = it },
+                    label = { Text("Weight in recipe") },
+                    suffix = { Text("g") },
+                    isError = weightInput.isNotEmpty() && !weightValid,
+                    supportingText = if (weightInput.isNotEmpty() && !weightValid) {
+                        { Text("Enter a valid number") }
+                    } else null,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                )
+            }
+
             Spacer(modifier = Modifier.height(Spacing.xl))
 
             Button(
                 onClick = {
-                    viewModel.setManualFood(
-                        name = foodName.trim(),
-                        kcalPer100g = kcalInput.toDouble(),
-                        proteinPer100g = proteinInput.toDouble(),
-                        carbsPer100g = carbsInput.toDouble(),
-                        fatPer100g = fatInput.toDouble(),
-                    )
-                    onNavigateToWeightEntry()
+                    if (isIngredientMode && onIngredientAdded != null) {
+                        viewModel.setDirectEntry(
+                            name = foodName.trim(),
+                            kcal = kcalInput.toDouble(),
+                            proteinG = proteinInput.toDouble(),
+                            carbsG = carbsInput.toDouble(),
+                            fatG = fatInput.toDouble(),
+                            weight = weightInput,
+                        )
+                        onIngredientAdded()
+                    } else {
+                        viewModel.setDirectEntry(
+                            name = foodName.trim(),
+                            kcal = kcalInput.toDouble(),
+                            proteinG = proteinInput.toDouble(),
+                            carbsG = carbsInput.toDouble(),
+                            fatG = fatInput.toDouble(),
+                        )
+                        onNavigateToConfirm()
+                    }
                 },
                 enabled = allValid,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Next")
+                Text(buttonLabel)
             }
             Spacer(modifier = Modifier.height(Spacing.xl))
         }

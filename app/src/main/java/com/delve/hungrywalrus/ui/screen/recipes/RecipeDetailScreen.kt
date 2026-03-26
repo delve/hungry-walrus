@@ -58,6 +58,7 @@ fun RecipeDetailScreen(
         viewModel.events.collect { event ->
             when (event) {
                 RecipeDetailUiEvent.RecipeDeleted -> {
+                    snackbarHostState.showSnackbar("Recipe deleted")
                     onNavigateBack()
                 }
             }

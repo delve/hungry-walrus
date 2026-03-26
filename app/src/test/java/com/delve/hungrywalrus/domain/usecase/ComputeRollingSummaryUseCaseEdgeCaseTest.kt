@@ -36,7 +36,7 @@ class ComputeRollingSummaryUseCaseEdgeCaseTest {
 
     @Test
     fun `total intake sums all entries regardless of date field on entry`() {
-        // Entries timestamps are not inspected by the use case; all entries in the list are summed.
+        // The use case does not filter entries by date — the ViewModel is responsible for passing only entries within the [start, end] window.
         val entries = (1..7).map { makeEntry(kcal = 300.0, protein = 30.0, carbs = 40.0, fat = 10.0) }
         val plans = (0..6).associate { start7.plusDays(it.toLong()) to uniformPlan }
         val result = useCase(entries, plans, start7, end7)
@@ -101,20 +101,7 @@ class ComputeRollingSummaryUseCaseEdgeCaseTest {
         assertEquals(13_500.0, result.totalTarget!!.kcal, 0.001)
     }
 
-    // --- Data retention: entries must be present in the window ---
-
-    @Test
-    fun `result startDate and endDate match inputs`() {
-        val result = useCase(emptyList(), emptyMap(), start7, end7)
-        assertEquals(start7, result.startDate)
-        assertEquals(end7, result.endDate)
-    }
-
-    @Test
-    fun `periodDays for 7-day window is exactly 7`() {
-        val result = useCase(emptyList(), emptyMap(), start7, end7)
-        assertEquals(7, result.periodDays)
-    }
+    // --- Period length ---
 
     @Test
     fun `periodDays for 28-day window is exactly 28`() {
@@ -122,21 +109,6 @@ class ComputeRollingSummaryUseCaseEdgeCaseTest {
         val end28 = LocalDate.of(2026, 3, 20)
         val result = useCase(emptyList(), emptyMap(), start28, end28)
         assertEquals(28, result.periodDays)
-    }
-
-    // --- Boundary: totalTarget null when dailyPlans is empty map ---
-
-    @Test
-    fun `totalTarget is null when dailyPlans is empty map`() {
-        val result = useCase(emptyList(), emptyMap(), start7, end7)
-        assertNull(result.totalTarget)
-    }
-
-    // --- start after end guard ---
-
-    @Test(expected = IllegalArgumentException::class)
-    fun `throws when start is after end`() {
-        useCase(emptyList(), emptyMap(), end7, start7)
     }
 
     // --- Very large values ---

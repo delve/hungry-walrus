@@ -36,6 +36,10 @@ data class CreateRecipeUiState(
     val isSaving: Boolean = false,
     val isEditMode: Boolean = false,
     val originalCreatedAt: Long = 0L,
+    /** True once the user has made at least one change. False until then, including after
+     *  loading an existing recipe in edit mode, so the discard dialog is not shown on a
+     *  clean open-and-close. */
+    val isDirty: Boolean = false,
 )
 
 sealed interface CreateRecipeUiEvent {
@@ -94,12 +98,12 @@ class CreateRecipeViewModel @Inject constructor(
     }
 
     fun setRecipeName(name: String) {
-        _uiState.value = _uiState.value.copy(recipeName = name)
+        _uiState.value = _uiState.value.copy(recipeName = name, isDirty = true)
     }
 
     fun addIngredient(draft: IngredientDraft) {
         val updated = _uiState.value.ingredients + draft
-        _uiState.value = _uiState.value.copy(ingredients = updated)
+        _uiState.value = _uiState.value.copy(ingredients = updated, isDirty = true)
         recomputeTotals()
     }
 
@@ -107,7 +111,7 @@ class CreateRecipeViewModel @Inject constructor(
         val updated = _uiState.value.ingredients.toMutableList().apply {
             if (index in indices) removeAt(index)
         }
-        _uiState.value = _uiState.value.copy(ingredients = updated)
+        _uiState.value = _uiState.value.copy(ingredients = updated, isDirty = true)
         recomputeTotals()
     }
 

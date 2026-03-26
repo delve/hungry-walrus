@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.delve.hungrywalrus"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.delve.hungrywalrus"

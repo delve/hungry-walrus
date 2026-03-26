@@ -22,6 +22,10 @@ class ValidateFoodDataUseCase @Inject constructor() {
      * Override parameters are only applied when non-null; existing non-null field values are
      * never replaced by a null override.
      *
+     * All non-null override values must be >= 0.0; negative per-100g nutritional values are
+     * physically impossible.
+     *
+     * @throws IllegalArgumentException if any non-null override value is negative.
      * @return A new [FoodSearchResult] with overrides applied and [FoodSearchResult.missingFields]
      *         re-derived from the resulting nullable fields.
      */
@@ -32,6 +36,10 @@ class ValidateFoodDataUseCase @Inject constructor() {
         carbsPer100g: Double? = null,
         fatPer100g: Double? = null,
     ): FoodSearchResult {
+        kcalPer100g?.let { require(it >= 0.0) { "kcalPer100g must not be negative" } }
+        proteinPer100g?.let { require(it >= 0.0) { "proteinPer100g must not be negative" } }
+        carbsPer100g?.let { require(it >= 0.0) { "carbsPer100g must not be negative" } }
+        fatPer100g?.let { require(it >= 0.0) { "fatPer100g must not be negative" } }
         val newKcal = kcalPer100g ?: result.kcalPer100g
         val newProtein = proteinPer100g ?: result.proteinPer100g
         val newCarbs = carbsPer100g ?: result.carbsPer100g

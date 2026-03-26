@@ -6,7 +6,7 @@ import com.delve.hungrywalrus.domain.model.LogEntry
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
-import java.time.ZoneOffset
+import java.time.ZoneId
 import javax.inject.Inject
 
 class LogEntryRepositoryImpl @Inject constructor(
@@ -14,16 +14,16 @@ class LogEntryRepositoryImpl @Inject constructor(
 ) : LogEntryRepository {
 
     override fun getEntriesForDate(date: LocalDate): Flow<List<LogEntry>> {
-        val startOfDay = date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
-        val endOfDay = date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+        val startOfDay = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val endOfDay = date.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
         return dao.getEntriesForDate(startOfDay, endOfDay).map { entities ->
             entities.map { it.toDomain() }
         }
     }
 
     override fun getEntriesForRange(start: LocalDate, end: LocalDate): Flow<List<LogEntry>> {
-        val startMillis = start.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
-        val endMillis = end.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+        val startMillis = start.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val endMillis = end.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
         return dao.getEntriesForRange(startMillis, endMillis).map { entities ->
             entities.map { it.toDomain() }
         }

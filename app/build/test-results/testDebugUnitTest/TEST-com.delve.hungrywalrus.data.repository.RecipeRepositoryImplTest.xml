@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-03-22T14:56:09" hostname="ravenclaw" time="0.784">
+<testsuite name="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-03-26T08:41:10" hostname="ravenclaw" time="1.208">
   <properties/>
-  <testcase name="getRecipeWithIngredients returns mapped domain model when recipe exists" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.373"/>
-  <testcase name="updateRecipe deletes old ingredients before inserting new ones" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.089"/>
-  <testcase name="saveRecipe returns the DAO-generated recipe ID" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.054"/>
-  <testcase name="updateRecipe inserts new ingredients with the recipe id" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.056"/>
-  <testcase name="getRecipeWithIngredients returns null in flow when recipe does not exist" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.053"/>
-  <testcase name="saveRecipe uses DAO-generated ID for ingredient inserts, not recipe id field" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.057"/>
-  <testcase name="deleteRecipe calls DAO with correct id" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.046"/>
-  <testcase name="getAllRecipes returns mapped domain list from DAO" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.053"/>
+  <testcase name="getRecipeWithIngredients returns mapped domain model when recipe exists" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.554"/>
+  <testcase name="updateRecipe deletes old ingredients before inserting new ones" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.114"/>
+  <testcase name="saveRecipe returns the DAO-generated recipe ID" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.094"/>
+  <testcase name="updateRecipe inserts new ingredients with the recipe id" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.085"/>
+  <testcase name="getRecipeWithIngredients returns null in flow when recipe does not exist" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.088"/>
+  <testcase name="saveRecipe uses DAO-generated ID for ingredient inserts, not recipe id field" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.087"/>
+  <testcase name="deleteRecipe calls DAO with correct id" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.087"/>
+  <testcase name="getAllRecipes returns mapped domain list from DAO" classname="com.delve.hungrywalrus.data.repository.RecipeRepositoryImplTest" time="0.096"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

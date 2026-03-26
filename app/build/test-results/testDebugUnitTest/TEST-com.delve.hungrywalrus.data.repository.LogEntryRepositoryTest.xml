@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-03-22T14:56:09" hostname="ravenclaw" time="0.143">
+<testsuite name="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-03-26T08:41:10" hostname="ravenclaw" time="0.093">
   <properties/>
-  <testcase name="getEntriesForDate converts date to correct epoch millis range" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.113"/>
-  <testcase name="addEntry maps domain model to entity and inserts" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.014"/>
-  <testcase name="getEntriesForDate returns empty list when no entries exist" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.005"/>
-  <testcase name="getEntriesForRange converts dates to correct epoch millis" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.005"/>
+  <testcase name="getEntriesForDate converts date to correct epoch millis range" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.067"/>
+  <testcase name="addEntry maps domain model to entity and inserts" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.006"/>
+  <testcase name="getEntriesForDate returns empty list when no entries exist" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.004"/>
+  <testcase name="getEntriesForRange converts dates to correct epoch millis" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.007"/>
   <testcase name="deleteEntry calls dao deleteById with correct id" classname="com.delve.hungrywalrus.data.repository.LogEntryRepositoryTest" time="0.006"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

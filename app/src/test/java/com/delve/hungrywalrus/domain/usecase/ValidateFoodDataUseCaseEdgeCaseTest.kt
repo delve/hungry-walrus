@@ -84,7 +84,7 @@ class ValidateFoodDataUseCaseEdgeCaseTest {
     // --- applyOverrides: existing non-null value is not overwritten ---
 
     @Test
-    fun `applyOverrides does not overwrite an existing non-null kcal with a non-null override`() {
+    fun `applyOverrides replaces existing non-null kcal when a non-null override is provided`() {
         // If kcalPer100g is already populated (not missing), and an override is provided,
         // the override takes precedence — this tests that applyOverrides uses the override
         // when the field is supplied, not that it preserves the original.
@@ -126,6 +126,28 @@ class ValidateFoodDataUseCaseEdgeCaseTest {
         // Second call with null override should preserve the value set in first pass
         assertEquals(300.0, secondPass.kcalPer100g!!, 0.001)
         assertTrue(secondPass.missingFields.isEmpty())
+    }
+
+    // --- applyOverrides: negative values are rejected ---
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `applyOverrides throws for negative kcalPer100g`() {
+        useCase.applyOverrides(makeFood(kcal = null, missingFields = setOf(NutritionField.KCAL)), kcalPer100g = -1.0)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `applyOverrides throws for negative proteinPer100g`() {
+        useCase.applyOverrides(makeFood(protein = null, missingFields = setOf(NutritionField.PROTEIN)), proteinPer100g = -0.1)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `applyOverrides throws for negative carbsPer100g`() {
+        useCase.applyOverrides(makeFood(carbs = null, missingFields = setOf(NutritionField.CARBS)), carbsPer100g = -5.0)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `applyOverrides throws for negative fatPer100g`() {
+        useCase.applyOverrides(makeFood(fat = null, missingFields = setOf(NutritionField.FAT)), fatPer100g = -0.5)
     }
 
     // --- Requirement: user must supply estimate for missing fields before entry can be saved ---

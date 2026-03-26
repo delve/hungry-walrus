@@ -15,7 +15,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
-import java.time.ZoneOffset
+import java.time.ZoneId
 
 class LogEntryRepositoryTest {
 
@@ -31,8 +31,8 @@ class LogEntryRepositoryTest {
     @Test
     fun `getEntriesForDate converts date to correct epoch millis range`() = runTest {
         val date = LocalDate.of(2026, 3, 20)
-        val expectedStart = date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
-        val expectedEnd = date.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+        val expectedStart = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val expectedEnd = date.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
         val entity = LogEntryEntity(
             id = 1,
@@ -74,8 +74,8 @@ class LogEntryRepositoryTest {
     fun `getEntriesForRange converts dates to correct epoch millis`() = runTest {
         val start = LocalDate.of(2026, 3, 14)
         val end = LocalDate.of(2026, 3, 20)
-        val expectedStart = start.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
-        val expectedEnd = end.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+        val expectedStart = start.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val expectedEnd = end.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
         every { dao.getEntriesForRange(expectedStart, expectedEnd) } returns flowOf(emptyList())
 

@@ -9,9 +9,6 @@ import com.delve.hungrywalrus.data.local.entity.FoodCacheEntity
 @Dao
 interface FoodCacheDao {
 
-    @Query("SELECT * FROM food_cache WHERE cacheKey = :cacheKey")
-    suspend fun get(cacheKey: String): FoodCacheEntity?
-
     @Query("SELECT * FROM food_cache WHERE barcode = :barcode")
     suspend fun getByBarcode(barcode: String): FoodCacheEntity?
 

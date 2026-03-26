@@ -58,7 +58,15 @@ object NetworkModule {
                 .apply()
             // Delete the file and try again.
             context.deleteSharedPreferences(ENCRYPTED_PREFS_FILE)
-            createEncryptedPrefs(context)
+            try {
+                createEncryptedPrefs(context)
+            } catch (e2: Exception) {
+                // Keystore permanently unavailable (e.g. hardware failure). Fall back to
+                // unencrypted prefs so the app remains usable. The API key will not persist
+                // across process restarts in this state, but the app will not crash.
+                android.util.Log.w("NetworkModule", "EncryptedSharedPreferences unavailable; falling back to plain SharedPreferences", e2)
+                context.getSharedPreferences(ENCRYPTED_PREFS_FILE + "_plain", Context.MODE_PRIVATE)
+            }
         }
     }
 

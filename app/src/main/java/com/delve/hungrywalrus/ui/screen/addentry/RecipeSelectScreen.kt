@@ -40,7 +40,7 @@ fun RecipeSelectScreen(
     onClose: () -> Unit,
     onNavigateToWeightEntry: () -> Unit,
 ) {
-    val recipes by viewModel.recipes.collectAsStateWithLifecycle()
+    val recipesState by viewModel.recipes.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -54,62 +54,76 @@ fun RecipeSelectScreen(
             )
         },
     ) { padding ->
-        if (recipes.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = "No recipes saved. Create one from the Recipes tab.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                )
+        when (val state = recipesState) {
+            is RecipesState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(horizontal = Spacing.lg),
-                verticalArrangement = Arrangement.spacedBy(Spacing.sm),
-            ) {
-                items(
-                    items = recipes,
-                    key = { it.id },
-                ) { recipe ->
-                    Card(
+            is RecipesState.Loaded -> {
+                if (state.recipes.isEmpty()) {
+                    Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                viewModel.selectRecipe(recipe)
-                                onNavigateToWeightEntry()
-                            },
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surface,
-                        ),
-                        shape = RoundedCornerShape(CardCornerRadius),
+                            .fillMaxSize()
+                            .padding(padding),
+                        contentAlignment = Alignment.Center,
                     ) {
-                        Column(
-                            modifier = Modifier.padding(Spacing.md),
-                        ) {
-                            Text(
-                                text = recipe.name,
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            Text(
-                                text = "${Formatter.formatMacro(recipe.totalWeightG)}g total | ${Formatter.formatKcal(recipe.totalKcal)} kcal total",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                            NutritionSummaryRow(
-                                proteinG = recipe.totalProteinG,
-                                carbsG = recipe.totalCarbsG,
-                                fatG = recipe.totalFatG,
-                            )
+                        Text(
+                            text = "No recipes saved. Create one from the Recipes tab.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(padding)
+                            .padding(horizontal = Spacing.lg),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.sm),
+                    ) {
+                        items(
+                            items = state.recipes,
+                            key = { it.id },
+                        ) { recipe ->
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        viewModel.selectRecipe(recipe)
+                                        onNavigateToWeightEntry()
+                                    },
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surface,
+                                ),
+                                shape = RoundedCornerShape(CardCornerRadius),
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(Spacing.md),
+                                ) {
+                                    Text(
+                                        text = recipe.name,
+                                        style = MaterialTheme.typography.titleSmall,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                    )
+                                    Text(
+                                        text = "${Formatter.formatMacro(recipe.totalWeightG)}g total | ${Formatter.formatKcal(recipe.totalKcal)} kcal total",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                    NutritionSummaryRow(
+                                        proteinG = recipe.totalProteinG,
+                                        carbsG = recipe.totalCarbsG,
+                                        fatG = recipe.totalFatG,
+                                    )
+                                }
+                            }
                         }
                     }
                 }

@@ -23,7 +23,7 @@
 <tr>
 <td>
 <div class="infoBox" id="tests">
-<div class="counter">24</div>
+<div class="counter">34</div>
 <p>tests</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.154s</div>
+<div class="counter">2.576s</div>
 <p>duration</p>
 </div>
 </td>
@@ -75,88 +75,93 @@
 </tr>
 </thead>
 <tr>
-<td class="success">applyMissingValues updates selected food</td>
-<td class="success">0.005s</td>
+<td class="success">applyMissingValues updates food with overrides</td>
+<td class="success">0.006s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">events Channel delivers EntrySaved to exactly one collector</td>
-<td class="success">0.009s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">getIngredientData converts recipe to per-100g equivalent</td>
-<td class="success">0.004s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">getIngredientData returns ingredient data for selected food with weight</td>
-<td class="success">0.006s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">getIngredientData returns null when no food selected</td>
-<td class="success">0.004s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">ingredientMode defaults to false</td>
-<td class="success">0.004s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">initial state has empty search and no USDA key</td>
-<td class="success">0.004s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">lookupBarcode emits BarcodeResult found=false isError=false when product not in database</td>
-<td class="success">0.008s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">lookupBarcode emits BarcodeResult found=false isError=true and sets Error state on network failure</td>
-<td class="success">0.013s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">lookupBarcode emits BarcodeResult found=true isError=false on successful lookup</td>
-<td class="success">0.008s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">resetState clears all state and resets ingredientMode</td>
-<td class="success">0.005s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">saveApiKey ignores blank key</td>
 <td class="success">0.007s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
+<td class="success">getIngredientData returns null when no food selected</td>
+<td class="success">0.007s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">initial state has empty search and no USDA key</td>
+<td class="success">0.012s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">lookupBarcode emits BarcodeResult found on success</td>
+<td class="success">2.233s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">lookupBarcode emits BarcodeResult not found when null</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">lookupBarcode emits BarcodeResult with isError on failure</td>
+<td class="success">0.014s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">recipes initial state is Loading before repository emits</td>
+<td class="success">0.011s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">recipes transitions to Loaded after repository emits</td>
+<td class="success">0.026s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">resetState clears all state and resets ingredientMode</td>
+<td class="success">0.007s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">saveApiKey ignores blank key</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
 <td class="success">saveApiKey stores key and updates hasUsdaKey state</td>
-<td class="success">0.010s</td>
+<td class="success">0.012s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">saveEntry creates log entry and emits event</td>
-<td class="success">0.009s</td>
+<td class="success">0.063s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">searchOff updates state with results</td>
+<td class="success">0.013s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">searchOff with no results sets NoResults</td>
+<td class="success">0.012s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">searchUsda failure sets error state</td>
+<td class="success">0.013s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">searchUsda updates state with results</td>
+<td class="success">0.010s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">searchUsda with blank query is ignored</td>
 <td class="success">0.006s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">searchUsda with empty results sets NoResults state</td>
-<td class="success">0.008s</td>
-<td class="success">passed</td>
-</tr>
-<tr>
-<td class="success">searchUsda with error sets Error state</td>
-<td class="success">0.008s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
@@ -166,32 +171,77 @@
 </tr>
 <tr>
 <td class="success">selectFood stores food and returns false when complete</td>
+<td class="success">0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">selectRecipe sets recipe source state</td>
 <td class="success">0.005s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">selectRecipe stores recipe and sets recipe source</td>
-<td class="success">0.005s</td>
+<td class="success">setDirectEntry allows saveEntry immediately without weight step</td>
+<td class="success">0.011s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">setIngredientMode updates ingredientMode in uiState</td>
+<td class="success">setDirectEntry getIngredientData returns 100g ingredient for ingredient mode</td>
+<td class="success">0.007s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">setDirectEntry in ingredient mode with weight - getIngredientData uses supplied weight</td>
+<td class="success">0.007s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">setDirectEntry stores nutrition values without weight step</td>
+<td class="success">0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">setDirectEntry with explicit weight sets weightG and scales nutrition</td>
+<td class="success">0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">setIngredientMode updates state</td>
 <td class="success">0.005s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">setWeight computes scaled nutrition for food</td>
-<td class="success">0.005s</td>
+<td class="success">0.012s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
-<td class="success">setWeight computes scaled nutrition for recipe</td>
+<td class="success">setWeight scales recipe portion correctly</td>
+<td class="success">0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">setWeight with decimal string computes correct scaled nutrition</td>
 <td class="success">0.005s</td>
 <td class="success">passed</td>
 </tr>
 <tr>
 <td class="success">setWeight with invalid value clears scaled nutrition</td>
 <td class="success">0.006s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">setWeight with rounded integer after decimal preserves scaled nutrition</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">setWeight with rounded integer from decimal decrement works correctly</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">updateSearchQuery updates the query string</td>
+<td class="success">0.005s</td>
 <td class="success">passed</td>
 </tr>
 </table>
@@ -204,7 +254,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 8.11.1</a> at Mar 22, 2026, 2:56:12 PM</p>
+<a href="http://www.gradle.org">Gradle 8.11.1</a> at Mar 26, 2026, 8:41:13 AM</p>
 </div>
 </div>
 </body>

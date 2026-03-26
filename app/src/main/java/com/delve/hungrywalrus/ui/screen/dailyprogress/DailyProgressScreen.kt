@@ -39,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.delve.hungrywalrus.ui.component.ConfirmationDialog
 import com.delve.hungrywalrus.ui.component.LogEntryItem
+import com.delve.hungrywalrus.ui.component.NutritionCard
 import com.delve.hungrywalrus.ui.component.NutritionProgressBar
 import com.delve.hungrywalrus.ui.theme.CardCornerRadius
 import com.delve.hungrywalrus.ui.theme.ProgressCarbs
@@ -150,22 +151,36 @@ fun DailyProgressScreen(
                 ) {
                     // Progress section
                     if (state.plan == null) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = Spacing.lg, vertical = Spacing.sm)
-                                .clickable(onClick = onNavigateToPlan),
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        Column(
+                            modifier = Modifier.padding(
+                                horizontal = Spacing.lg,
+                                vertical = Spacing.sm,
                             ),
-                            shape = RoundedCornerShape(CardCornerRadius),
                         ) {
-                            Text(
-                                text = "No nutrition plan set. Tap to configure.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(Spacing.lg),
+                            NutritionCard(
+                                kcal = state.totalKcal,
+                                proteinG = state.totalProteinG,
+                                carbsG = state.totalCarbsG,
+                                fatG = state.totalFatG,
+                                prominent = true,
                             )
+                            Spacer(modifier = Modifier.height(Spacing.sm))
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable(onClick = onNavigateToPlan),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                ),
+                                shape = RoundedCornerShape(CardCornerRadius),
+                            ) {
+                                Text(
+                                    text = "No nutrition plan set. Tap to configure.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.padding(Spacing.lg),
+                                )
+                            }
                         }
                     } else {
                         Column(

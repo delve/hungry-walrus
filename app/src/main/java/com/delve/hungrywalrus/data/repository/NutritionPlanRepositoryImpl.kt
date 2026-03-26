@@ -6,27 +6,24 @@ import com.delve.hungrywalrus.domain.model.NutritionPlan
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate
-import java.time.ZoneOffset
+import java.time.ZoneId
 import javax.inject.Inject
 
 class NutritionPlanRepositoryImpl @Inject constructor(
     private val dao: NutritionPlanDao,
 ) : NutritionPlanRepository {
 
-    /**
-     * NOTE: [System.currentTimeMillis] is captured once when the Flow is first collected.
-     * Room re-runs the underlying query on database changes, but the timestamp predicate is fixed
-     * to that initial value. Re-collect the Flow (e.g. on screen navigation) to pick up plans
-     * whose effectiveFrom falls after the original collection instant.
-     */
     override fun getCurrentPlan(): Flow<NutritionPlan?> {
-        return dao.getCurrentPlan(System.currentTimeMillis()).map { entity ->
+        // Pass Long.MAX_VALUE so every plan ever inserted (effectiveFrom <= MAX_VALUE) is
+        // eligible. Room re-runs this query on every table change, and since we never insert
+        // plans with a future effectiveFrom, this reliably returns the latest active plan.
+        return dao.getCurrentPlan(Long.MAX_VALUE).map { entity ->
             entity?.toDomain()
         }
     }
 
     override suspend fun getPlanForDate(date: LocalDate): NutritionPlan? {
-        val millis = date.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli()
+        val millis = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
         return dao.getPlanForDate(millis)?.toDomain()
     }
 

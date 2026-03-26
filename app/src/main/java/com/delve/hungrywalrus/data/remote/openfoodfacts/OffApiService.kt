@@ -19,5 +19,6 @@ interface OffApiService {
     @GET("api/v2/product/{barcode}")
     suspend fun getProductByBarcode(
         @Path("barcode") barcode: String,
+        @Query("fields") fields: String = "code,product_name,nutriments",
     ): OffBarcodeResponse
 }

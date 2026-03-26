@@ -179,6 +179,61 @@ class CreateRecipeViewModelTest {
     }
 
     @Test
+    fun `isDirty is false initially in create mode and true after setRecipeName`() = runTest {
+        val viewModel = createViewModel()
+        assertFalse(viewModel.uiState.value.isDirty)
+
+        viewModel.setRecipeName("Test")
+        assertTrue(viewModel.uiState.value.isDirty)
+    }
+
+    @Test
+    fun `isDirty is false after loading edit mode and true after first user mutation`() = runTest {
+        val recipe = Recipe(
+            id = 1, name = "Bolognese", totalWeightG = 300.0,
+            totalKcal = 450.0, totalProteinG = 30.0, totalCarbsG = 40.0, totalFatG = 15.0,
+            createdAt = 0L, updatedAt = 0L,
+        )
+        val ingredient = RecipeIngredient(
+            recipeId = 1, foodName = "Beef mince", weightG = 200.0,
+            kcalPer100g = 200.0, proteinPer100g = 20.0, carbsPer100g = 0.0, fatPer100g = 10.0,
+        )
+        every { recipeRepo.getRecipeWithIngredients(1) } returns flowOf(
+            RecipeWithIngredients(recipe, listOf(ingredient)),
+        )
+
+        val viewModel = CreateRecipeViewModel(
+            recipeRepo, scaleUseCase, SavedStateHandle(mapOf("id" to 1L)),
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Loaded with existing data but no user change yet — isDirty must be false
+        assertFalse(viewModel.uiState.value.isDirty)
+
+        // User renames the recipe — now dirty
+        viewModel.setRecipeName("Bolognese Variant")
+        assertTrue(viewModel.uiState.value.isDirty)
+    }
+
+    @Test
+    fun `isDirty becomes true when addIngredient or removeIngredient is called`() = runTest {
+        val viewModel = createViewModel()
+        assertFalse(viewModel.uiState.value.isDirty)
+
+        viewModel.addIngredient(IngredientDraft("Pasta", 100.0, 150.0, 5.0, 30.0, 1.0))
+        assertTrue(viewModel.uiState.value.isDirty)
+
+        // Create a second viewModel to test removeIngredient independently
+        val viewModel2 = createViewModel()
+        viewModel2.addIngredient(IngredientDraft("Item", 100.0, 100.0, 10.0, 20.0, 5.0))
+        // Reset by creating fresh — removeIngredient on a create-mode vm with one item
+        // We test just the removeIngredient path sets isDirty = true (it was already true here,
+        // but the copy always includes isDirty = true in removeIngredient).
+        viewModel2.removeIngredient(0)
+        assertTrue(viewModel2.uiState.value.isDirty)
+    }
+
+    @Test
     fun `saveRecipe in edit mode calls updateRecipe with original createdAt`() = runTest {
         val createdAt = 1_700_000_000_000L
         val recipe = Recipe(

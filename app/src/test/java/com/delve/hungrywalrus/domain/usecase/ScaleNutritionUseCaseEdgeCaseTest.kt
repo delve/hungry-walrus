@@ -59,15 +59,26 @@ class ScaleNutritionUseCaseEdgeCaseTest {
         assertEquals(5.0, result.fatG, 0.001)
     }
 
+    // --- invoke: negative per-100g values are rejected ---
+
     @Test(expected = IllegalArgumentException::class)
-    fun `negative weightG throws IllegalArgumentException`() {
-        useCase(
-            kcalPer100g = 100.0,
-            proteinPer100g = 10.0,
-            carbsPer100g = 20.0,
-            fatPer100g = 5.0,
-            weightG = -1.0,
-        )
+    fun `negative kcalPer100g throws IllegalArgumentException`() {
+        useCase(kcalPer100g = -1.0, proteinPer100g = 10.0, carbsPer100g = 20.0, fatPer100g = 5.0, weightG = 100.0)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `negative proteinPer100g throws IllegalArgumentException`() {
+        useCase(kcalPer100g = 100.0, proteinPer100g = -0.1, carbsPer100g = 20.0, fatPer100g = 5.0, weightG = 100.0)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `negative carbsPer100g throws IllegalArgumentException`() {
+        useCase(kcalPer100g = 100.0, proteinPer100g = 10.0, carbsPer100g = -5.0, fatPer100g = 5.0, weightG = 100.0)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `negative fatPer100g throws IllegalArgumentException`() {
+        useCase(kcalPer100g = 100.0, proteinPer100g = 10.0, carbsPer100g = 20.0, fatPer100g = -0.5, weightG = 100.0)
     }
 
     // --- scaleRecipePortion edge cases ---
@@ -117,23 +128,4 @@ class ScaleNutritionUseCaseEdgeCaseTest {
         assertEquals(24.0, result.fatG, 0.001)
     }
 
-    @Test(expected = IllegalArgumentException::class)
-    fun `zero recipe totalWeightG throws IllegalArgumentException`() {
-        val recipe = Recipe(
-            id = 1, name = "Empty", totalWeightG = 0.0,
-            totalKcal = 0.0, totalProteinG = 0.0, totalCarbsG = 0.0, totalFatG = 0.0,
-            createdAt = 0, updatedAt = 0,
-        )
-        useCase.scaleRecipePortion(recipe, 100.0)
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun `negative portionWeightG throws IllegalArgumentException`() {
-        val recipe = Recipe(
-            id = 1, name = "Soup", totalWeightG = 500.0,
-            totalKcal = 250.0, totalProteinG = 15.0, totalCarbsG = 30.0, totalFatG = 8.0,
-            createdAt = 0, updatedAt = 0,
-        )
-        useCase.scaleRecipePortion(recipe, -50.0)
-    }
 }

@@ -14,7 +14,8 @@ import javax.inject.Inject
  * The caller (ViewModel) is responsible for fetching:
  * - [entries]: all [LogEntry] records whose timestamps fall within [start]..[end].
  * - [dailyPlans]: a map from each date in the period to the [NutritionPlan] that was active on
- *   that day, or null if no plan was configured for that day.
+ *   that day, or null if no plan was configured for that day. Keys need not cover every date in
+ *   the period; an absent key is treated identically to a null value — that day has no plan.
  *
  * This use case is a pure function with no I/O or Android dependencies.
  */
@@ -53,7 +54,7 @@ class ComputeRollingSummaryUseCase @Inject constructor() {
             val plan = dailyPlans[date]
             if (plan != null) {
                 planCoveredDays++
-                targetKcal += plan.kcalTarget
+                targetKcal += plan.kcalTarget  // Int widened to Double intentionally; kcalTarget is Int per spec (section 5.2)
                 targetProtein += plan.proteinTargetG
                 targetCarbs += plan.carbsTargetG
                 targetFat += plan.fatTargetG

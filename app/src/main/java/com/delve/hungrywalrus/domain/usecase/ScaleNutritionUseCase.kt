@@ -16,6 +16,10 @@ class ScaleNutritionUseCase @Inject constructor() {
     /**
      * Scale per-100g nutrition values to [weightG] grams consumed.
      * Formula: scaledValue = (valuePer100g / 100.0) * weightG
+     *
+     * All per-100g inputs must be >= 0.0; negative reference values are physically impossible.
+     *
+     * @throws IllegalArgumentException if any per-100g input or [weightG] is negative.
      */
     operator fun invoke(
         kcalPer100g: Double,
@@ -25,6 +29,10 @@ class ScaleNutritionUseCase @Inject constructor() {
         weightG: Double,
     ): NutritionValues {
         require(weightG >= 0.0) { "weightG must not be negative" }
+        require(kcalPer100g >= 0.0) { "kcalPer100g must not be negative" }
+        require(proteinPer100g >= 0.0) { "proteinPer100g must not be negative" }
+        require(carbsPer100g >= 0.0) { "carbsPer100g must not be negative" }
+        require(fatPer100g >= 0.0) { "fatPer100g must not be negative" }
         return NutritionValues(
             kcal = (kcalPer100g / 100.0) * weightG,
             proteinG = (proteinPer100g / 100.0) * weightG,

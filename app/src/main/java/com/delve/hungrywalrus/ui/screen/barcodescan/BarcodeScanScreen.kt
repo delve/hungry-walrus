@@ -10,6 +10,8 @@ import android.provider.Settings
 import android.util.Log
 import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.camera.core.resolutionselector.ResolutionSelector
+import androidx.camera.core.resolutionselector.ResolutionStrategy
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -153,8 +155,9 @@ fun BarcodeScanScreen(
         }
     }
 
-    // Collect barcode events
-    LaunchedEffect(Unit) {
+    // Collect barcode events — keyed on viewModel so the collector restarts if ViewModel
+    // identity changes (O13: defensive pattern matching EntryConfirmScreen's W03 fix).
+    LaunchedEffect(viewModel) {
         viewModel.events.collect { event ->
             when (event) {
                 is AddEntryUiEvent.BarcodeResult -> {
@@ -235,7 +238,16 @@ fun BarcodeScanScreen(
 
                                 @androidx.annotation.OptIn(androidx.camera.core.ExperimentalGetImage::class)
                                 val imageAnalysis = ImageAnalysis.Builder()
-                                    .setTargetResolution(Size(1280, 720))
+                                    .setResolutionSelector(
+                                        ResolutionSelector.Builder()
+                                            .setResolutionStrategy(
+                                                ResolutionStrategy(
+                                                    Size(1280, 720),
+                                                    ResolutionStrategy.FALLBACK_RULE_CLOSEST_HIGHER_THEN_LOWER,
+                                                ),
+                                            )
+                                            .build(),
+                                    )
                                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                                     .build()
                                     .also { analysis ->

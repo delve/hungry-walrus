@@ -81,7 +81,8 @@ fun CreateRecipeScreen(
         inlineFat = ""
     }
 
-    LaunchedEffect(Unit) {
+    // Keyed on viewModel so the collector restarts if ViewModel identity changes (O13).
+    LaunchedEffect(viewModel) {
         viewModel.events.collect { event ->
             when (event) {
                 CreateRecipeUiEvent.RecipeSaved -> {
@@ -113,7 +114,7 @@ fun CreateRecipeScreen(
                 title = { Text(title) },
                 navigationIcon = {
                     IconButton(onClick = {
-                        if (uiState.ingredients.isNotEmpty() || uiState.recipeName.isNotBlank()) {
+                        if (uiState.isDirty) {
                             showDiscardDialog = true
                         } else {
                             onClose()

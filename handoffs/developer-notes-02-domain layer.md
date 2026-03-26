@@ -1,176 +1,334 @@
-# Developer Notes: Session 02 — Domain Layer
+# Developer Notes: Session 02 -- Domain Layer Review
 
-## What was implemented
+## What this session did
 
-### New domain model (1 file)
-- `domain/model/RollingSummary.kt` — computed result for 7-day or 28-day summaries: period intake totals, optional plan targets (null when no plan configured), and daily average
-
-### Use cases (3 files)
-- `domain/usecase/ScaleNutritionUseCase.kt` — scales per-100g nutrition values to a consumed weight; separate overload for recipe portions
-- `domain/usecase/ValidateFoodDataUseCase.kt` — checks `FoodSearchResult` completeness and applies user-supplied overrides for missing fields; always re-derives `missingFields`
-- `domain/usecase/ComputeRollingSummaryUseCase.kt` — pure function accepting pre-fetched entries and a per-day plan map; computes intake totals, plan targets (accounting for mid-period changes), and daily averages
-
-### Deleted placeholder
-- `domain/usecase/package-info.kt` — replaced by the three real use case files
-
-## Deviations from architecture
-
-None. All implementations exactly match the patterns described in architecture sections 3, 12, and 7.2.
-
-## Integration notes for ViewModel layer
-
-### `ScaleNutritionUseCase`
-- Two call paths:
-  - `invoke(kcalPer100g, proteinPer100g, carbsPer100g, fatPer100g, weightG): NutritionValues` — for API/manual food entries
-  - `scaleRecipePortion(recipe, portionWeightG): NutritionValues` — for recipe portions
-- Throws `IllegalArgumentException` if `weightG < 0.0`. Throws `IllegalArgumentException` if `recipe.totalWeightG <= 0.0`. Both guards live in the use case — callers do not need to duplicate them.
-- All use cases annotated `@Inject constructor()` — Hilt injects them into ViewModels with no extra DI module configuration required.
-
-### `ValidateFoodDataUseCase`
-- `AddEntryViewModel` should call `isComplete(result)` after a food search to decide whether to show the missing-values screen.
-- On the missing-values screen, call `applyOverrides(result, kcal, protein, carbs, fat)` with the user-entered estimates. The returned result has `missingFields` re-derived — if it is now empty, the entry can be saved.
-- `applyOverrides` never replaces an existing non-null value with a null override, so it is safe to call with partial user input (only pass non-null values for fields the user actually filled in).
-
-### `ComputeRollingSummaryUseCase`
-- Signature: `invoke(entries, dailyPlans, start, end): RollingSummary`
-- Throws `IllegalArgumentException` if `start` is after `end`.
-- The `SummariesViewModel` must:
-  1. Call `LogEntryRepository.getEntriesForRange(start, end)` to get a `Flow<List<LogEntry>>`.
-  2. For each date in the period, call `NutritionPlanRepository.getPlanForDate(date)` to build the `Map<LocalDate, NutritionPlan?>`.
-  3. Pass both to this use case.
-- `totalTarget` is null if **any** day in the period has no plan entry (i.e. partial-plan coverage also yields null). The UI should show "Set up a nutrition plan to see targets" in this case (see design spec section 3.14).
-- `dailyPlans` does not need an entry for every date — dates absent from the map are treated as null (no plan), which will cause `totalTarget` to be null for the period.
-- `NutritionPlan.kcalTarget` is `Int`; it is widened to `Double` during accumulation. This is transparent to callers.
-
-### No new repository methods required
-The three use cases work with data already available from the existing repository interfaces. No repository changes are needed.
-
-## Unit tests written
-
-### `domain/usecase/ScaleNutritionUseCaseTest.kt` (5 tests)
-- Scales per-100g values correctly for a given weight
-- Returns zero values for zero weight
-- Scales recipe to 50% portion correctly
-- Full portion weight returns recipe totals
-- Throws `IllegalArgumentException` for zero recipe weight
-
-### `domain/usecase/ValidateFoodDataUseCaseTest.kt` (6 tests)
-- `isComplete` returns true when `missingFields` is empty
-- `isComplete` returns false when `missingFields` is non-empty
-- `applyOverrides` fills a single missing field
-- `applyOverrides` fills multiple missing fields
-- `applyOverrides` preserves existing values when override is null
-- `applyOverrides` re-derives `missingFields` after a partial override
-
-### `domain/usecase/ComputeRollingSummaryUseCaseTest.kt` (8 tests)
-- Correct total intake summed from entries
-- Correct daily average (total ÷ periodDays)
-- Null target when no plans configured
-- Summed targets for a uniform plan across the period
-- Handles mid-period plan changes (planA for first 3 days, planB for final 4 days)
-- Zero intake for empty entries list
-- Period days is inclusive of start and end (14–20 Mar = 7 days)
-- `startDate` and `endDate` are preserved in the returned `RollingSummary`
-
-**Total: 19 domain-layer unit tests, 0 failures, 0 errors.**
-
-## Test run results
-
-```
-ScaleNutritionUseCaseTest:       5 passed
-ValidateFoodDataUseCaseTest:     6 passed
-ComputeRollingSummaryUseCaseTest: 8 passed
-
-Total: 19 domain-layer tests, 0 failures, 0 errors.
-```
-
-Data-layer tests (49) were unaffected. Full test run: 68 tests, 0 failures.
-
-## Notes for the next session
-
-- **`SummariesViewModel`**: must call `getPlanForDate()` for each day in the selected period (7 or 28 calls). These are lightweight local DB reads. Consider whether to run them as a single coroutine block in `viewModelScope.launch`.
-- **`AddEntryViewModel`**: the multi-step add-entry flow should hold the current `FoodSearchResult` as a state field and update it in-place via `ValidateFoodDataUseCase.applyOverrides()` as the user fills in missing values.
-- **`ScaleNutritionUseCase` for manual entry**: when the user enters nutrition values directly (manual entry screen), the UI already has the final values — no scaling is needed. The use case is only relevant when the source is API-backed with per-100g reference values.
-- **Recipe totals computation** (`CreateRecipeViewModel`): ingredient totals are computed at save time using the formula `(valuePer100g / 100.0) * weightG`. This is the same formula as `ScaleNutritionUseCase.invoke()`, so `CreateRecipeViewModel` should call the use case rather than duplicating the formula inline.
+Reviewed the domain layer against the current Architecture (Revision 1, 2026-03-22),
+Requirements, and Design specifications. The domain layer was already fully implemented
+in a prior commit. This session performed a complete verification pass: every model and
+use case was checked against the spec, tests were run to confirm all pass, and no code
+changes were required.
 
 ---
 
-## Fix Session: Code Review 02 Findings
+## Domain Layer Inventory
 
-*Date: 2026-03-20*
+### Domain Models (`domain/model/`)
 
-### Changes made
+| File | Contents | Status |
+|---|---|---|
+| `NutritionValues.kt` | `data class NutritionValues(kcal, proteinG, carbsG, fatG)` | ✅ Matches Section 6.3 |
+| `FoodSearchResult.kt` | `data class FoodSearchResult(id, name, source, kcalPer100g?, proteinPer100g?, carbsPer100g?, fatPer100g?, missingFields)` | ✅ Matches Section 6.3 |
+| `FoodSource.kt` | `enum class FoodSource { USDA, OPEN_FOOD_FACTS, MANUAL }` | ✅ Matches Section 6.3 |
+| `NutritionField.kt` | `enum class NutritionField { KCAL, PROTEIN, CARBS, FAT }` | ✅ Matches Section 6.3 |
+| `NutritionPlan.kt` | `data class NutritionPlan(id, kcalTarget, proteinTargetG, carbsTargetG, fatTargetG, effectiveFrom)` | ✅ Matches Section 5.2 |
+| `LogEntry.kt` | `data class LogEntry(id, foodName, kcal, proteinG, carbsG, fatG, timestamp)` | ✅ Matches Section 5.2 |
+| `Recipe.kt` | `data class Recipe(id, name, totalWeightG, totalKcal, totalProteinG, totalCarbsG, totalFatG, createdAt, updatedAt)` | ✅ Matches Section 5.2 |
+| `RecipeIngredient.kt` | `data class RecipeIngredient(id, recipeId, foodName, weightG, kcalPer100g, proteinPer100g, carbsPer100g, fatPer100g)` | ✅ Matches Section 5.2 |
+| `RecipeWithIngredients.kt` | `data class RecipeWithIngredients(recipe, ingredients)` | ✅ Matches Section 6.1 |
+| `RollingSummary.kt` | `data class RollingSummary(periodDays, startDate, endDate, totalIntake, totalTarget?, dailyAverage)` | ✅ Matches Section 7.5 |
+| `OfflineException.kt` | Custom exception for offline/no-network errors | ✅ Matches Section 8.4 |
 
-#### m1 — Negative weight guard in `ScaleNutritionUseCase.invoke`
+### Use Cases (`domain/usecase/`)
 
-Added `require(weightG >= 0.0) { "weightG must not be negative" }` at the top of the `invoke` operator function, mirroring the existing guard in `scaleRecipePortion`. Zero weight remains valid (produces all-zero output, representing a "weigh nothing" scenario).
+Architecture Section 3 defines three non-trivial use cases for the domain layer:
 
-#### s1 — Test for negative weight in `ScaleNutritionUseCaseTest`
+| Use Case | Purpose | Status |
+|---|---|---|
+| `ScaleNutritionUseCase` | Scales per-100g nutrition to consumed weight (Sections 12.1, 12.2); also scales recipe portions. Two overloads: `invoke()` for per-100g → weight, `scaleRecipePortion()` for recipe → portion. | ✅ Implemented |
+| `ValidateFoodDataUseCase` | Validates completeness of `FoodSearchResult`; applies user-supplied overrides for missing fields; re-derives `missingFields` after each override (Section 6.3). | ✅ Implemented |
+| `ComputeRollingSummaryUseCase` | Computes a `RollingSummary` for a date range given log entries and per-day plan history. Handles full and partial plan coverage, mid-period plan changes. Pure function with no I/O. (Sections 7.5, 17.7). | ✅ Implemented |
 
-Added `invoke throws for negative weight` test using `@Test(expected = IllegalArgumentException::class)` with `weightG = -1.0`.
-
-#### m2 — Partial-plan contract in `ComputeRollingSummaryUseCase`
-
-Replaced the `hasAnyPlan` boolean flag with a `planCoveredDays` counter. `totalTarget` is now non-null only when `planCoveredDays == periodDays` — i.e. every day in the period has a plan entry. Partial coverage (some days have a plan, some do not) now correctly yields `null`, preventing the misleading partial-sum display identified in the review.
-
-**Contract decision:** Return null unless all days have a plan. This is option 2 from the review recommendations. Rationale: a partial sum (e.g. one day's target displayed as a 7-day target) is worse than no target at all; the UI already has a clear "no target configured" state. The integration note for `SummariesViewModel` has been updated to reflect this contract.
-
-#### s3 — Start-after-end guard in `ComputeRollingSummaryUseCase`
-
-Added `require(!start.isAfter(end)) { "start must not be after end" }` at the top of `invoke` to produce a clear `IllegalArgumentException` rather than silent `NaN` propagation from a negative `periodDays` divisor.
-
-#### New tests in `ComputeRollingSummaryUseCaseTest`
-
-Two tests added:
-- `returns null target when only some days have a plan` — 3 of 7 days covered, asserts `totalTarget` is null.
-- `throws when start is after end` — `@Test(expected = IllegalArgumentException::class)` passing `end` as start and `start` as end.
-
-#### s2 — `isComplete` thin alias in `ValidateFoodDataUseCase`
-
-No action taken. The review correctly identifies this as a non-defect. `isComplete` is co-located with `applyOverrides` in the same use case; keeping both together is the right pattern for the ViewModel call flow.
-
-### Test run results after fixes
-
-```
-ScaleNutritionUseCaseTest:        6 passed  (+1 negative weight test)
-ValidateFoodDataUseCaseTest:      6 passed  (unchanged)
-ComputeRollingSummaryUseCaseTest: 10 passed (+2 new tests)
-
-Domain-layer total: 22 tests, 0 failures, 0 errors.
-Full suite total:   88 tests, 0 failures, 0 errors.
-```
+All three use cases carry `@Inject constructor()` for Hilt injection.
 
 ---
 
-## Fix Session: Code Review 02 Findings (second pass)
+## Architecture Spec Conformance
 
-*Date: 2026-03-20*
+### Section 3 (Architecture Pattern)
+
+> Domain Layer: Contains use cases only where business logic is non-trivial.
+> Simple CRUD flows pass through directly from ViewModel to repository.
+
+Confirmed: the domain layer contains exactly the three non-trivial use cases called out
+in the spec. There are no spurious use cases and no missing ones.
+
+### Section 5.2 (Entity Definitions)
+
+All domain models carry the correct field names and types as specified. Key points verified:
+
+- `NutritionPlan.effectiveFrom` is `Long` (epoch millis). ✅
+- `LogEntry` stores only final calculated values; no weight field. ✅
+  (Architecture Section 5.2: "The consumed weight is not stored in the log entry.")
+- `RecipeIngredient` stores per-100g reference values (non-nullable), not final values.
+  A `FoodSearchResult` with missing fields must have all values resolved before constructing
+  a `RecipeIngredient`. This is documented in the class KDoc. ✅
+- `FoodSearchResult.missingFields` is always consistent with nullable per-100g fields —
+  `ValidateFoodDataUseCase.applyOverrides` re-derives it after every override. ✅
+
+### Section 6.3 (Domain Models)
+
+`FoodSource` enum values confirmed: `USDA`, `OPEN_FOOD_FACTS`, `MANUAL`. The architecture
+spec lists `FoodSource { USDA, OPEN_FOOD_FACTS, MANUAL }` — all three values are present. ✅
+
+### Section 8.4 (Error Handling)
+
+`OfflineException` is the error type for `IOException`/offline scenarios. It extends
+`Exception` (not `RuntimeException`) and is caught in the repository layer to produce
+`Result.failure(OfflineException(...))`. ✅
+
+### Section 12.1–12.3 (Nutrition Value Scaling)
+
+`ScaleNutritionUseCase` implements:
+- `invoke()`: `scaledValue = (valuePer100g / 100.0) * weightG` ✅
+- `scaleRecipePortion()`: `scaledValue = (recipeTotalValue / recipeTotalWeightG) * portionWeightG` ✅
+- Manual entry: no use case involvement; values are passed directly in `AddEntryViewModel.setDirectEntry()`. ✅
+
+---
+
+## Tests
+
+No new tests were written in this session. All existing tests were verified to pass.
+
+### Domain use case tests (53 total)
+
+| Test class | Tests | Passed | Failed |
+|---|---|---|---|
+| `ComputeRollingSummaryUseCaseEdgeCaseTest` | 11 | 11 | 0 |
+| `ComputeRollingSummaryUseCaseTest` | 11 | 11 | 0 |
+| `ScaleNutritionUseCaseEdgeCaseTest` | 9 | 9 | 0 |
+| `ScaleNutritionUseCaseTest` | 7 | 7 | 0 |
+| `ValidateFoodDataUseCaseEdgeCaseTest` | 9 | 9 | 0 |
+| `ValidateFoodDataUseCaseTest` | 6 | 6 | 0 |
+
+### Full test suite
+
+```
+./gradlew testDebugUnitTest -- BUILD SUCCESSFUL
+```
+
+All 277 tests pass.
+
+| Test class | Tests | Passed | Failed |
+|---|---|---|---|
+| `OffResponseMapperTest` | 6 | 6 | 0 |
+| `UsdaResponseMapperTest` | 5 | 5 | 0 |
+| `FoodLookupRepositoryImplTest` | 20 | 20 | 0 |
+| `LogEntryRepositoryTest` | 5 | 5 | 0 |
+| `NutritionPlanRepositoryTest` | 5 | 5 | 0 |
+| `RecipeRepositoryImplTest` | 8 | 8 | 0 |
+| `ComputeRollingSummaryUseCaseEdgeCaseTest` | 11 | 11 | 0 |
+| `ComputeRollingSummaryUseCaseTest` | 11 | 11 | 0 |
+| `ScaleNutritionUseCaseEdgeCaseTest` | 9 | 9 | 0 |
+| `ScaleNutritionUseCaseTest` | 7 | 7 | 0 |
+| `ValidateFoodDataUseCaseEdgeCaseTest` | 9 | 9 | 0 |
+| `ValidateFoodDataUseCaseTest` | 6 | 6 | 0 |
+| `AddEntryViewModelIntegrationTest` | 12 | 12 | 0 |
+| `DataRetentionIntegrationTest` | 8 | 8 | 0 |
+| `FoodLookupIntegrationTest` | 16 | 16 | 0 |
+| `NutritionCalculationIntegrationTest` | 12 | 12 | 0 |
+| `RepositoryToViewModelIntegrationTest` | 7 | 7 | 0 |
+| `BottomNavItemTest` | 3 | 3 | 0 |
+| `RoutesTest` | 5 | 5 | 0 |
+| `AddEntryViewModelTest` | 27 | 27 | 0 |
+| `CreateRecipeViewModelTest` | 9 | 9 | 0 |
+| `DailyProgressViewModelEdgeCaseTest` | 5 | 5 | 0 |
+| `DailyProgressViewModelTest` | 4 | 4 | 0 |
+| `RecipeDetailViewModelTest` | 4 | 4 | 0 |
+| `RecipeListViewModelTest` | 3 | 3 | 0 |
+| `SettingsViewModelTest` | 16 | 16 | 0 |
+| `SummariesViewModelTest` | 9 | 9 | 0 |
+| `FormatterEdgeCaseTest` | 18 | 18 | 0 |
+| `FormatterTest` | 9 | 9 | 0 |
+| `DataRetentionWorkerTest` | 8 | 8 | 0 |
+| **Total** | **277** | **277** | **0** |
+
+---
+
+## Changes made
+
+None. The domain layer was complete and correct as implemented. No code changes were
+required in this session.
+
+---
+
+---
+
+## Session 03 — Code Review Fix Pass (Domain Layer)
+
+**Date**: 2026-03-22
+**Review source**: `handoffs/code-review-02-domain layer.md`
 
 ### Changes made
 
-#### m1 — Negative portionWeightG guard in `ScaleNutritionUseCase.scaleRecipePortion`
+#### C01 — KDoc clarification for `dailyPlans` parameter
+**File**: `app/src/main/java/com/delve/hungrywalrus/domain/usecase/ComputeRollingSummaryUseCase.kt`
 
-Added `require(portionWeightG >= 0.0) { "portionWeightG must not be negative" }` at the top of `scaleRecipePortion`, before the existing recipe weight guard. The order is: portionWeightG check first, then recipe.totalWeightG check — consistent with the parameter order in the function signature. Updated the KDoc `@throws` block to document the new guard.
+Added a sentence to the `dailyPlans` KDoc: "Keys need not cover every date in the period; an absent key is treated identically to a null value — that day has no plan." This removes the implicit contract ambiguity without changing behaviour.
 
-#### s1 — Updated KDoc on `RollingSummary.totalTarget`
+#### W01 — Int-to-Double widening comment
+**File**: `app/src/main/java/com/delve/hungrywalrus/domain/usecase/ComputeRollingSummaryUseCase.kt:56`
 
-Replaced the stale description (_"null when no nutrition plan was configured for **any** day in the period"_) with the accurate contract: _"null when one or more days in the period have no active nutrition plan. It is non-null only when every day in the period has a plan entry."_
+Added an inline comment at the `targetKcal += plan.kcalTarget` accumulation line noting the Int-to-Double widening is intentional and referencing the spec (section 5.2). No code change.
 
-#### s2 — Single-day period test in `ComputeRollingSummaryUseCaseTest`
+#### W02 — Negative override guards in `ValidateFoodDataUseCase.applyOverrides`
+**File**: `app/src/main/java/com/delve/hungrywalrus/domain/usecase/ValidateFoodDataUseCase.kt`
 
-Added `single-day period has periodDays 1 and dailyAverage equals totalIntake` test using `start == end == 2026-03-20`. Asserts `periodDays == 1` and that each `dailyAverage` field equals the corresponding `totalIntake` field (confirming the `/ periodDays` formula is correct at its minimum boundary).
+Added `require(value >= 0.0)` guards for each of the four non-null override parameters (`kcalPer100g`, `proteinPer100g`, `carbsPer100g`, `fatPer100g`). A null override still passes through (leaving the field unchanged); only non-null negative values throw. Updated KDoc to document the `@throws` contract.
 
-#### s3 — Negative portionWeightG test in `ScaleNutritionUseCaseTest`
+Added 4 new tests to `ValidateFoodDataUseCaseEdgeCaseTest` (one per field) verifying `IllegalArgumentException` is thrown on negative inputs.
 
-Added `scaleRecipePortion throws for negative portionWeightG` annotated `@Test(expected = IllegalArgumentException::class)` passing `portionWeightG = -1.0`, parallel to the existing `scaleRecipePortion throws for zero recipe weight` test.
+#### W03 — Negative per-100g guards in `ScaleNutritionUseCase.invoke`
+**File**: `app/src/main/java/com/delve/hungrywalrus/domain/usecase/ScaleNutritionUseCase.kt`
 
-### Test run results after fixes
+Added `require(value >= 0.0)` guards for all four per-100g parameters (`kcalPer100g`, `proteinPer100g`, `carbsPer100g`, `fatPer100g`) in `invoke`. Updated KDoc with the `@throws` contract. The existing `weightG` guard is unchanged.
+
+Added 4 new tests to `ScaleNutritionUseCaseEdgeCaseTest` (one per field) verifying `IllegalArgumentException` is thrown on negative per-100g inputs.
+
+#### O01 — Remove duplicate tests from `ScaleNutritionUseCaseEdgeCaseTest`
+**File**: `app/src/test/java/com/delve/hungrywalrus/domain/usecase/ScaleNutritionUseCaseEdgeCaseTest.kt`
+
+Removed 2 tests already covered by `ScaleNutritionUseCaseTest`:
+- `negative weightG throws IllegalArgumentException` (duplicate of `invoke throws for negative weight`)
+- `zero recipe totalWeightG throws IllegalArgumentException` (duplicate of `scaleRecipePortion throws for zero recipe weight`)
+
+Net test count for the edge-case class: 9 → (9 - 2 + 4) = 11 (4 new per-100g guard tests added for W03).
+
+#### O02 — Update test comment in `ComputeRollingSummaryUseCaseEdgeCaseTest`
+**File**: `app/src/test/java/com/delve/hungrywalrus/domain/usecase/ComputeRollingSummaryUseCaseEdgeCaseTest.kt`
+
+Rewrote the comment in `total intake sums all entries regardless of date field on entry` to make the caller contract explicit: "The use case does not filter entries by date — the ViewModel is responsible for passing only entries within the [start, end] window."
+
+---
+
+### Test results after changes
 
 ```
-ScaleNutritionUseCaseTest:        7 passed  (+1 negative portionWeightG test)
-ValidateFoodDataUseCaseTest:      6 passed  (unchanged)
-ComputeRollingSummaryUseCaseTest: 11 passed (+1 single-day period test)
-
-Domain-layer total: 24 tests, 0 failures, 0 errors.
-Full suite total:   90 tests, 0 failures, 0 errors.
+./gradlew testDebugUnitTest -- BUILD SUCCESSFUL
 ```
+
+All 283 tests pass (up from 277; +6 net from new guard tests).
+
+| Test class | Tests | Passed | Failed |
+|---|---|---|---|
+| `ComputeRollingSummaryUseCaseEdgeCaseTest` | 11 | 11 | 0 |
+| `ComputeRollingSummaryUseCaseTest` | 11 | 11 | 0 |
+| `ScaleNutritionUseCaseEdgeCaseTest` | 11 | 11 | 0 |
+| `ScaleNutritionUseCaseTest` | 7 | 7 | 0 |
+| `ValidateFoodDataUseCaseEdgeCaseTest` | 13 | 13 | 0 |
+| `ValidateFoodDataUseCaseTest` | 6 | 6 | 0 |
+| **Domain total** | **59** | **59** | **0** |
+| **Full suite total** | **283** | **283** | **0** |
+
+---
+
+---
+
+## Session 04 — Code Review Fix Pass 2 (Domain Layer)
+
+**Date**: 2026-03-22
+**Review source**: `handoffs/code-review-02-domain layer.md` (Review Pass 2)
+
+### Changes made
+
+#### O03 — Remove duplicate `negative portionWeightG` test from `ScaleNutritionUseCaseEdgeCaseTest`
+**File**: `app/src/test/java/com/delve/hungrywalrus/domain/usecase/ScaleNutritionUseCaseEdgeCaseTest.kt`
+
+Removed `negative portionWeightG throws IllegalArgumentException` (the test was a pre-existing edge-case test that duplicated `scaleRecipePortion throws for negative portionWeightG` in `ScaleNutritionUseCaseTest`). This duplicate was noted by the reviewer as introduced during the Session 03 fix pass.
+
+`ScaleNutritionUseCaseEdgeCaseTest`: 11 → 10 tests.
+
+#### O04 — Rename misleading test in `ValidateFoodDataUseCaseEdgeCaseTest`
+**File**: `app/src/test/java/com/delve/hungrywalrus/domain/usecase/ValidateFoodDataUseCaseEdgeCaseTest.kt`
+
+Renamed test from `applyOverrides does not overwrite an existing non-null kcal with a non-null override` to `applyOverrides replaces existing non-null kcal when a non-null override is provided`. The old name implied the original value was preserved; the test body actually asserts the override value replaces it. No code change; test count unchanged.
+
+---
+
+### Test results after changes
+
+```
+./gradlew testDebugUnitTest -- BUILD SUCCESSFUL
+```
+
+All 282 tests pass (down from 283 by the one removed duplicate; no new tests added).
+
+| Test class | Tests | Passed | Failed |
+|---|---|---|---|
+| `ComputeRollingSummaryUseCaseEdgeCaseTest` | 11 | 11 | 0 |
+| `ComputeRollingSummaryUseCaseTest` | 11 | 11 | 0 |
+| `ScaleNutritionUseCaseEdgeCaseTest` | 10 | 10 | 0 |
+| `ScaleNutritionUseCaseTest` | 7 | 7 | 0 |
+| `ValidateFoodDataUseCaseEdgeCaseTest` | 13 | 13 | 0 |
+| `ValidateFoodDataUseCaseTest` | 6 | 6 | 0 |
+| **Domain total** | **58** | **58** | **0** |
+| **Full suite total** | **282** | **282** | **0** |
+
+---
+
+## Known gaps / what next sessions should tackle
+
+These items carry over from the Session 01 notes and the QA report. None are domain
+layer issues.
+
+1. **In-memory Room database tests** for DAO SQL correctness (`NutritionPlanDao.getCurrentPlan`
+   ordering, `LogEntryDao.getEntriesForDate` day-boundary arithmetic). The `room-testing`
+   dependency is present; requires Robolectric or instrumented tests to run.
+
+2. **`ApiKeyStore` error-recovery unit tests**: the try/catch path that clears corrupted
+   `EncryptedSharedPreferences` and returns `null` is not directly tested.
+
+3. **UI layer session**: verify screen implementations against the Design Specification.
+   All screens are implemented; this session should confirm UI behaviour and layout
+   match the spec.
+
+---
+
+## Session 05 — Code Review Fix Pass 3 (Domain Layer)
+
+**Date**: 2026-03-24
+**Review source**: `handoffs/code-review-02-domain layer.md` (Review Pass 3)
+
+### Changes made
+
+#### O05 — Remove 4 duplicate tests from `ComputeRollingSummaryUseCaseEdgeCaseTest`
+**File**: `app/src/test/java/com/delve/hungrywalrus/domain/usecase/ComputeRollingSummaryUseCaseEdgeCaseTest.kt`
+
+Removed the following four tests already covered by `ComputeRollingSummaryUseCaseTest`:
+
+1. `result startDate and endDate match inputs` — duplicate of `startDate and endDate are preserved in result` (base, line 127)
+2. `periodDays for 7-day window is exactly 7` — duplicate of `periodDays is inclusive of start and end` (base, line 122)
+3. `totalTarget is null when dailyPlans is empty map` — duplicate of `returns null target when dailyPlans has no non-null values` (base, line 76)
+4. `throws when start is after end` — identical name and assertion in both files (base, line 144)
+
+Also removed the now-empty section comments `// --- Data retention: entries must be present in the window ---`,
+`// --- Boundary: totalTarget null when dailyPlans is empty map ---`, and `// --- start after end guard ---`.
+Replaced with a single `// --- Period length ---` comment above the retained 28-day `periodDays` test.
+
+`ComputeRollingSummaryUseCaseEdgeCaseTest`: 11 → 7 tests.
+
+The edge-case class retains its distinct coverage: daily aggregation comment contract, empty-entries
+daily average, 28-day window target accumulation, 28-day partial-plan null target, mid-period plan
+change, 28-day period length, and very-large-value overflow test.
+
+---
+
+### Test results after changes
+
+```
+./gradlew testDebugUnitTest -- BUILD SUCCESSFUL
+```
+
+All 278 tests pass (down from 282 by the four removed duplicates; no new tests added).
+
+| Test class | Tests | Passed | Failed |
+|---|---|---|---|
+| `ComputeRollingSummaryUseCaseEdgeCaseTest` | 7 | 7 | 0 |
+| `ComputeRollingSummaryUseCaseTest` | 11 | 11 | 0 |
+| `ScaleNutritionUseCaseEdgeCaseTest` | 10 | 10 | 0 |
+| `ScaleNutritionUseCaseTest` | 7 | 7 | 0 |
+| `ValidateFoodDataUseCaseEdgeCaseTest` | 13 | 13 | 0 |
+| `ValidateFoodDataUseCaseTest` | 6 | 6 | 0 |
+| **Domain total** | **54** | **54** | **0** |
+| **Full suite total** | **278** | **278** | **0** |
+
+---

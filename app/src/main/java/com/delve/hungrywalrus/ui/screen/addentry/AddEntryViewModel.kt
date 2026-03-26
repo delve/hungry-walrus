@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -32,6 +33,11 @@ enum class SearchState {
     Results,
     NoResults,
     Error,
+}
+
+sealed interface RecipesState {
+    data object Loading : RecipesState
+    data class Loaded(val recipes: List<Recipe>) : RecipesState
 }
 
 data class AddEntryUiState(
@@ -79,8 +85,9 @@ class AddEntryViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AddEntryUiState())
     val uiState: StateFlow<AddEntryUiState> = _uiState.asStateFlow()
 
-    val recipes = recipeRepo.getAllRecipes()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    val recipes: StateFlow<RecipesState> = recipeRepo.getAllRecipes()
+        .map { RecipesState.Loaded(it) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), RecipesState.Loading)
 
     private val _events = Channel<AddEntryUiEvent>(Channel.BUFFERED)
     val events: Flow<AddEntryUiEvent> = _events.receiveAsFlow()
@@ -193,30 +200,44 @@ class AddEntryViewModel @Inject constructor(
         )
     }
 
-    fun setManualFood(
+    /**
+     * Sets direct consumption values entered by the user on the manual-entry screen.
+     * For regular logging, per-100g fields store the consumed values and [weight] defaults to
+     * "100" so that scaling maths produce the entered values unchanged (x * 100 / 100 = x).
+     * For ingredient mode, the caller supplies the actual ingredient weight so that
+     * [getIngredientData] reads the correct weight without a separate [setWeight] call.
+     */
+    fun setDirectEntry(
         name: String,
-        kcalPer100g: Double,
-        proteinPer100g: Double,
-        carbsPer100g: Double,
-        fatPer100g: Double,
+        kcal: Double,
+        proteinG: Double,
+        carbsG: Double,
+        fatG: Double,
+        weight: String = "100",
     ) {
         val result = FoodSearchResult(
             id = "manual_${System.currentTimeMillis()}",
             name = name,
             source = FoodSource.MANUAL,
-            kcalPer100g = kcalPer100g,
-            proteinPer100g = proteinPer100g,
-            carbsPer100g = carbsPer100g,
-            fatPer100g = fatPer100g,
+            kcalPer100g = kcal,
+            proteinPer100g = proteinG,
+            carbsPer100g = carbsG,
+            fatPer100g = fatG,
             missingFields = emptySet(),
         )
+        val weightVal = weight.toDoubleOrNull() ?: 100.0
         _uiState.value = _uiState.value.copy(
             selectedFood = result,
             selectedRecipe = null,
             isRecipeSource = false,
             foodName = name,
-            weightG = "",
-            scaledNutrition = null,
+            weightG = weight,
+            scaledNutrition = NutritionValues(
+                kcal = kcal * weightVal / 100.0,
+                proteinG = proteinG * weightVal / 100.0,
+                carbsG = carbsG * weightVal / 100.0,
+                fatG = fatG * weightVal / 100.0,
+            ),
         )
     }
 
