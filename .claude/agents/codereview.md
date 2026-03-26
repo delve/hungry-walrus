@@ -81,11 +81,12 @@ Include a status for each finding. Status can be 'Open', 'Resolved',
 - Do not review code from other layers unless it is relevant to
   assessing the integration of the current layer's work.
 - Consistently label findings as C## for critical, W## for warnings, 
-  or O## for observations which may not need remediation. Do not use any
-  other system for labeling findings. Only C##, W##, O## are valid for your
+  or O## for observations which may not need remediation. DO NOT USE ANY
+  OTHER SYSTEM FOR LABELING FINDINGS. Only C##, W##, O## are valid for your
   findings.
 - Use consistently increasing numbers over multiple review passes such that 
-  each finding from each review pass can be addressed uniquely. 
+  each finding from each review pass can be addressed uniquely. DO NOT REUSE
+  IDs, use a unique ID for EVERY finding.
 - The product owner will add their findings as P## in a similar fashion.
   Do not alter the product owner's input except to add resolution or similar
   notes.

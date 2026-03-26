@@ -55,7 +55,7 @@ And your pipeline execution order is:
 1. 1. Sending significant findings back through the process:
 1. 1. 1. `/pipeline:architect Review the findings in the QA handoff and update the requirements and architecture documents to remediate them`
 1. 1. 1. `/pipeline:design Review the updated the requirements and architecture documents. Update the design document to reflect the changes.`
-1. 1. 1. `/pipeline:develop 01  "data layer" Review the updated requirements, architecture, and design documents. Update the code and necessary to reflect the changes.`
+1. 1. 1. proceed with dev & review cycles
 1. DevOps — CI/CD pipeline, signing docs, build commands
 1. You review
 
