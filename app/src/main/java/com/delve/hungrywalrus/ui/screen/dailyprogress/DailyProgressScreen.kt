@@ -39,7 +39,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.delve.hungrywalrus.ui.component.ConfirmationDialog
 import com.delve.hungrywalrus.ui.component.LogEntryItem
-import com.delve.hungrywalrus.ui.component.NutritionCard
 import com.delve.hungrywalrus.ui.component.NutritionProgressBar
 import com.delve.hungrywalrus.ui.theme.CardCornerRadius
 import com.delve.hungrywalrus.ui.theme.ProgressCarbs
@@ -157,14 +156,6 @@ fun DailyProgressScreen(
                                 vertical = Spacing.sm,
                             ),
                         ) {
-                            NutritionCard(
-                                kcal = state.totalKcal,
-                                proteinG = state.totalProteinG,
-                                carbsG = state.totalCarbsG,
-                                fatG = state.totalFatG,
-                                prominent = true,
-                            )
-                            Spacer(modifier = Modifier.height(Spacing.sm))
                             Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -195,40 +186,32 @@ fun DailyProgressScreen(
                                 target = state.plan.kcalTarget.toDouble(),
                                 unit = "kcal",
                                 colour = ProgressKcal,
+                                isKcalBar = true,
                             )
-                            Spacer(modifier = Modifier.height(Spacing.md))
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
-                            ) {
-                                Column(modifier = Modifier.weight(1f)) {
-                                    NutritionProgressBar(
-                                        label = "Protein",
-                                        current = state.totalProteinG,
-                                        target = state.plan.proteinTargetG,
-                                        unit = "g",
-                                        colour = ProgressProtein,
-                                    )
-                                }
-                                Column(modifier = Modifier.weight(1f)) {
-                                    NutritionProgressBar(
-                                        label = "Carbs",
-                                        current = state.totalCarbsG,
-                                        target = state.plan.carbsTargetG,
-                                        unit = "g",
-                                        colour = ProgressCarbs,
-                                    )
-                                }
-                                Column(modifier = Modifier.weight(1f)) {
-                                    NutritionProgressBar(
-                                        label = "Fat",
-                                        current = state.totalFatG,
-                                        target = state.plan.fatTargetG,
-                                        unit = "g",
-                                        colour = ProgressFat,
-                                    )
-                                }
-                            }
+                            Spacer(modifier = Modifier.height(Spacing.sm))
+                            NutritionProgressBar(
+                                label = "Protein",
+                                current = state.totalProteinG,
+                                target = state.plan.proteinTargetG,
+                                unit = "g",
+                                colour = ProgressProtein,
+                            )
+                            Spacer(modifier = Modifier.height(Spacing.sm))
+                            NutritionProgressBar(
+                                label = "Carbs",
+                                current = state.totalCarbsG,
+                                target = state.plan.carbsTargetG,
+                                unit = "g",
+                                colour = ProgressCarbs,
+                            )
+                            Spacer(modifier = Modifier.height(Spacing.sm))
+                            NutritionProgressBar(
+                                label = "Fat",
+                                current = state.totalFatG,
+                                target = state.plan.fatTargetG,
+                                unit = "g",
+                                colour = ProgressFat,
+                            )
                         }
                     }
 

@@ -141,11 +141,16 @@ Each screen has a `TopAppBar` (Material 3 small top app bar, `surface` backgroun
 +----------------------------------------------+
 | [Plan targets banner]                         |
 |  Kcal: 1,250 / 2,000  Remaining: 750        |
-|  [=========>          ] progress bar          |
+|  [=========>                    ] kcal bar   |
 |                                               |
-|  Protein   Carbs      Fat                    |
-|  45.0/150.0g 120.0/250.0g 30.0/65.0g        |
-|  [=====>  ] [======> ] [====>   ]            |
+|  Protein  45.0 / 150.0g                      |
+|  [========>                     ] protein bar|
+|                                               |
+|  Carbs  120.0 / 250.0g                       |
+|  [=============>                ] carbs bar  |
+|                                               |
+|  Fat  30.0 / 65.0g                           |
+|  [=========>                    ] fat bar    |
 +----------------------------------------------+
 | Log entries (scrollable list)                 |
 |  +------------------------------------------+|
@@ -171,7 +176,7 @@ Each screen has a `TopAppBar` (Material 3 small top app bar, `surface` backgroun
 
 2. **Progress summary section** (non-scrollable, pinned above the list):
    - **Kilocalories row**: A single horizontal `LinearProgressIndicator` spanning full width. Fill colour: `progressKcal`. Track: `progressTrack`. Above the bar: left-aligned "X / Y kcal" in `titleMedium`, right-aligned "Remaining: Z kcal" in `bodyMedium` / `onSurfaceVariant`. If intake exceeds target, the remaining text changes to "Over: Z kcal" in `overage` colour, and the progress bar fill uses `overage` colour for the portion exceeding 100%.
-   - **Macro row**: Three equal-width columns, one for each macro (Protein, Carbs, Fat). Each column contains: a label in `labelSmall` / `onSurfaceVariant`, a value "X / Yg" in `bodyMedium`, and a thin `LinearProgressIndicator` with its respective semantic colour. Progress bars clamp visually at 100% but the numeric value shows the true amount.
+   - **Macro rows**: Three separate full-width rows, one for each macro (Protein, Carbs, Fat), stacked vertically with `8dp` spacing between them. Each row contains: a label in `labelSmall` / `onSurfaceVariant` and value "X / Yg" in `bodyMedium` on the same line (label left-aligned, value right-aligned), followed below by a `LinearProgressIndicator` spanning full width with its respective semantic colour. Progress bars clamp visually at 100% but the numeric value shows the true amount.
    - If no plan is configured, this section shows a card: "No nutrition plan set. Tap to configure." The card is tappable and navigates to `settings`.
 
 3. **Log entries list**: `LazyColumn` filling the remaining vertical space. Each item is a `Card` on `surface`:

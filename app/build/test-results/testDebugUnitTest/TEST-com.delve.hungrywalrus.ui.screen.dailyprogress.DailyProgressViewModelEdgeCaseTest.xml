@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModelEdgeCaseTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-03-26T08:41:12" hostname="ravenclaw" time="0.034">
+<testsuite name="com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModelEdgeCaseTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-03-27T09:53:41" hostname="ravenclaw" time="2.401">
   <properties/>
-  <testcase name="single entry totals match that entry exactly" classname="com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModelEdgeCaseTest" time="0.006"/>
-  <testcase name="state is Content not Error when plan is null" classname="com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModelEdgeCaseTest" time="0.008"/>
-  <testcase name="entries are sorted descending by timestamp" classname="com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModelEdgeCaseTest" time="0.006"/>
-  <testcase name="totals aggregate all four macronutrients correctly across multiple entries" classname="com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModelEdgeCaseTest" time="0.007"/>
-  <testcase name="totals are zero when no entries logged" classname="com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModelEdgeCaseTest" time="0.007"/>
+  <testcase name="single entry totals match that entry exactly" classname="com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModelEdgeCaseTest" time="2.326"/>
+  <testcase name="state is Content not Error when plan is null" classname="com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModelEdgeCaseTest" time="0.011"/>
+  <testcase name="entries are sorted descending by timestamp" classname="com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModelEdgeCaseTest" time="0.023"/>
+  <testcase name="totals aggregate all four macronutrients correctly across multiple entries" classname="com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModelEdgeCaseTest" time="0.02"/>
+  <testcase name="totals are zero when no entries logged" classname="com.delve.hungrywalrus.ui.screen.dailyprogress.DailyProgressViewModelEdgeCaseTest" time="0.016"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
