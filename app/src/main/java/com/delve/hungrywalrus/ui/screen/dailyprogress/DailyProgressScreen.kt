@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.delve.hungrywalrus.ui.component.ConfirmationDialog
 import com.delve.hungrywalrus.ui.component.LogEntryItem
@@ -47,7 +48,6 @@ import com.delve.hungrywalrus.ui.theme.ProgressKcal
 import com.delve.hungrywalrus.ui.theme.ProgressProtein
 import com.delve.hungrywalrus.ui.theme.Spacing
 import com.delve.hungrywalrus.util.Formatter
-import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,6 +59,14 @@ fun DailyProgressScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var entryToDeleteId by rememberSaveable { mutableStateOf<Long?>(null) }
     var entryToDeleteLabel by rememberSaveable { mutableStateOf<String?>(null) }
+
+    // Key is Unit because we want to refresh on every lifecycle resume, not on
+    // parameter changes. The effect fires refreshDate() to handle midnight
+    // rollover and returning from other screens.
+    LifecycleResumeEffect(Unit) {
+        viewModel.refreshDate()
+        onPauseOrDispose { }
+    }
 
     if (entryToDeleteId != null && entryToDeleteLabel != null) {
         ConfirmationDialog(
@@ -87,11 +95,17 @@ fun DailyProgressScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text("Today")
-                        Text(
-                            text = Formatter.formatDate(LocalDate.now()),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                        val dateText = when (val state = uiState) {
+                            is DailyProgressUiState.Content -> Formatter.formatDate(state.displayDate)
+                            else -> ""
+                        }
+                        if (dateText.isNotEmpty()) {
+                            Text(
+                                text = dateText,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                     }
                 },
                 actions = {
@@ -181,7 +195,7 @@ fun DailyProgressScreen(
                             ),
                         ) {
                             NutritionProgressBar(
-                                label = "Kcal",
+                                label = "kcal",
                                 current = state.totalKcal,
                                 target = state.plan.kcalTarget.toDouble(),
                                 unit = "kcal",

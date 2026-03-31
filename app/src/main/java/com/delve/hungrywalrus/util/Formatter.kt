@@ -50,16 +50,12 @@ object Formatter {
     }
 
     /**
-     * Format a macronutrient value: rounded to nearest 0.5g.
+     * Format a macronutrient value: rounded to nearest 0.5g, always showing one decimal place.
      * Example: 12.3 -> "12.5", 12.1 -> "12.0"
      */
     fun formatMacro(value: Double): String {
         val rounded = Math.round(value * 2.0) / 2.0
-        return if (rounded == rounded.toLong().toDouble()) {
-            String.format(Locale.UK, "%.1f", rounded)
-        } else {
-            String.format(Locale.UK, "%.1f", rounded)
-        }
+        return String.format(Locale.UK, "%.1f", rounded)
     }
 
     /**
