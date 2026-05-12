@@ -1,4 +1,5 @@
 APK := app/build/outputs/apk/debug/app-debug.apk
+SHELL := /bin/bash
 
 .PHONY: debug tree
 
@@ -18,5 +19,5 @@ debug:
 	adb -s $$DEVICE install -r $(APK); \
 	echo "Done."
 
-tree:
-	tree -P '.claude/*|docs' -a --matchdirs --prune | tee ./docs/tree
+proj_instructions:
+	. scripts/proj_instructions.sh
