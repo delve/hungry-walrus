@@ -1,5 +1,6 @@
 package com.delve.hungrywalrus.ui.screen.createrecipe
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,11 +11,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.foundation.clickable
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.delve.hungrywalrus.ui.component.ConfirmationDialog
+import com.delve.hungrywalrus.ui.component.EditIngredientSheet
+import com.delve.hungrywalrus.ui.component.IngredientRow
 import com.delve.hungrywalrus.ui.component.NutritionCard
 import com.delve.hungrywalrus.ui.theme.Spacing
 import com.delve.hungrywalrus.util.Formatter
@@ -64,6 +66,12 @@ fun CreateRecipeScreen(
     var showMethodSheet by rememberSaveable { mutableStateOf(false) }
     var showInlineAddDialog by rememberSaveable { mutableStateOf(false) }
 
+    // Edit ingredient sheet state. Holds the id of the ingredient currently being
+    // edited; null means the sheet is closed. The sheet's initial values are read
+    // from the ViewModel's state at the time of opening, so the sheet sees the
+    // live in-memory values rather than a stale snapshot.
+    var editingIngredientId by rememberSaveable { mutableStateOf<Long?>(null) }
+
     // Inline manual ingredient entry state
     var inlineName by rememberSaveable { mutableStateOf("") }
     var inlineWeight by rememberSaveable { mutableStateOf("") }
@@ -81,7 +89,7 @@ fun CreateRecipeScreen(
         inlineFat = ""
     }
 
-    // Keyed on viewModel so the collector restarts if ViewModel identity changes (O13).
+    // Keyed on viewModel so the collector restarts if ViewModel identity changes.
     LaunchedEffect(viewModel) {
         viewModel.events.collect { event ->
             when (event) {
@@ -198,40 +206,21 @@ fun CreateRecipeScreen(
                     }
                 }
 
-                itemsIndexed(uiState.ingredients) { index, ingredient ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = Spacing.xs),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = ingredient.name,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            val scaledKcal = (ingredient.kcalPer100g / 100.0) * ingredient.weightG
-                            Text(
-                                text = "${Formatter.formatMacro(ingredient.weightG)}g | ${Formatter.formatKcal(scaledKcal)} kcal",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                        IconButton(
-                            onClick = { viewModel.removeIngredient(index) },
-                            modifier = Modifier.size(48.dp),
-                        ) {
-                            Icon(
-                                Icons.Default.Close,
-                                contentDescription = "Remove ${ingredient.name}",
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                    }
-                    if (index < uiState.ingredients.lastIndex) {
-                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-                    }
+                // Keyed on the draft id so list mutations animate smoothly and
+                // the sheet's saveable state survives recompositions.
+                items(uiState.ingredients, key = { it.id }) { ingredient ->
+                    val index = uiState.ingredients.indexOfFirst { it.id == ingredient.id }
+                    val scaledKcal = (ingredient.kcalPer100g / 100.0) * ingredient.weightG
+                    IngredientRow(
+                        name = ingredient.name,
+                        weightG = ingredient.weightG,
+                        kcal = scaledKcal,
+                        onClick = { editingIngredientId = ingredient.id },
+                        onRemove = {
+                            if (index >= 0) viewModel.removeIngredient(index)
+                        },
+                    )
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                 }
 
                 item {
@@ -265,6 +254,34 @@ fun CreateRecipeScreen(
                     Spacer(modifier = Modifier.height(Spacing.xl))
                 }
             }
+        }
+    }
+
+    // Edit ingredient sheet, rendered above the recipe screen content.
+    val editingId = editingIngredientId
+    if (editingId != null) {
+        val ingredient = uiState.ingredients.firstOrNull { it.id == editingId }
+        if (ingredient != null) {
+            val initial = IngredientEditValues(
+                foodName = ingredient.name,
+                weightG = ingredient.weightG,
+                kcalPer100g = ingredient.kcalPer100g,
+                proteinPer100g = ingredient.proteinPer100g,
+                carbsPer100g = ingredient.carbsPer100g,
+                fatPer100g = ingredient.fatPer100g,
+            )
+            EditIngredientSheet(
+                initialValues = initial,
+                onSave = { newValues ->
+                    viewModel.editIngredient(editingId, newValues)
+                    editingIngredientId = null
+                },
+                onCancel = { editingIngredientId = null },
+            )
+        } else {
+            // Defensive: the ingredient was removed externally while the sheet
+            // was open. Close the sheet rather than presenting a stale view.
+            editingIngredientId = null
         }
     }
 

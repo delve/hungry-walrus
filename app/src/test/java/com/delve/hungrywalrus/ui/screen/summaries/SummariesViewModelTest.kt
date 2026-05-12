@@ -23,7 +23,10 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import java.time.Clock
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SummariesViewModelTest {
@@ -32,6 +35,14 @@ class SummariesViewModelTest {
     private lateinit var logRepo: LogEntryRepository
     private lateinit var planRepo: NutritionPlanRepository
     private val computeSummaryUseCase = ComputeRollingSummaryUseCase()
+
+    // Fixed clock at 20:00 local time today. At/after the 20:00 cutoff (architecture
+    // §7.6) today is included in the window, so end == today. This preserves the
+    // assertion semantics these tests inherited from the pre-cutoff implementation.
+    private val fixedClock: Clock = Clock.fixed(
+        LocalDate.now().atTime(LocalTime.of(20, 0)).atZone(ZoneId.systemDefault()).toInstant(),
+        ZoneId.systemDefault(),
+    )
 
     @Before
     fun setup() {
@@ -50,7 +61,7 @@ class SummariesViewModelTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             assertEquals(SummariesUiState.Loading, awaitItem())
@@ -63,7 +74,7 @@ class SummariesViewModelTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             assertEquals(SummariesUiState.Loading, awaitItem())
@@ -85,7 +96,7 @@ class SummariesViewModelTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns plan
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             assertEquals(SummariesUiState.Loading, awaitItem())
@@ -103,7 +114,7 @@ class SummariesViewModelTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, fixedClock)
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.uiState.test {
@@ -132,11 +143,11 @@ class SummariesViewModelTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         // Simulate: only today has a plan (effectiveFrom = today). Earlier dates return null
         // but getPlanForDate(today) returns the plan (used as fallback for all earlier days).
-        val today = java.time.LocalDate.now()
+        val today = LocalDate.now()
         coEvery { planRepo.getPlanForDate(any()) } returns null
         coEvery { planRepo.getPlanForDate(today) } returns plan
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             assertEquals(SummariesUiState.Loading, awaitItem())
@@ -153,7 +164,7 @@ class SummariesViewModelTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns entriesFlow
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             assertEquals(SummariesUiState.Loading, awaitItem())
@@ -184,7 +195,7 @@ class SummariesViewModelTest {
             plan
         }
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, fixedClock)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val callCountAfterInit = callCount
@@ -203,7 +214,7 @@ class SummariesViewModelTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, fixedClock)
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.selectTab(SummaryTab.Day28)
@@ -222,11 +233,12 @@ class SummariesViewModelTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, fixedClock)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // 7 period dates queried. today == end so it is in the dates list; the fallback
-        // reuses that deferred rather than issuing a second query. Total: exactly 7 calls.
+        // 7 period dates queried. With the clock fixed at 20:00 the window ends at
+        // today (today is in the dates list); the fallback reuses that deferred
+        // rather than issuing a second query. Total: exactly 7 calls.
         coVerify(atLeast = 7) { planRepo.getPlanForDate(any()) }
         assertTrue(viewModel.uiState.value is SummariesUiState.NoPlan)
     }
@@ -236,10 +248,10 @@ class SummariesViewModelTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, fixedClock)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // For a 7-day period today == end, so today is in the dates list. The fallback
+        // At/after 20:00 today == end, so today is in the dates list. The fallback
         // reuses that deferred — no second query is issued. Exactly 7 calls total.
         coVerify(exactly = 7) { planRepo.getPlanForDate(any()) }
         assertTrue(viewModel.uiState.value is SummariesUiState.NoPlan)
@@ -254,7 +266,7 @@ class SummariesViewModelTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(entries)
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             assertEquals(SummariesUiState.Loading, awaitItem())
@@ -265,5 +277,100 @@ class SummariesViewModelTest {
             assertEquals(4.0, state.summary.dailyAverage.proteinG, 0.001)
             cancelAndIgnoreRemainingEvents()
         }
+    }
+
+    // --- 20:00 rolling-window cutoff (architecture §7.6) ---
+
+    /**
+     * Before 20:00 local time, the rolling window must end at end-of-yesterday and
+     * the [SummariesUiState.WithSummary.includesToday] flag must be false.
+     */
+    @Test
+    fun `before 20-00 endDate is yesterday and includesToday is false`() = runTest {
+        val today = LocalDate.of(2026, 5, 20)
+        val clockAt19_59 = Clock.fixed(
+            today.atTime(19, 59).atZone(ZoneId.systemDefault()).toInstant(),
+            ZoneId.systemDefault(),
+        )
+        every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
+        coEvery { planRepo.getPlanForDate(any()) } returns null
+
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, clockAt19_59)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value as SummariesUiState.NoPlan
+        assertEquals(false, state.includesToday)
+        assertEquals(today.minusDays(1), state.summary.endDate)
+        // 7-day window ending yesterday: start = yesterday.minusDays(6) = today.minusDays(7)
+        assertEquals(today.minusDays(7), state.summary.startDate)
+    }
+
+    /**
+     * At exactly 20:00 local time the rolling window must include today.
+     */
+    @Test
+    fun `at 20-00 endDate is today and includesToday is true`() = runTest {
+        val today = LocalDate.of(2026, 5, 20)
+        val clockAt20_00 = Clock.fixed(
+            today.atTime(20, 0).atZone(ZoneId.systemDefault()).toInstant(),
+            ZoneId.systemDefault(),
+        )
+        every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
+        coEvery { planRepo.getPlanForDate(any()) } returns null
+
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, clockAt20_00)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value as SummariesUiState.NoPlan
+        assertEquals(true, state.includesToday)
+        assertEquals(today, state.summary.endDate)
+        assertEquals(today.minusDays(6), state.summary.startDate)
+    }
+
+    /**
+     * Well after the cutoff (20:01) behaviour matches 20:00 — today is included.
+     */
+    @Test
+    fun `after 20-00 endDate is today and includesToday is true`() = runTest {
+        val today = LocalDate.of(2026, 5, 20)
+        val clockAt20_01 = Clock.fixed(
+            today.atTime(20, 1).atZone(ZoneId.systemDefault()).toInstant(),
+            ZoneId.systemDefault(),
+        )
+        every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
+        coEvery { planRepo.getPlanForDate(any()) } returns null
+
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, clockAt20_01)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value as SummariesUiState.NoPlan
+        assertEquals(true, state.includesToday)
+        assertEquals(today, state.summary.endDate)
+    }
+
+    /**
+     * Before 20:00, the 28-day window ends yesterday and spans 28 days backward.
+     */
+    @Test
+    fun `before 20-00 28-day window ends yesterday`() = runTest {
+        val today = LocalDate.of(2026, 5, 20)
+        val clockAt10 = Clock.fixed(
+            today.atTime(10, 0).atZone(ZoneId.systemDefault()).toInstant(),
+            ZoneId.systemDefault(),
+        )
+        every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
+        coEvery { planRepo.getPlanForDate(any()) } returns null
+
+        val viewModel = SummariesViewModel(logRepo, planRepo, computeSummaryUseCase, clockAt10)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.selectTab(SummaryTab.Day28)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value as SummariesUiState.NoPlan
+        assertEquals(false, state.includesToday)
+        assertEquals(today.minusDays(1), state.summary.endDate)
+        assertEquals(today.minusDays(28), state.summary.startDate)
+        assertEquals(28, state.summary.periodDays)
     }
 }

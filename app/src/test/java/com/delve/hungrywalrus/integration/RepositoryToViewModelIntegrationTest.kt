@@ -31,6 +31,10 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import java.time.Clock
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 
 /**
  * Integration tests verifying the repository layer → ViewModel layer data flow.
@@ -63,6 +67,14 @@ class RepositoryToViewModelIntegrationTest {
     fun tearDown() {
         Dispatchers.resetMain()
     }
+
+    // Fixed clock at 20:00 local time today. At/after the 20:00 cutoff (architecture
+    // §7.6) today is included in the rolling window, so end == today. This preserves
+    // the assertion semantics these tests inherited from the pre-cutoff implementation.
+    private val fixedClock: Clock = Clock.fixed(
+        LocalDate.now().atTime(LocalTime.of(20, 0)).atZone(ZoneId.systemDefault()).toInstant(),
+        ZoneId.systemDefault(),
+    )
 
     // ---- DailyProgressViewModel integration ----
 
@@ -142,7 +154,7 @@ class RepositoryToViewModelIntegrationTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, rollingSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, rollingSummaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             awaitItem() // Loading
@@ -164,7 +176,7 @@ class RepositoryToViewModelIntegrationTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns plan
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, rollingSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, rollingSummaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             awaitItem() // Loading
@@ -190,7 +202,7 @@ class RepositoryToViewModelIntegrationTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(entries)
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, rollingSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, rollingSummaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             awaitItem() // Loading
@@ -207,7 +219,7 @@ class RepositoryToViewModelIntegrationTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, rollingSummaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, rollingSummaryUseCase, fixedClock)
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.uiState.test {

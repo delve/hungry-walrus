@@ -35,6 +35,12 @@ The relevant files for the project are available on Github using the following U
 --- URL:  https://raw.githubusercontent.com/delve/hungry-walrus/refs/heads/main/docs/issue_tracking.md
 --- FILE: ./docs/notes.md
 --- URL:  https://raw.githubusercontent.com/delve/hungry-walrus/refs/heads/main/docs/notes.md
+--- FILE: ./docs/Orchestrator.md
+--- URL:  https://raw.githubusercontent.com/delve/hungry-walrus/refs/heads/main/docs/Orchestrator.md
 --- FILE: ./docs/project_instructions.txt
 --- URL:  https://raw.githubusercontent.com/delve/hungry-walrus/refs/heads/main/docs/project_instructions.txt
+--- FILE: ./scripts/orchestrator.py
+--- URL:  https://raw.githubusercontent.com/delve/hungry-walrus/refs/heads/main/scripts/orchestrator.py
+--- FILE: ./scripts/proj_instructions.sh
+--- URL:  https://raw.githubusercontent.com/delve/hungry-walrus/refs/heads/main/scripts/proj_instructions.sh
 

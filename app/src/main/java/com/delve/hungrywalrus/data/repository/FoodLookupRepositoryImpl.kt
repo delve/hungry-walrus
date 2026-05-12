@@ -6,7 +6,7 @@ import com.delve.hungrywalrus.data.remote.openfoodfacts.OffApiService
 import com.delve.hungrywalrus.data.remote.openfoodfacts.OffResponseMapper
 import com.delve.hungrywalrus.data.remote.usda.UsdaApiService
 import com.delve.hungrywalrus.data.remote.usda.UsdaResponseMapper
-import com.delve.hungrywalrus.domain.OfflineException
+import com.delve.hungrywalrus.domain.model.OfflineException
 import com.delve.hungrywalrus.domain.model.FoodSearchResult
 import com.delve.hungrywalrus.domain.model.FoodSource
 import com.delve.hungrywalrus.domain.model.NutritionField
@@ -84,6 +84,14 @@ class FoodLookupRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.failure(Exception("Could not read food data"))
         }
+    }
+
+    override suspend fun cacheItem(result: FoodSearchResult) {
+        // Text-search-result caching: no barcode is associated with the entry. The
+        // FoodCacheDao.insert call uses OnConflictStrategy.REPLACE (architecture §6.2 item 3),
+        // so re-caching the same item refreshes its cachedAt timestamp and any updated
+        // nutritional values from a more recent search.
+        cacheResult(result, barcode = null)
     }
 
     private fun isCacheExpired(cachedAt: Long): Boolean {

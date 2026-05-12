@@ -12,7 +12,7 @@ import com.delve.hungrywalrus.data.remote.usda.UsdaFood
 import com.delve.hungrywalrus.data.remote.usda.UsdaNutrient
 import com.delve.hungrywalrus.data.remote.usda.UsdaSearchResponse
 import com.delve.hungrywalrus.data.repository.FoodLookupRepositoryImpl
-import com.delve.hungrywalrus.domain.OfflineException
+import com.delve.hungrywalrus.domain.model.OfflineException
 import com.delve.hungrywalrus.domain.model.FoodSource
 import com.delve.hungrywalrus.domain.model.NutritionField
 import com.delve.hungrywalrus.domain.usecase.ValidateFoodDataUseCase

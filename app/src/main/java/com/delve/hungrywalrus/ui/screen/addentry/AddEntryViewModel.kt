@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.delve.hungrywalrus.data.repository.FoodLookupRepository
 import com.delve.hungrywalrus.data.repository.LogEntryRepository
 import com.delve.hungrywalrus.data.repository.RecipeRepository
-import com.delve.hungrywalrus.domain.OfflineException
+import com.delve.hungrywalrus.domain.model.OfflineException
 import com.delve.hungrywalrus.domain.model.FoodSearchResult
 import com.delve.hungrywalrus.domain.model.FoodSource
 import com.delve.hungrywalrus.domain.model.LogEntry
@@ -176,6 +176,18 @@ class AddEntryViewModel @Inject constructor(
 
     /**
      * Select a food from search results. Returns true if the food has missing values.
+     *
+     * Per architecture §6.2 item 2, an API-sourced food item is cached when the user
+     * selects it and its per-100g data is resolved. We honour that contract here:
+     * if the selected food is from USDA or Open Food Facts and has no missing fields,
+     * its values are written to [FoodLookupRepository.cacheItem] so subsequent lookups
+     * of the same `cacheKey` can be served locally for up to 30 days
+     * (architecture §5.2). Items with missing fields are deferred until
+     * [applyMissingValues] completes them, at which point that method performs the
+     * cache write.
+     *
+     * Manual entries are not cached because their id ("manual_{timestamp}") is not a
+     * stable cache key and manual entries have no API source to deduplicate against.
      */
     fun selectFood(result: FoodSearchResult): Boolean {
         _uiState.value = _uiState.value.copy(
@@ -186,7 +198,11 @@ class AddEntryViewModel @Inject constructor(
             weightG = "",
             scaledNutrition = null,
         )
-        return !validateUseCase.isComplete(result)
+        val complete = validateUseCase.isComplete(result)
+        if (complete && shouldCache(result)) {
+            cacheSelectedFood(result)
+        }
+        return !complete
     }
 
     fun selectRecipe(recipe: Recipe) {
@@ -275,6 +291,14 @@ class AddEntryViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(scaledNutrition = scaled)
     }
 
+    /**
+     * Apply user-supplied overrides for any missing nutritional fields on the currently
+     * selected food. If the result becomes complete and the food source is API-sourced
+     * (USDA or Open Food Facts), the resolved item is cached via
+     * [FoodLookupRepository.cacheItem] per architecture §6.2 item 2 (cache "when the
+     * user selects a specific item and its per-100g data is resolved"). Manual-source
+     * items are not cached for the same reasons described on [selectFood].
+     */
     fun applyMissingValues(
         kcal: Double?,
         protein: Double?,
@@ -284,6 +308,9 @@ class AddEntryViewModel @Inject constructor(
         val food = _uiState.value.selectedFood ?: return
         val updated = validateUseCase.applyOverrides(food, kcal, protein, carbs, fat)
         _uiState.value = _uiState.value.copy(selectedFood = updated)
+        if (validateUseCase.isComplete(updated) && shouldCache(updated)) {
+            cacheSelectedFood(updated)
+        }
     }
 
     fun lookupBarcode(barcode: String) {
@@ -382,5 +409,24 @@ class AddEntryViewModel @Inject constructor(
 
     fun resetState() {
         _uiState.value = AddEntryUiState(hasUsdaKey = apiKeyStore.hasApiKey())
+    }
+
+    /**
+     * Only API-sourced results (USDA / Open Food Facts) are candidates for the food cache.
+     * Manual entries have synthetic ids and no upstream source to deduplicate against.
+     */
+    private fun shouldCache(result: FoodSearchResult): Boolean =
+        result.source == FoodSource.USDA || result.source == FoodSource.OPEN_FOOD_FACTS
+
+    /**
+     * Fire-and-forget cache write on [viewModelScope]. Cache writes are best-effort:
+     * a Room failure here must not prevent the user from proceeding through the
+     * meal-logging flow, so the exception (if any) is swallowed. The user's selection
+     * remains correctly represented in [AddEntryUiState.selectedFood] either way.
+     */
+    private fun cacheSelectedFood(result: FoodSearchResult) {
+        viewModelScope.launch {
+            runCatching { foodLookupRepo.cacheItem(result) }
+        }
     }
 }

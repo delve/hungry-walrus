@@ -28,6 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.delve.hungrywalrus.domain.model.RollingSummary
 import com.delve.hungrywalrus.ui.component.NutritionCard
 import com.delve.hungrywalrus.ui.component.NutritionProgressBar
+import com.delve.hungrywalrus.ui.component.RollingWindowHint
 import com.delve.hungrywalrus.ui.theme.ProgressCarbs
 import com.delve.hungrywalrus.ui.theme.ProgressFat
 import com.delve.hungrywalrus.ui.theme.ProgressKcal
@@ -48,8 +49,7 @@ fun SummariesScreen(
 
     val selectedTab = when (uiState) {
         is SummariesUiState.Loading -> SummaryTab.Day7
-        is SummariesUiState.Content -> (uiState as SummariesUiState.Content).selectedTab
-        is SummariesUiState.NoPlan -> (uiState as SummariesUiState.NoPlan).selectedTab
+        is SummariesUiState.WithSummary -> (uiState as SummariesUiState.WithSummary).selectedTab
     }
 
     Scaffold(
@@ -87,6 +87,7 @@ fun SummariesScreen(
                 is SummariesUiState.NoPlan -> {
                     SummaryContent(
                         summary = state.summary,
+                        includesToday = state.includesToday,
                         hasTarget = false,
                     )
                 }
@@ -94,6 +95,7 @@ fun SummariesScreen(
                 is SummariesUiState.Content -> {
                     SummaryContent(
                         summary = state.summary,
+                        includesToday = state.includesToday,
                         hasTarget = true,
                     )
                 }
@@ -105,6 +107,7 @@ fun SummariesScreen(
 @Composable
 private fun SummaryContent(
     summary: RollingSummary,
+    includesToday: Boolean,
     hasTarget: Boolean,
 ) {
     Column(
@@ -115,11 +118,14 @@ private fun SummaryContent(
     ) {
         Spacer(modifier = Modifier.height(Spacing.lg))
 
+        // Period label: "dd/MM/yyyy -- dd/MM/yyyy"
         Text(
             text = "${Formatter.formatDate(summary.startDate)} -- ${Formatter.formatDate(summary.endDate)}",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+        // Rolling-window hint (design §5.8)
+        RollingWindowHint(includesToday = includesToday)
         Spacer(modifier = Modifier.height(Spacing.lg))
 
         if (!hasTarget) {

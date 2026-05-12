@@ -7,7 +7,10 @@ import com.delve.hungrywalrus.data.remote.openfoodfacts.OffBarcodeResponse
 import com.delve.hungrywalrus.data.remote.openfoodfacts.OffNutriments
 import com.delve.hungrywalrus.data.remote.openfoodfacts.OffProduct
 import com.delve.hungrywalrus.data.remote.openfoodfacts.OffSearchResponse
-import com.delve.hungrywalrus.domain.OfflineException
+import com.delve.hungrywalrus.domain.model.OfflineException
+import com.delve.hungrywalrus.domain.model.FoodSearchResult
+import com.delve.hungrywalrus.domain.model.FoodSource
+import com.delve.hungrywalrus.domain.model.NutritionField
 import com.delve.hungrywalrus.data.remote.usda.UsdaApiService
 import com.delve.hungrywalrus.data.remote.usda.UsdaFood
 import com.delve.hungrywalrus.data.remote.usda.UsdaNutrient
@@ -394,5 +397,121 @@ class FoodLookupRepositoryImplTest {
 
         assertEquals("OFF", entitySlot.captured.source)
         assertEquals("7777", entitySlot.captured.barcode)
+    }
+
+    // --- cacheItem (text-search caching) ---
+
+    private fun usdaSearchResult(
+        id: String = "usda:42",
+        name: String = "Apple",
+        missing: Set<NutritionField> = emptySet(),
+    ) = FoodSearchResult(
+        id = id,
+        name = name,
+        source = FoodSource.USDA,
+        kcalPer100g = 52.0,
+        proteinPer100g = 0.3,
+        carbsPer100g = 14.0,
+        fatPer100g = 0.2,
+        missingFields = missing,
+    )
+
+    @Test
+    fun `cacheItem writes the entity with cacheKey from FoodSearchResult id`() = runTest {
+        val slot = slot<FoodCacheEntity>()
+        coEvery { foodCacheDao.insert(capture(slot)) } returns Unit
+
+        repository.cacheItem(usdaSearchResult(id = "usda:42"))
+
+        assertEquals("usda:42", slot.captured.cacheKey)
+    }
+
+    @Test
+    fun `cacheItem maps USDA source to USDA string`() = runTest {
+        val slot = slot<FoodCacheEntity>()
+        coEvery { foodCacheDao.insert(capture(slot)) } returns Unit
+
+        repository.cacheItem(usdaSearchResult())
+
+        assertEquals("USDA", slot.captured.source)
+    }
+
+    @Test
+    fun `cacheItem maps Open Food Facts source to OFF string`() = runTest {
+        val slot = slot<FoodCacheEntity>()
+        coEvery { foodCacheDao.insert(capture(slot)) } returns Unit
+
+        val offItem = FoodSearchResult(
+            id = "off:1234567890123",
+            name = "Branded biscuit",
+            source = FoodSource.OPEN_FOOD_FACTS,
+            kcalPer100g = 450.0,
+            proteinPer100g = 6.0,
+            carbsPer100g = 70.0,
+            fatPer100g = 18.0,
+            missingFields = emptySet(),
+        )
+        repository.cacheItem(offItem)
+
+        assertEquals("OFF", slot.captured.source)
+    }
+
+    @Test
+    fun `cacheItem leaves barcode column null for text-search results`() = runTest {
+        val slot = slot<FoodCacheEntity>()
+        coEvery { foodCacheDao.insert(capture(slot)) } returns Unit
+
+        repository.cacheItem(usdaSearchResult())
+
+        // Architecture §6.2: text-search caching does not associate a barcode.
+        // Barcode association is exclusive to lookupBarcode's internal cache write.
+        assertEquals(null, slot.captured.barcode)
+    }
+
+    @Test
+    fun `cacheItem preserves null nutrition fields verbatim`() = runTest {
+        val slot = slot<FoodCacheEntity>()
+        coEvery { foodCacheDao.insert(capture(slot)) } returns Unit
+
+        val partial = FoodSearchResult(
+            id = "usda:99",
+            name = "Mystery food",
+            source = FoodSource.USDA,
+            kcalPer100g = 100.0,
+            proteinPer100g = null,
+            carbsPer100g = null,
+            fatPer100g = 5.0,
+            missingFields = setOf(NutritionField.PROTEIN, NutritionField.CARBS),
+        )
+        repository.cacheItem(partial)
+
+        assertEquals(100.0, slot.captured.kcalPer100g!!, 0.001)
+        assertEquals(null, slot.captured.proteinPer100g)
+        assertEquals(null, slot.captured.carbsPer100g)
+        assertEquals(5.0, slot.captured.fatPer100g!!, 0.001)
+    }
+
+    @Test
+    fun `cacheItem stamps cachedAt with approximately current time`() = runTest {
+        val slot = slot<FoodCacheEntity>()
+        coEvery { foodCacheDao.insert(capture(slot)) } returns Unit
+
+        val before = System.currentTimeMillis()
+        repository.cacheItem(usdaSearchResult())
+        val after = System.currentTimeMillis()
+
+        assertTrue(
+            "cachedAt ${slot.captured.cachedAt} should be in [$before, $after]",
+            slot.captured.cachedAt in before..after,
+        )
+    }
+
+    @Test
+    fun `cacheItem invokes DAO insert exactly once`() = runTest {
+        coEvery { foodCacheDao.insert(any()) } returns Unit
+
+        repository.cacheItem(usdaSearchResult())
+
+        coVerify(exactly = 1) { foodCacheDao.insert(any()) }
     }
 }

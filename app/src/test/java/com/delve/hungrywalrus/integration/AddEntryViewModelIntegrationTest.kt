@@ -69,6 +69,10 @@ class AddEntryViewModelIntegrationTest {
         every { apiKeyStore.hasApiKey() } returns true
         every { apiKeyStore.getApiKey() } returns "test-key"
         every { recipeRepo.getAllRecipes() } returns flowOf(emptyList())
+        // W03 (UI Pass 1): selectFood / applyMissingValues now cache API-sourced
+        // complete results. Default the call to a no-op so existing integration
+        // tests are unaffected.
+        coEvery { foodLookupRepo.cacheItem(any()) } returns Unit
     }
 
     @After

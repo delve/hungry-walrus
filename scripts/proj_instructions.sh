@@ -23,7 +23,7 @@ EOF
 )
 
 # Directories to walk, relative to the current working directory.
-SEARCH_DIRS=("./.claude" "./docs")
+SEARCH_DIRS=("./.claude" "./docs" "./scripts")
 
 # --- Helpers ----------------------------------------------------------------
 require() {
