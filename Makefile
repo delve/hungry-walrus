@@ -1,9 +1,12 @@
 APK := app/build/outputs/apk/debug/app-debug.apk
 SHELL := /bin/bash
 
-.PHONY: debug proj_instructions orchestrate orchestrate-reset
+.PHONY: build_debug_APK install_via_adb proj_instructions orchestrate orchestrate-reset
 
-debug:
+build_debug_APK:
+	JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 ./gradlew assembleDebug
+
+install_via_adb:
 	@echo "Looking for connected physical device..."
 	@DEVICE=$$(adb devices | grep -v 'List of devices' | grep -v 'emulator' | awk '{print $$1}' | head -n1); \
 	if [ -z "$$DEVICE" ]; then \

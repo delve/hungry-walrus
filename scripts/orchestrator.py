@@ -408,14 +408,44 @@ def invoke_claude(
         append_log(repo_dir, f"command: {' '.join(cmd[:3])} ... [prompt+flags omitted]")
         append_log(repo_dir, f"prompt:\n{prompt_preview}")
         invoke_start = time.monotonic()
-        with Heartbeat(discord, label):
-            proc = subprocess.run(
-                cmd,
-                cwd=str(repo_dir),
-                capture_output=True,
-                text=True,
-                check=False,
+        # Defensive: never let the child inherit the parent's stdin (it'll
+        # block forever if claude ever prompts interactively). Also set a
+        # Python-level timeout as a backstop in case the GNU timeout wrapper
+        # fails to kill its child (e.g., signal delivery issues, process
+        # group weirdness). The Python timeout is set generously past the
+        # GNU timeout so the inner wrapper has the first chance to clean up.
+        py_timeout = timeout_s + 120
+        try:
+            with Heartbeat(discord, label):
+                proc = subprocess.run(
+                    cmd,
+                    cwd=str(repo_dir),
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                    stdin=subprocess.DEVNULL,
+                    timeout=py_timeout,
+                )
+        except subprocess.TimeoutExpired as e:
+            invoke_elapsed = time.monotonic() - invoke_start
+            append_log(
+                repo_dir,
+                f"--- Invoke claude END ({label}) attempt {attempt}: "
+                f"PYTHON-LEVEL TIMEOUT after {invoke_elapsed:.1f}s (limit {py_timeout}s) ---",
             )
+            stdout = (e.stdout or b"").decode("utf-8", errors="replace") if isinstance(e.stdout, bytes) else (e.stdout or "")
+            stderr = (e.stderr or b"").decode("utf-8", errors="replace") if isinstance(e.stderr, bytes) else (e.stderr or "")
+            transcript = write_transcript(
+                repo_dir, label, attempt, prompt, cmd,
+                -1, stdout, stderr, {}, "timeout",
+            )
+            discord.send(
+                f"🛑 [hungry-walrus] HALT on {label}: child process exceeded "
+                f"Python-level timeout ({py_timeout}s). The GNU timeout wrapper "
+                f"failed to kill it. Transcript: `{transcript}`"
+            )
+            append_log(repo_dir, "Python-level timeout fired; GNU timeout did not kill child")
+            return ClaudeResult(False, "timeout", None, 0.0, stdout, stderr, -1, transcript)
         invoke_elapsed = time.monotonic() - invoke_start
         append_log(repo_dir, f"--- Invoke claude END ({label}) attempt {attempt}: exit={proc.returncode} elapsed={invoke_elapsed:.1f}s ---")
         stdout = proc.stdout or ""
