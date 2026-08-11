@@ -16,34 +16,44 @@ class ValidateFoodDataUseCaseEdgeCaseTest {
 
     private val useCase = ValidateFoodDataUseCase()
 
+    /**
+     * Test factory for [FoodSearchResult]. `missingFields` is derived from the nullable
+     * arguments automatically, matching the invariant documented in architecture §6.3
+     * ("`missingFields` is derived: any field that is null is included in the set").
+     *
+     * The previously-accepted explicit `missingFields` parameter was removed per code-review
+     * finding O08 to eliminate the latent risk of constructing inconsistent test fixtures
+     * (e.g. `makeFood(kcal = null)` without supplying the matching `missingFields`).
+     */
     private fun makeFood(
         kcal: Double? = 100.0,
         protein: Double? = 10.0,
         carbs: Double? = 20.0,
         fat: Double? = 5.0,
-        missingFields: Set<NutritionField> = emptySet(),
-    ) = FoodSearchResult(
-        id = "test:1",
-        name = "Test Food",
-        source = FoodSource.USDA,
-        kcalPer100g = kcal,
-        proteinPer100g = protein,
-        carbsPer100g = carbs,
-        fatPer100g = fat,
-        missingFields = missingFields,
-    )
+    ): FoodSearchResult {
+        val missing = buildSet {
+            if (kcal == null) add(NutritionField.KCAL)
+            if (protein == null) add(NutritionField.PROTEIN)
+            if (carbs == null) add(NutritionField.CARBS)
+            if (fat == null) add(NutritionField.FAT)
+        }
+        return FoodSearchResult(
+            id = "test:1",
+            name = "Test Food",
+            source = FoodSource.USDA,
+            kcalPer100g = kcal,
+            proteinPer100g = protein,
+            carbsPer100g = carbs,
+            fatPer100g = fat,
+            missingFields = missing,
+        )
+    }
 
     // --- isComplete ---
 
     @Test
     fun `isComplete returns false when all four fields are missing`() {
-        val food = makeFood(
-            kcal = null, protein = null, carbs = null, fat = null,
-            missingFields = setOf(
-                NutritionField.KCAL, NutritionField.PROTEIN,
-                NutritionField.CARBS, NutritionField.FAT,
-            ),
-        )
+        val food = makeFood(kcal = null, protein = null, carbs = null, fat = null)
         assertFalse(useCase.isComplete(food))
     }
 
@@ -57,7 +67,7 @@ class ValidateFoodDataUseCaseEdgeCaseTest {
 
     @Test
     fun `applyOverrides accepts zero as a valid override for kcal`() {
-        val food = makeFood(kcal = null, missingFields = setOf(NutritionField.KCAL))
+        val food = makeFood(kcal = null)
         val result = useCase.applyOverrides(food, kcalPer100g = 0.0)
         assertEquals(0.0, result.kcalPer100g!!, 0.001)
         assertTrue(result.missingFields.isEmpty())
@@ -65,12 +75,7 @@ class ValidateFoodDataUseCaseEdgeCaseTest {
 
     @Test
     fun `applyOverrides accepts zero for all macros simultaneously`() {
-        val food = makeFood(
-            protein = null, carbs = null, fat = null,
-            missingFields = setOf(
-                NutritionField.PROTEIN, NutritionField.CARBS, NutritionField.FAT,
-            ),
-        )
+        val food = makeFood(protein = null, carbs = null, fat = null)
         val result = useCase.applyOverrides(
             food,
             proteinPer100g = 0.0, carbsPer100g = 0.0, fatPer100g = 0.0,
@@ -105,10 +110,7 @@ class ValidateFoodDataUseCaseEdgeCaseTest {
 
     @Test
     fun `missingFields remains non-empty when not all missing fields are filled`() {
-        val food = makeFood(
-            kcal = null, protein = null,
-            missingFields = setOf(NutritionField.KCAL, NutritionField.PROTEIN),
-        )
+        val food = makeFood(kcal = null, protein = null)
         // Only fill kcal; protein remains missing
         val result = useCase.applyOverrides(food, kcalPer100g = 150.0)
         assertFalse(result.missingFields.isEmpty())
@@ -118,9 +120,7 @@ class ValidateFoodDataUseCaseEdgeCaseTest {
 
     @Test
     fun `applyOverrides called multiple times is idempotent when values unchanged`() {
-        val food = makeFood(
-            kcal = null, missingFields = setOf(NutritionField.KCAL),
-        )
+        val food = makeFood(kcal = null)
         val firstPass = useCase.applyOverrides(food, kcalPer100g = 300.0)
         val secondPass = useCase.applyOverrides(firstPass, kcalPer100g = null)
         // Second call with null override should preserve the value set in first pass
@@ -132,32 +132,29 @@ class ValidateFoodDataUseCaseEdgeCaseTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun `applyOverrides throws for negative kcalPer100g`() {
-        useCase.applyOverrides(makeFood(kcal = null, missingFields = setOf(NutritionField.KCAL)), kcalPer100g = -1.0)
+        useCase.applyOverrides(makeFood(kcal = null), kcalPer100g = -1.0)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun `applyOverrides throws for negative proteinPer100g`() {
-        useCase.applyOverrides(makeFood(protein = null, missingFields = setOf(NutritionField.PROTEIN)), proteinPer100g = -0.1)
+        useCase.applyOverrides(makeFood(protein = null), proteinPer100g = -0.1)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun `applyOverrides throws for negative carbsPer100g`() {
-        useCase.applyOverrides(makeFood(carbs = null, missingFields = setOf(NutritionField.CARBS)), carbsPer100g = -5.0)
+        useCase.applyOverrides(makeFood(carbs = null), carbsPer100g = -5.0)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun `applyOverrides throws for negative fatPer100g`() {
-        useCase.applyOverrides(makeFood(fat = null, missingFields = setOf(NutritionField.FAT)), fatPer100g = -0.5)
+        useCase.applyOverrides(makeFood(fat = null), fatPer100g = -0.5)
     }
 
     // --- Requirement: user must supply estimate for missing fields before entry can be saved ---
 
     @Test
     fun `entry cannot be considered complete until all missing fields are overridden`() {
-        val food = makeFood(
-            kcal = null, fat = null,
-            missingFields = setOf(NutritionField.KCAL, NutritionField.FAT),
-        )
+        val food = makeFood(kcal = null, fat = null)
         assertFalse(useCase.isComplete(food))
 
         // Apply only kcal override
@@ -167,5 +164,35 @@ class ValidateFoodDataUseCaseEdgeCaseTest {
         // Apply fat override
         val complete = useCase.applyOverrides(partial, fatPer100g = 3.0)
         assertTrue(useCase.isComplete(complete))
+    }
+
+    // --- O08: makeFood helper derives missingFields from nullable inputs ---
+
+    @Test
+    fun `makeFood helper derives empty missingFields when all values supplied`() {
+        val food = makeFood()
+        assertTrue(food.missingFields.isEmpty())
+    }
+
+    @Test
+    fun `makeFood helper derives all four NutritionField entries when all values are null`() {
+        val food = makeFood(kcal = null, protein = null, carbs = null, fat = null)
+        assertEquals(
+            setOf(
+                NutritionField.KCAL,
+                NutritionField.PROTEIN,
+                NutritionField.CARBS,
+                NutritionField.FAT,
+            ),
+            food.missingFields,
+        )
+    }
+
+    @Test
+    fun `makeFood helper derives single-field missing set when only one value is null`() {
+        assertEquals(setOf(NutritionField.KCAL), makeFood(kcal = null).missingFields)
+        assertEquals(setOf(NutritionField.PROTEIN), makeFood(protein = null).missingFields)
+        assertEquals(setOf(NutritionField.CARBS), makeFood(carbs = null).missingFields)
+        assertEquals(setOf(NutritionField.FAT), makeFood(fat = null).missingFields)
     }
 }

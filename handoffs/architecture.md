@@ -216,6 +216,8 @@ The totals are denormalised (pre-computed from ingredients) to avoid recalculati
 
 Ingredients store per-100g reference values and weight. This means the recipe can be recalculated if an ingredient weight is changed during editing, without re-fetching from the API.
 
+**In-place ingredient editing**: The schema supports in-place editing of an ingredient's name, weight, and per-100g values directly through `RecipeIngredient`'s existing columns. No schema change is required to support the in-place edit feature described in Section 7.7. The persistence strategy continues to use the existing delete-and-reinsert approach on recipe save (see `RecipeIngredientDao` in Section 5.3); in-memory edits in the ViewModel are flushed to the database as part of that single save operation.
+
 #### FoodCache
 
 | Column         | Type     | Notes                                        |
@@ -267,6 +269,8 @@ Ingredients store per-100g reference values and weight. This means the recipe ca
 - `getByRecipeId(recipeId: Long): Flow<List<RecipeIngredient>>` -- ingredients for a recipe.
 - `insertAll(ingredients: List<RecipeIngredient>)` -- batch insert.
 - `deleteByRecipeId(recipeId: Long)` -- used during recipe editing (delete-and-reinsert strategy for simplicity).
+
+**In-place ingredient editing**: No changes to `RecipeIngredientDao` are required to support the in-place ingredient editing feature (Section 7.7). The delete-and-reinsert strategy on recipe save already handles the case where individual ingredient fields have been modified in memory: the entire ingredient list is replaced as a single transactional save. The ViewModel is the source of truth for ingredient state during the editing session.
 
 #### FoodCacheDao
 
@@ -388,8 +392,8 @@ enum class NutritionField { KCAL, PROTEIN, CARBS, FAT }
 | `AddEntryViewModel`        | Log Method, Food Search, Barcode Scan, Manual Entry, Weight Entry, Missing Values, Entry Confirmation | Manage selected food state across multi-step flow; compute scaled values from weight input; accept direct values for manual entry (no scaling); prompt for missing values; save entry |
 | `RecipeListViewModel`      | Recipe List                                     | Load all recipes; handle recipe deletion with confirmation        |
 | `RecipeDetailViewModel`    | Recipe Detail                                   | Load single recipe with ingredients                               |
-| `CreateRecipeViewModel`    | Create/Edit Recipe                              | Manage ingredient list; compute live running totals; save/update recipe. Must support ingredients sourced from USDA, Open Food Facts searches, barcode scan, and manual entry. |
-| `SummariesViewModel`       | Summaries (7-day and 28-day tabs)               | Load entries for rolling periods; compute cumulative totals; load per-day plan targets and sum them for the period; display both cumulative intake and cumulative plan targets. Must reload data each time the screen becomes visible (not use a stale snapshot from a previous visit). |
+| `CreateRecipeViewModel`    | Create/Edit Recipe                              | Manage ingredient list; compute live running totals; save/update recipe. Must support ingredients sourced from USDA, Open Food Facts searches, barcode scan, and manual entry. Must also support in-place editing of an existing ingredient via `editIngredient(id, newValues)` (see Section 7.7). |
+| `SummariesViewModel`       | Summaries (7-day and 28-day tabs)               | Compute the rolling window (see Section 7.6) using the `SUMMARY_CUTOFF_HOUR` constant; load entries for the resulting period; compute cumulative totals; load per-day plan targets and sum them for the period; display both cumulative intake and cumulative plan targets. Must reload data each time the screen becomes visible (not use a stale snapshot from a previous visit), so that both newly logged entries and any crossing of the 20:00 cutoff between visits are reflected. |
 | `SettingsViewModel`        | Settings                                        | Read/write USDA API key from EncryptedSharedPreferences; load current nutrition plan; validate and save updated plan |
 
 ### 7.3 Manual Entry Flow
@@ -421,7 +425,152 @@ Certain screens must be reactive to data changes occurring elsewhere in the app:
 
 - **DailyProgressViewModel**: The plan observation (`getCurrentPlan()`) must be a continuously collected `Flow`, not a one-shot `.first()` snapshot. This ensures that when a user creates or updates their nutrition plan from Settings, the daily progress screen reflects the change immediately upon returning, without requiring a full screen re-creation.
 
-- **SummariesViewModel**: The summary data must be reloaded each time the summaries screen becomes visible (e.g. when the user switches to the Summaries tab from another tab). Using `.first()` to collect a single snapshot at ViewModel creation time is insufficient -- if the user logs a meal on the Daily Progress tab and then switches to Summaries, the summary must include the newly logged entry. The recommended approach is to trigger `loadSummary()` from a `LaunchedEffect` keyed to the screen's lifecycle or tab selection, so it fires on every visit.
+- **SummariesViewModel**: The summary data must be reloaded each time the summaries screen becomes visible (e.g. when the user switches to the Summaries tab from another tab). Using `.first()` to collect a single snapshot at ViewModel creation time is insufficient -- if the user logs a meal on the Daily Progress tab and then switches to Summaries, the summary must include the newly logged entry. The recommended approach is to trigger `loadSummary()` from a `LaunchedEffect` keyed to the screen's lifecycle or tab selection, so it fires on every visit. Recomputing on every visit also ensures the rolling window (Section 7.6) is re-evaluated against the current local time, so a user who opens the screen before 20:00, leaves the app open, and returns after 20:00 sees the updated window.
+
+### 7.6 Rolling Window Logic (SummariesViewModel)
+
+The 7-day and 28-day rolling summaries exclude an in-progress current day until late evening. This is a product requirement (see the Rolling Summaries section of `requirements.md`) intended to prevent a partially-consumed day from depressing cumulative intake totals and distorting the intake-versus-plan comparison.
+
+**Named constant**:
+
+```
+const val SUMMARY_CUTOFF_HOUR = 20   // 24-hour local time
+```
+
+This constant lives alongside the `SummariesViewModel` (or in a shared `SummaryConstants` file) and must not be inlined as a magic number. The product owner has indicated the threshold is a fixed value, but isolating it as a named constant keeps any future change to a single location.
+
+**Window computation**:
+
+On each invocation of `loadSummary()` (which fires on every visit per Section 7.5), the ViewModel computes the window as follows:
+
+```
+val today: LocalDate    = LocalDate.now(systemZoneId)
+val nowTime: LocalTime  = LocalTime.now(systemZoneId)
+
+val endDate: LocalDate = if (nowTime.hour < SUMMARY_CUTOFF_HOUR) {
+    today.minusDays(1)   // before 20:00 -- exclude today
+} else {
+    today                // 20:00 or later -- include today
+}
+
+val startDate7:  LocalDate = endDate.minusDays(6)    // 7-day window  (inclusive endpoints)
+val startDate28: LocalDate = endDate.minusDays(27)   // 28-day window (inclusive endpoints)
+```
+
+Both `startDate` and `endDate` are inclusive day boundaries. The repository call (`getEntriesForRange(startDate, endDate)`) translates these `LocalDate` values to the corresponding start-of-day and end-of-day epoch millis in the device's local zone.
+
+**Time source and time zone**:
+
+- Use `java.time` (`LocalDate`, `LocalTime`, `ZoneId.systemDefault()`). The check is performed against the device's local time, matching the user's intuition of "today" and "yesterday".
+- Do not cache the computed `endDate`. It must be recomputed on every visit so that crossing the 20:00 boundary while the app is open results in the correct window on the next visit.
+- For testability, the ViewModel should obtain "now" through an injected `Clock` (e.g. `Clock.systemDefaultZone()` in production, a fixed `Clock` in unit tests). This allows verifying behaviour at 19:59 vs 20:00 vs 20:01 deterministically.
+
+**Plan target summing**:
+
+Per-day plan targets are summed across the same `[startDate, endDate]` range using `NutritionPlanDao.getPlanForDate(date)` for each day. This already accounts for plan changes mid-period (see Section 17.7) and naturally produces fewer days of targets when today is excluded, keeping intake and target sums aligned over the same set of days.
+
+### 7.7 In-Place Editing of Recipe Ingredients (CreateRecipeViewModel)
+
+`CreateRecipeViewModel` supports editing an existing ingredient in-place during the recipe creation/edit session, rather than requiring the user to remove and re-add the ingredient.
+
+**In-memory state**:
+
+The ViewModel maintains the ingredient list as a `StateFlow<List<RecipeIngredientDraft>>`. `RecipeIngredientDraft` is an in-memory representation that mirrors the `RecipeIngredient` Room entity but is decoupled from the persistence layer:
+
+```
+data class RecipeIngredientDraft(
+    val id: Long,                  // stable identifier for the draft; assigned by the ViewModel
+                                   // (e.g. negative sentinel for ingredients not yet persisted,
+                                   // or the Room id for ingredients loaded from an existing recipe)
+    val foodName: String,
+    val weightG: Double,
+    val kcalPer100g: Double,
+    val proteinPer100g: Double,
+    val carbsPer100g: Double,
+    val fatPer100g: Double,
+    val source: FoodSource         // USDA, OPEN_FOOD_FACTS, or MANUAL
+)
+```
+
+The in-memory list is the single source of truth during editing. Database persistence happens only when the user saves the recipe, at which point `RecipeRepository.updateRecipe(...)` invokes the existing `RecipeIngredientDao` delete-and-reinsert strategy.
+
+**Edit operation**:
+
+```
+data class IngredientEditValues(
+    val foodName: String,
+    val weightG: Double,
+    val kcalPer100g: Double,
+    val proteinPer100g: Double,
+    val carbsPer100g: Double,
+    val fatPer100g: Double
+)
+
+fun editIngredient(id: Long, newValues: IngredientEditValues)
+```
+
+Semantics of `editIngredient(id, newValues)`:
+
+1. Locate the draft with the matching `id` in the current `StateFlow<List<RecipeIngredientDraft>>` value.
+2. Produce a new draft with the fields from `newValues` applied. The `id` and `source` fields are preserved unchanged.
+3. Emit a new list (immutable copy with the replaced element) to the `StateFlow`. The order of ingredients is preserved.
+4. Recompute the running totals (`totalWeightG`, `totalKcal`, `totalProteinG`, `totalCarbsG`, `totalFatG`) by summing across the updated list. Totals are exposed via a derived `StateFlow` (or as part of the same UI state) so the UI updates immediately.
+5. No database I/O occurs at this point.
+
+Input validation (weight > 0, non-negative macros, non-empty name) is performed by the ViewModel before applying the edit; invalid input is reported back as a one-off event on the edit dialog's UI state and the in-memory list is not mutated.
+
+**Cancellation**:
+
+If the user cancels the edit dialog, `editIngredient(...)` is not called. The in-memory list is unchanged. No additional state needs to be reset because the dialog manages its own draft input state.
+
+**Interaction with delete-and-reinsert on save**:
+
+When the user saves the recipe, `RecipeRepository.updateRecipe(recipe, ingredients)` builds `RecipeIngredient` entities from the in-memory drafts and calls `RecipeIngredientDao.deleteByRecipeId(recipeId)` followed by `insertAll(...)` within a single transaction. Because the in-memory list is the source of truth, any number of in-place edits (and additions/removals) made during the session are flushed in one atomic operation. The `id` values on `RecipeIngredientDraft` are not propagated to the persisted rows -- Room generates fresh primary keys on insert. This is consistent with the existing strategy and requires no DAO or schema changes.
+
+### 7.8 UI Layer: Recipe Ingredient Edit Dialog
+
+The Create/Edit Recipe screen renders the ingredient list as a vertical list of rows. Each row is a tappable element.
+
+**Trigger**:
+
+- In recipe create mode and recipe edit mode, tapping an ingredient row opens the ingredient edit dialog (modal `AlertDialog` or `ModalBottomSheet` -- Designer to choose; bottom sheet is recommended for better form ergonomics on mobile).
+- The trigger is the row itself, not an explicit "edit" button. A long-press gesture is not used. A separate small "remove" affordance remains on each row for ingredient removal; it is visually distinct from the row tap target.
+
+**Fields exposed**:
+
+The dialog is pre-populated with the current values of the tapped ingredient. The following fields are presented as editable form inputs:
+
+| Field            | Editable for MANUAL ingredients | Editable for USDA / OPEN_FOOD_FACTS ingredients |
+|------------------|---------------------------------|-------------------------------------------------|
+| Ingredient name  | Yes                             | Yes (allows correction of API-sourced names)    |
+| Weight (g)       | Yes                             | Yes (the minimum requirement)                   |
+| kcal per 100g    | Yes                             | Yes (allows correction of API values)           |
+| Protein per 100g | Yes                             | Yes (allows correction of API values)           |
+| Carbs per 100g   | Yes                             | Yes (allows correction of API values)           |
+| Fat per 100g     | Yes                             | Yes (allows correction of API values)           |
+
+Weight is always editable; this is the minimum requirement of the feature. Name and per-100g macros are also editable for API-sourced ingredients because (a) API data is often incomplete or incorrect, especially for Open Food Facts, and (b) forcing the user to remove and re-add an ingredient to correct a single value is a poor experience.
+
+The dialog must not display or persist any "source" badge in a way that implies the values are read-only; the source is retained internally on the draft only for analytics/diagnostic purposes and does not constrain edit behaviour.
+
+**Validation**:
+
+The dialog enforces the same validation rules used when initially adding an ingredient:
+
+- Ingredient name: non-empty after trimming.
+- Weight: must be greater than zero.
+- Each per-100g macro (kcal, protein, carbs, fat): must be zero or greater. (Zero is permitted to represent, e.g., a zero-fat ingredient.)
+
+Invalid fields are highlighted inline. The confirm button is disabled while any field is invalid.
+
+**Actions**:
+
+- **Confirm / Save**: invokes `CreateRecipeViewModel.editIngredient(id, newValues)` with the dialog's current field values. The dialog dismisses on success. The recipe-level running totals update immediately because they are derived from the in-memory ingredient list (Section 7.7).
+- **Cancel**: dismisses the dialog without invoking the ViewModel. The in-memory ingredient list is unchanged.
+
+**Persistence boundary**:
+
+Confirming the dialog does **not** persist anything to Room. Persistence happens only when the user saves the entire recipe via the existing "Save recipe" action, at which point the delete-and-reinsert strategy of `RecipeIngredientDao` flushes the full updated ingredient list (Section 5.3, Section 7.7). This keeps the editing experience snappy and allows the user to abandon all changes by navigating away before saving the recipe.
 
 ---
 
@@ -610,6 +759,8 @@ The app is fully functional without a USDA API key -- Open Food Facts search, ba
 | `recipes/edit/{id}`        | Edit Recipe               | Edit an existing recipe.                                     |
 | `summaries`                | Rolling Summaries         | Tabs for 7-day and 28-day views. Shows both intake and plan targets. |
 | `settings`                 | Settings                  | USDA API key management and nutrition plan management.       |
+
+Note: The ingredient edit dialog (Section 7.8) is a modal UI element rendered within the Create Recipe and Edit Recipe screens, not a navigable route. It does not appear in this table.
 
 ### 11.3 Navigation Flow Diagram
 
@@ -811,7 +962,7 @@ No other permissions are needed. The app does not access location, contacts, sto
 ### 17.4 Open Food Facts data quality
 
 **Risk**: Open Food Facts is community-contributed. Nutrition data may be missing, incorrect, or inconsistent.
-**Mitigation**: The missing-value prompt requirement ensures the user always reviews and completes nutrition data before saving. The app does not blindly trust API data.
+**Mitigation**: The missing-value prompt requirement ensures the user always reviews and completes nutrition data before saving. The app does not blindly trust API data. The in-place ingredient edit dialog (Section 7.8) additionally allows the user to correct an ingredient's name and per-100g values after it has been added to a recipe, without re-fetching from the API.
 
 ### 17.5 Camera permission denial
 
@@ -906,3 +1057,33 @@ Amendments based on QA report (2026-03-21), data layer code review (Session 01, 
 12. **DataRetentionWorker recipe non-deletion contract documented (Bug 4).** Section 14.2 now explicitly states that the worker must never delete recipes. While the implementation was already correct (no `RecipeDao` injection), this contract was not documented in the architecture, leaving it vulnerable to accidental regression.
 
 13. **In-memory Room database testing recommended.** Section 19 now recommends in-memory Room database tests for SQL query correctness, particularly for day-boundary and plan-ordering queries, based on the QA coverage assessment.
+
+### Revision 2 -- 2026-05-12
+
+Amendments based on a product clarification of the rolling summary window definition.
+
+#### Requirements changes
+
+14. **Rolling summary window cutoff defined.** The Rolling Summaries section of `requirements.md` now specifies that the current day is excluded from both the 7-day and 28-day windows unless the local device time is at or after 20:00. Before 20:00 the period ends at end-of-yesterday; from 20:00 onward it ends at end-of-today. Rationale: an in-progress day depresses cumulative intake totals and distorts the intake-versus-plan comparison. The 20:00 threshold was selected based on user feedback and is a fixed constant in this version.
+
+#### Architecture changes
+
+15. **SummariesViewModel rolling window logic specified (Section 7.6).** Added Section 7.6 describing how `SummariesViewModel` computes `endDate` based on `LocalTime.now()` against a named constant `SUMMARY_CUTOFF_HOUR = 20`, deriving `startDate` as `endDate.minusDays(6)` for the 7-day window and `endDate.minusDays(27)` for the 28-day window. The `SummariesViewModel` row in Section 7.2 has been updated to reference this logic. Section 7.5 has been amended to note that recomputing on every visit is also necessary for the rolling window to re-evaluate against the current local time (e.g. when the user crosses the 20:00 boundary while the app is open). For testability, the ViewModel should obtain "now" from an injected `Clock`.
+
+### Revision 3 -- 2026-05-12
+
+Amendments to support in-place editing of recipe ingredients during recipe creation and editing.
+
+#### Requirements changes
+
+16. **In-place editing of recipe ingredients.** The Recipes section of `requirements.md` now specifies that in recipe edit mode, tapping an ingredient row opens an edit dialog pre-populated with the ingredient's current values. Weight is always editable. Ingredient name and per-100g macros are also editable for both manual and API-sourced (USDA, Open Food Facts) ingredients, since users should be able to correct errors without removing and re-adding an ingredient. Confirming the dialog updates the in-memory list and recomputes totals immediately; changes persist only on recipe save; cancelling discards the changes for that ingredient.
+
+#### Architecture changes
+
+17. **CreateRecipeViewModel `editIngredient(id, newValues)` operation (Section 7.7).** Added Section 7.7 specifying that `CreateRecipeViewModel` maintains the ingredient list as a `StateFlow<List<RecipeIngredientDraft>>` and exposes `editIngredient(id: Long, newValues: IngredientEditValues)`. The operation locates the draft by id, replaces it with an immutable copy, emits the updated list to the StateFlow, and recomputes the running totals. Database I/O is not triggered; the in-memory list is the source of truth during the editing session and is flushed only on recipe save. The `CreateRecipeViewModel` row in Section 7.2 references this new operation.
+
+18. **Ingredient edit dialog in UI layer (Section 7.8).** Added Section 7.8 documenting the modal ingredient edit dialog/bottom sheet. The dialog is triggered by tapping an ingredient row in the Create Recipe or Edit Recipe screen. It exposes name, weight, and per-100g macros (kcal, protein, carbs, fat) for all ingredient sources, with the same validation rules used at ingredient creation time. Confirming invokes `editIngredient(...)`; cancelling discards changes. Section 11.2 has been annotated to note that this dialog is a modal element rather than a navigable route.
+
+19. **No schema or DAO changes required.** Section 5.2 (RecipeIngredient) and Section 5.3 (RecipeIngredientDao) have been annotated to explicitly state that the existing schema and the existing delete-and-reinsert persistence strategy already support the in-place editing feature. The in-memory ingredient list in the ViewModel is the source of truth during editing, and all changes are flushed to Room as a single transactional save operation when the user saves the recipe.
+
+20. **Section 17.4 (Open Food Facts data quality) updated.** The mitigation note now references the in-place ingredient edit dialog as an additional remediation path: users can correct an ingredient's name and per-100g values directly within a recipe rather than having to remove and re-add the ingredient.

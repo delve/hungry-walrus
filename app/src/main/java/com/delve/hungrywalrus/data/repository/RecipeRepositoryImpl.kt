@@ -13,6 +13,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+/**
+ * Repository implementation backed by Room.
+ *
+ * **Note on the `database` constructor parameter:** Room's transactional API
+ * ([androidx.room.withTransaction]) is an extension function on the concrete
+ * [RoomDatabase][androidx.room.RoomDatabase] subclass, so this implementation depends on
+ * the concrete [HungryWalrusDatabase] type rather than an interface. There is no
+ * interface-based alternative in the current Room version. The implementation could be
+ * decoupled by wrapping the transaction in a hand-rolled `TransactionRunner` interface, but
+ * the added indirection (and the corresponding fake in tests) does not yield enough value
+ * to outweigh the simplicity of using Room's KTX extension directly. The repository
+ * interface itself ([RecipeRepository]) is unaffected by this — callers depend on the
+ * interface, not on this class.
+ */
 class RecipeRepositoryImpl @Inject constructor(
     private val database: HungryWalrusDatabase,
     private val recipeDao: RecipeDao,

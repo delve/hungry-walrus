@@ -3,14 +3,17 @@ package com.delve.hungrywalrus.qa
 import com.delve.hungrywalrus.data.local.dao.NutritionPlanDao
 import com.delve.hungrywalrus.data.local.entity.NutritionPlanEntity
 import com.delve.hungrywalrus.data.repository.NutritionPlanRepositoryImpl
+import app.cash.turbine.test
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -76,10 +79,11 @@ class PlanHistoryQaTest {
         val second = insertedEntities[1]
 
         // Second insertion must have effectiveFrom >= first (never in the past)
-        assert(second.effectiveFrom >= first.effectiveFrom) {
+        assertTrue(
             "Second plan effectiveFrom (${second.effectiveFrom}) must not be before " +
-                "first plan effectiveFrom (${first.effectiveFrom})"
-        }
+                "first plan effectiveFrom (${first.effectiveFrom})",
+            second.effectiveFrom >= first.effectiveFrom,
+        )
     }
 
     /**
@@ -117,25 +121,48 @@ class PlanHistoryQaTest {
         val after = System.currentTimeMillis()
 
         val captured = entitySlot.captured
-        assert(captured.effectiveFrom in before..after) {
-            "effectiveFrom (${captured.effectiveFrom}) was not in range [$before, $after]"
-        }
+        assertTrue(
+            "effectiveFrom (${captured.effectiveFrom}) was not in range [$before, $after]",
+            captured.effectiveFrom in before..after,
+        )
     }
 
     /**
-     * getCurrentPlan uses Long.MAX_VALUE as the DAO query parameter.
-     * This ensures any plan ever inserted is eligible (since effectiveFrom is always
-     * a real timestamp which is << Long.MAX_VALUE).
-     * Verify that the DAO is called with Long.MAX_VALUE.
+     * Per architecture §5.3 / §6.1, getCurrentPlan() filters out future-dated plans by
+     * passing the current wall-clock time to the DAO (whose query is
+     * `WHERE effectiveFrom <= :now ORDER BY effectiveFrom DESC LIMIT 1`).
+     *
+     * The repository previously passed `Long.MAX_VALUE` which silently disabled the
+     * `effectiveFrom <= :now` filter. That was safe under the v1 invariant that
+     * `savePlan()` always sets `effectiveFrom = System.currentTimeMillis()` (so no plan
+     * is ever future-dated), but it left the DAO contract unverified at the repository
+     * boundary and could mask regressions if a future feature ever inserted a
+     * future-dated plan (e.g. a "schedule a plan change" feature).
+     *
+     * Verify that the DAO is now called with the current wall-clock time within the test
+     * window.
      */
     @Test
-    fun `getCurrentPlan passes Long MAX_VALUE to DAO`() = runTest {
+    fun `getCurrentPlan passes a current-time snapshot to the DAO`() = runTest {
         val timestampSlot = slot<Long>()
-        coEvery { dao.getCurrentPlan(capture(timestampSlot)) } returns flowOf(null)
+        every { dao.getCurrentPlan(capture(timestampSlot)) } returns flowOf(null)
 
-        repository.getCurrentPlan()
+        val before = System.currentTimeMillis()
+        // Collect the flow so the DAO is actually invoked.
+        repository.getCurrentPlan().test {
+            awaitItem()
+            awaitComplete()
+        }
+        val after = System.currentTimeMillis()
 
-        // Room doesn't execute the query until collected, so just verify the argument via direct DAO call
-        coVerify { dao.getCurrentPlan(Long.MAX_VALUE) }
+        // The `captured in before..after` window is sufficient on its own: the current
+        // wall clock is roughly 1.7e12 ms and Long.MAX_VALUE is ~9.2e18, so a `captured`
+        // value inside the window cannot also equal Long.MAX_VALUE. The explicit
+        // "!= Long.MAX_VALUE" check would therefore be redundant.
+        val captured = timestampSlot.captured
+        assertTrue(
+            "DAO 'now' argument $captured not in expected window [$before, $after]",
+            captured in before..after,
+        )
     }
 }

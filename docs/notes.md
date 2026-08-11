@@ -39,7 +39,7 @@ And your pipeline execution order is:
 1. You review
 1. Design — produces design.md `/pipeline:design`
 1. You review
-1. Developer session 00 — project scaffolding `/pipeline:scaffold`
+1. For project initiation only: Developer session 00 — project scaffolding `/pipeline:scaffold`
 1. Developer session 01 — data layer `/pipeline:develop 01  "data layer"`
 1. Start a new session. Code Review session 01 — reviews data layer `/pipeline:codereview 01  "data layer"`
 1. You review, send fixes back to Developer if needed - OPTIONAL: Start a new session. Run fix for review findings `/pipeline:fix 01  "data layer"` then repeat previous step.
@@ -60,4 +60,12 @@ And your pipeline execution order is:
 1. You review
 
 # TODOs
-TODO: As per 8.4 in design.md, add serving size to the food cache
+1. As per 8.4 in design.md, add serving size to the food cache to enable more extensive use of 100% button.
+
+-> 1. Ensure the summary screens don't include the current date in calculations, unless the local time is after 1900.
+
+-> 1. Enable editing ingredients in a recipe.
+
+1. All input boxes should be empty when the screen opens. Currently weights and some other inputs retain the last input causing user friction.
+
+1. Weight buttons should not scroll, they should wrap at screen width. The 100% button should be first in the list.

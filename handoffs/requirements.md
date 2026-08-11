@@ -38,6 +38,21 @@ The app does not generate or recommend plans.
 - Recipes are reusable across multiple log entries.
 - Recipe creation displays a live running total of nutritional values as
   ingredients are added.
+- In recipe edit mode, the user can modify an existing ingredient
+  in-place by tapping the ingredient row. Tapping opens an edit dialog
+  pre-populated with the ingredient's current values. The edit dialog
+  must allow the user to change the ingredient's weight at minimum. For
+  ingredients added via manual entry, the dialog must also allow the
+  user to change the ingredient name and the per-100g nutritional
+  values (kcal, protein, carbohydrates, fat). For ingredients sourced
+  from USDA or Open Food Facts, the dialog should also allow the user
+  to correct the ingredient name and per-100g values, since API data
+  may be incorrect or incomplete and the user should not have to
+  remove and re-add the ingredient to fix a small error. Confirming
+  the edit dialog updates the in-memory ingredient list and recomputes
+  the running totals immediately. The changes are persisted to the
+  database only when the user saves the recipe. Cancelling the edit
+  dialog discards the changes for that ingredient.
 
 ### Meal logging
 - Each log entry is an independent record. There is no meal container
@@ -94,6 +109,21 @@ The app does not generate or recommend plans.
   screen (e.g. by switching tabs). A stale snapshot from a previous
   visit is not acceptable -- the user should see up-to-date totals
   reflecting any entries logged since the last visit.
+- Rolling window definition: the current day is excluded from both the
+  7-day and 28-day windows unless the local device time is at or after
+  20:00. Rationale: until late evening the current day is incomplete and
+  including a partially-consumed day would distort cumulative totals
+  (both intake and plan targets) and make day-over-day comparisons
+  misleading. Concretely:
+  - Before 20:00 local time: the period ends at the end of yesterday
+    (i.e. just before midnight at the boundary between yesterday and
+    today). The 7-day period covers the 7 days ending yesterday; the
+    28-day period covers the 28 days ending yesterday.
+  - From 20:00 local time onward: the period ends at the end of today.
+    The 7-day period covers the 7 days ending today (inclusive); the
+    28-day period covers the 28 days ending today (inclusive).
+  The 20:00 threshold is a constant value selected based on user
+  feedback and is not user-configurable in this version.
 
 ## Data sources
 - USDA FoodData Central: generic and natural food queries. Free API,
@@ -137,3 +167,35 @@ The app does not generate or recommend plans.
 - Meal grouping or meal containers. Each log entry is independent.
 - Full log entry editing (potential future enhancement).
 - Light mode theme.
+
+## Revision history
+
+### Revision 1 -- 2026-05-12
+
+- **Rolling summary window cutoff added.** Clarified the definition of
+  the rolling 7-day and 28-day periods. The current day is now excluded
+  from both windows unless the local device time is at or after 20:00,
+  at which point today is treated as complete and included in the
+  period. Before 20:00 the period ends at end-of-yesterday; from 20:00
+  onward it ends at end-of-today. Rationale: an in-progress day would
+  otherwise depress cumulative intake totals and distort the
+  intake-versus-plan comparison that the summaries are intended to
+  surface. The 20:00 threshold was selected based on user feedback and
+  is a fixed constant in this version.
+
+### Revision 2 -- 2026-05-12
+
+- **In-place editing of recipe ingredients.** The Recipes section now
+  specifies that in recipe edit mode, tapping an existing ingredient
+  opens an edit dialog pre-populated with the ingredient's current
+  values, rather than requiring the user to remove and re-add the
+  ingredient. Weight is always editable. Ingredient name and per-100g
+  macronutrient values are also editable, both for manual ingredients
+  (where this is essential, since the user is the sole source of those
+  values) and for API-sourced ingredients (where this allows the user
+  to correct errors or fill in missing values without re-fetching).
+  Confirming the dialog updates the in-memory ingredient list and
+  recomputes the running totals immediately; changes are persisted
+  only on recipe save. Cancelling discards the changes for that
+  ingredient. This is a UI/ViewModel-level change; no database schema
+  or DAO changes are required.

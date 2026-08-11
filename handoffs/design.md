@@ -761,9 +761,9 @@ Both buttons are deliberately large per the product decision for easy-to-hit con
 
 ### 3.13 Create Recipe (`recipes/create`) and Edit Recipe (`recipes/edit/{id}`)
 
-**Purpose**: Create a new recipe or edit an existing one. These share the same screen layout. When editing, the screen pre-populates with existing data.
+**Purpose**: Create a new recipe or edit an existing one. These share the same screen layout. When editing, the screen pre-populates with existing data. In both modes the user can add ingredients, remove ingredients, and edit any existing ingredient in-place by tapping its row.
 
-**ViewModel**: `CreateRecipeViewModel`
+**ViewModel**: `CreateRecipeViewModel` (see architecture sections 7.7 and 7.8).
 
 **Routes**: `recipes/create`, `recipes/edit/{id}`
 
@@ -784,7 +784,7 @@ Both buttons are deliberately large per the product decision for easy-to-hit con
 |                                               |
 | Ingredients:                                  |
 |  +------------------------------------------+|
-|  | Chicken breast   200g   330 kcal   [X]   ||
+|  | Chicken breast   200g   330 kcal   [X]   ||  <- whole row tappable -> opens edit sheet
 |  +------------------------------------------+|
 |  | Broccoli         150g    51 kcal   [X]   ||
 |  +------------------------------------------+|
@@ -797,24 +797,25 @@ Both buttons are deliberately large per the product decision for easy-to-hit con
 
 **Elements**:
 
-1. **Top app bar**: Close (X) icon. Tapping shows discard confirmation dialog: "Discard changes?" with "Discard" and "Keep editing" buttons. Title: "Create Recipe" or "Edit Recipe".
+1. **Top app bar**: Close (X) icon. Tapping shows discard confirmation dialog: "Discard changes?" with "Discard" and "Keep editing" buttons. The dialog appears whenever any unsaved change exists, including in-memory ingredient edits made via the edit ingredient sheet (Section 3.13a). Title: "Create Recipe" or "Edit Recipe".
 
 2. **Recipe name field**: `OutlinedTextField`. Label: "Recipe name". Required.
 
-3. **Live totals card**: `Card` on `surfaceVariant`. Updates in real-time as ingredients are added or removed. Shows total kcal, total weight, and macros. When no ingredients are added, shows "0 kcal | 0g" with all macros at 0.0g.
+3. **Live totals card**: `Card` on `surfaceVariant`. Updates in real-time as ingredients are added, edited, or removed. Shows total kcal, total weight, and macros. When no ingredients are added, shows "0 kcal | 0g" with all macros at 0.0g. Totals are derived from the in-memory ingredient list in `CreateRecipeViewModel` (architecture section 7.7), so any change -- add, remove, or in-place edit -- propagates immediately without database I/O.
 
-4. **Ingredient list**: `LazyColumn` section. Each item shows:
-   - Ingredient name (`bodyMedium`).
-   - Weight (`bodySmall` / `onSurfaceVariant`).
-   - Scaled kcal for that ingredient (`bodySmall`).
-   - Trailing `IconButton` with `Close` (X) icon to remove the ingredient. Removal is immediate (no confirmation) and live totals update.
+4. **Ingredient list**: `LazyColumn` section. Each item is a tappable row:
+   - **Tap target**: the row itself is the primary tap target for opening the **Edit Ingredient** sheet (Section 3.13a). The row uses `Modifier.clickable` and renders a subtle `ripple` on press. The entire row content area is a single 56dp-minimum-height tap target spanning the full width minus the trailing remove button. This satisfies Material's 48dp minimum touch-target requirement comfortably and matches the touch-target sizing used by log entry rows on Daily Progress (Section 3.1).
+   - **Row content**:
+     - Ingredient name (`bodyMedium`), left-aligned.
+     - Weight (`bodySmall` / `onSurfaceVariant`), centre.
+     - Scaled kcal for that ingredient (`bodySmall`), right of weight.
+   - **Trailing remove control**: `IconButton` with `Close` (X) icon in `onSurfaceVariant`. This sits to the right of the row content area. It is a distinct 48dp tap target with its own click area, and per Material guidelines its click handler does not propagate to the row's `clickable`. Tapping it removes the ingredient from the in-memory list immediately (no confirmation) and live totals update. This separation prevents accidental edit-vs-remove confusion: tapping the row body opens the edit sheet; tapping the X icon removes the ingredient.
+   - The row's content description for accessibility services reads "Edit {ingredient name}, {weight}g, {kcal} kcal" so screen readers announce the tap action explicitly. The remove icon has content description "Remove {ingredient name}".
+   - Dividers (`outlineVariant`) between rows.
 
-5. **Add Ingredient button**: `OutlinedButton` full-width. Text: "+ Add Ingredient". On tap: opens a bottom sheet or navigates to a sub-flow that reuses the food lookup methods (USDA search, OFF search, barcode scan, manual entry). This sub-flow is identical to the log method selection but scoped to adding an ingredient:
-   - After selecting a food item and entering a weight, the ingredient (with per-100g reference values and weight) is added to the in-memory ingredient list in `CreateRecipeViewModel`.
-   - The sub-flow does NOT show the entry confirmation screen. It returns directly to the recipe creation screen after weight entry.
-   - Navigation: `recipes/create` opens a modal bottom sheet for method selection -> food search or manual entry -> weight entry for ingredient -> returns to recipe screen with ingredient added.
+5. **Add Ingredient button**: `OutlinedButton` full-width. Text: "+ Add Ingredient". On tap: opens a modal bottom sheet for method selection that reuses the food lookup methods (USDA search, OFF search, barcode scan, manual entry). After selecting a food item and entering a weight, the ingredient is added to the in-memory ingredient list in `CreateRecipeViewModel` and the bottom sheet sub-flow dismisses, returning to the recipe screen with totals updated. The confirmation screen used in meal logging is skipped for ingredient addition.
 
-6. **Save Recipe button**: Full-width `FilledButton`. Text: "Save Recipe". Disabled if recipe name is empty or no ingredients are added. On tap: saves via `CreateRecipeViewModel`. The recipe's total nutritional values are computed from the ingredients (sum of each ingredient's scaled values). Navigates back to `recipes` (or `recipes/detail/{id}` for edits). Snackbar: "Recipe saved".
+6. **Save Recipe button**: Full-width `FilledButton`. Text: "Save Recipe". Disabled if the recipe name is empty or no ingredients are present. On tap: saves via `CreateRecipeViewModel`. The recipe's total nutritional values are computed from the ingredients (sum of each ingredient's scaled values). Navigates back to `recipes` (or `recipes/detail/{id}` for edits). Snackbar: "Recipe saved".
 
 **Ingredient addition sub-flow**: To minimise navigation complexity, the ingredient lookup uses the same search/manual entry screens as meal logging but with a flag in the navigation arguments indicating "ingredient mode". In ingredient mode:
 - The confirmation screen is skipped.
@@ -826,15 +827,139 @@ Both buttons are deliberately large per the product decision for easy-to-hit con
 |----------|----------------------------------------------------|
 | Create mode | Empty name, empty ingredient list, totals at zero. Save disabled. |
 | Edit mode (loading) | Shimmer while loading existing recipe data. |
-| Edit mode (loaded) | Name and ingredients pre-populated. Totals reflect existing ingredients. |
+| Edit mode (loaded) | Name and ingredients pre-populated. Totals reflect existing ingredients. Tapping any ingredient row opens the Edit Ingredient sheet pre-populated with that ingredient's current values. |
 | No ingredients | Totals card shows zeros. Save disabled. "Add ingredients to get started." helper text above the Add Ingredient button. |
-| Has ingredients | Totals update live. Save enabled if name is also filled. |
+| Has ingredients | Totals update live. Save enabled if name is also filled. Each ingredient row is tappable for in-place editing. |
+| Unsaved in-memory edits | Live totals reflect the edited values immediately. The Save Recipe button remains enabled. The discard confirmation dialog on the Close (X) icon treats any in-memory edit as an unsaved change. |
+
+---
+
+### 3.13a Edit Ingredient Sheet (modal, rendered from Section 3.13)
+
+**Purpose**: Allow the user to modify an existing ingredient on the recipe being created or edited. The sheet is pre-populated with the tapped ingredient's current values. Confirming applies the change to the in-memory ingredient list in `CreateRecipeViewModel` and returns to the recipe screen with live totals updated. Cancelling discards the changes for that ingredient.
+
+This is the UI counterpart to the architectural feature described in `architecture.md` Section 7.7 (`CreateRecipeViewModel.editIngredient(id, newValues)`) and Section 7.8 (UI layer specification of the dialog). The requirement source is `requirements.md` Recipes section ("In recipe edit mode, the user can modify an existing ingredient in-place by tapping the ingredient row...").
+
+**Form factor decision: modal bottom sheet (`ModalBottomSheet`)**
+
+The edit UI is implemented as a Material 3 **modal bottom sheet** anchored to the bottom of the screen, not a full-screen destination and not an inline-editable row.
+
+**Justification**:
+
+1. **Touch target size and one-handed reachability.** The sheet places its form fields and primary action (Save) in the lower half of the screen, within the natural thumb reach zone for one-handed phone use. A full-screen destination pushes the primary action either to a top app bar (small target, high-reach zone) or to the very bottom of a long scrollable layout (small target relative to total scroll length). The sheet keeps the Save button at a consistent, large 56dp-minimum touch target in the easy-reach zone. This matches the meal logging flow's preference for large, easy-to-hit confirm buttons (Section 3.10, product decision on log entry confirmation).
+
+2. **Consistency with the rest of the app's modal patterns.** The app already uses bottom sheets for:
+   - The ingredient method-selection chooser when adding a new ingredient (Section 3.13 element 5).
+   - The barcode "product not found" overlay (Section 3.5 element 4).
+   These are all transient, dismissible-with-cancel, single-purpose surfaces. The edit ingredient sheet fits this pattern cleanly. By contrast, full-screen destinations in this app (e.g. `log/weight_entry`, `log/manual`) are nodes in a multi-step flow with their own back stack semantics. Editing a single ingredient is not a multi-step flow and should not push a destination onto the navigation back stack.
+
+3. **Inline-editable rows rejected.** An inline approach (each ingredient row expands in place to reveal six editable fields) was considered and rejected for three reasons. First, inline editing of six fields per row would either bloat the row height substantially (hurting the high-information-density principle when the row is collapsed but not being edited) or require an awkward in-row keyboard input area that competes with the system IME. Second, tap targets for individual fields on a narrow inline row are difficult to size correctly without horizontal scrolling. Third, inline rows make Cancel ambiguous: if the user taps a different row mid-edit, is the first row's edit discarded or applied? A modal sheet has unambiguous Cancel and Save semantics.
+
+4. **Full-screen destination rejected.** A full-screen destination was considered and rejected because (a) it adds a navigation back-stack entry for a small, transient form, complicating discard behaviour (the Close X on the recipe screen and the back arrow on the destination would each need their own discard logic), (b) it visually disconnects the user from the recipe screen they are editing, which makes the live-totals running figure invisible at the moment of editing, and (c) it is inconsistent with the existing modal pattern for ingredient-related actions on the same screen.
+
+**Layout**:
+
+```
++----------------------------------------------+
+|              (handle indicator)               |
++----------------------------------------------+
+| Edit Ingredient                       [X]    |  <- header row
++----------------------------------------------+
+| Ingredient name                               |
+| [ Chicken breast                          ]  |
+|                                               |
+| Weight in recipe                              |
+| [ - ]  [        200       ] g  [ + ]         |
+|                                               |
+| Nutrition per 100g:                           |
+|                                               |
+| Kilocalories                                  |
+| [        165         ] kcal                  |
+|                                               |
+| Protein                                       |
+| [         31.0       ] g                     |
+|                                               |
+| Carbohydrates                                 |
+| [          0.0       ] g                     |
+|                                               |
+| Fat                                           |
+| [          3.5       ] g                     |
+|                                               |
+| Scaled for this ingredient (preview):         |
+| +--------------------------------------------+|
+| | 330 kcal | P: 62.0g | C: 0.0g | F: 7.0g  ||
+| +--------------------------------------------+|
+|                                               |
+| [   Cancel   ]   [        Save        ]      |
++----------------------------------------------+
+```
+
+**Elements**:
+
+1. **Sheet container**: Material 3 `ModalBottomSheet` on `surface`. The sheet is scrollable internally (its content uses a `Column` inside a vertically scrolling container) so it remains usable on small screens when the IME is visible. The sheet expands to roughly 90% of screen height by default and can be dragged down to dismiss; dragging to dismiss is treated as Cancel.
+
+2. **Header row**: "Edit Ingredient" in `titleMedium`, left-aligned. A trailing `IconButton` with `Close` (X) icon dismisses the sheet as Cancel. The drag handle (Material 3 default) sits above the header.
+
+3. **Ingredient name field**: `OutlinedTextField`. Label: "Ingredient name". Keyboard type: text. Pre-populated with the ingredient's current `foodName`. Editable for all ingredient sources (USDA, Open Food Facts, MANUAL) per the requirement that API-sourced names can be corrected without re-fetching.
+
+4. **Weight field**: `OutlinedTextField` with leading `-` and trailing `+` `IconButton` controls, matching the styling of the weight entry screen (Section 3.9 element 4). Keyboard type: decimal. Trailing unit suffix "g". Pre-populated with the ingredient's current `weightG`. The minus button cannot reduce the value below 1g (rejecting zero and negative values). Long-press accelerates adjustment (10g increments after 500ms hold). Section label above: "Weight in recipe".
+
+5. **Per-100g nutrition fields**: A section labelled "Nutrition per 100g:" in `labelSmall` / `onSurfaceVariant`, followed by four `OutlinedTextField` components for kcal, protein, carbs, fat. Each has:
+   - Label naming the nutrient ("Kilocalories", "Protein", "Carbohydrates", "Fat").
+   - Trailing unit suffix ("kcal" for kilocalories, "g" for macros).
+   - Keyboard type: decimal number.
+   - Pre-populated with the ingredient's current `kcalPer100g`, `proteinPer100g`, `carbsPer100g`, `fatPer100g`.
+   - Required. Validation: kcal must be zero or greater; each macro must be zero or greater. Inline error: "Enter a valid number" for non-numeric input. The architecture (Section 7.8) explicitly notes that zero is permitted for any per-100g macro to allow, for example, a zero-fat ingredient.
+
+   These fields are editable for all ingredient sources, per the requirement that API-sourced per-100g values can be corrected (API data is often incomplete or incorrect, especially for Open Food Facts) without removing and re-adding the ingredient. The sheet does not display any "source" badge on these fields -- the source is retained internally on the draft only and does not constrain edit behaviour.
+
+6. **Scaled-for-this-ingredient preview**: A `Card` on `surfaceVariant`. Shows the four nutritional values scaled from the currently-entered per-100g values by the currently-entered weight, using the formula `scaled = (per100g / 100) * weight`. Header row in `labelSmall`, value row in `bodyMedium`. Updates reactively as any field changes. This preview gives the user immediate feedback on the impact of their edit before they commit, mirroring the live preview pattern used on the weight entry screen (Section 3.9 element 7).
+
+7. **Cancel button**: `OutlinedButton`. Text: "Cancel". Minimum height 56dp. Dismisses the sheet without invoking `CreateRecipeViewModel.editIngredient(...)`. The in-memory ingredient list is unchanged and the recipe screen's live totals do not move. Cancel is also the action triggered by tapping the header X icon, dragging the sheet down to dismiss, and tapping outside the sheet on the scrim.
+
+8. **Save button**: `FilledButton`. Text: "Save". Minimum height 56dp. Disabled while any field is invalid. On tap: invokes `CreateRecipeViewModel.editIngredient(id, IngredientEditValues(...))` with the current sheet field values. The sheet dismisses. The recipe screen's ingredient list and live totals update immediately because they observe the ViewModel's in-memory state.
+
+   The two buttons appear side-by-side, with Cancel on the leading edge and Save on the trailing edge, both wrapped in a row with equal weight. This matches the platform convention of placing the affirmative action on the trailing edge.
+
+**Validation**:
+
+Validation rules match those used when adding an ingredient (architecture Section 7.8):
+
+- **Ingredient name**: non-empty after trimming. Inline error: "Name is required" if empty.
+- **Weight**: must be greater than zero. Inline error: "Enter a valid weight". Negative values are rejected on input.
+- **Each per-100g macro (kcal, protein, carbs, fat)**: must be zero or greater. Inline error: "Enter a valid number" for non-numeric input.
+
+While any field is invalid, the Save button is disabled and the scaled preview shows "--" for any affected value.
+
+**Persistence boundary**:
+
+Per architecture Section 7.8, confirming the sheet does **not** persist to Room. The change is applied only to the in-memory `StateFlow<List<RecipeIngredientDraft>>` in `CreateRecipeViewModel`. Persistence happens only when the user taps Save Recipe on the parent recipe screen (Section 3.13 element 6), at which point the existing delete-and-reinsert strategy in `RecipeIngredientDao` flushes the entire updated ingredient list in a single transaction (architecture Section 5.3, Section 7.7).
+
+This means a user who edits an ingredient and then taps the recipe screen's Close (X) -- choosing "Discard" on the discard confirmation -- will lose the edit, consistent with the behaviour of any other unsaved change. The discard confirmation dialog (Section 3.13 element 1) appears whenever any in-memory change exists, including ingredient edits made via this sheet.
+
+**Navigation targets**:
+
+- Save -> dismiss sheet, return to recipe screen with totals updated.
+- Cancel / X / drag-to-dismiss / scrim tap -> dismiss sheet, no state change.
+- The sheet does not push a destination onto the `NavController` back stack; it is rendered by the recipe screen and dismissed by changing the `isSheetVisible` state in the recipe screen's composable.
+
+**States**:
+
+| State    | Behaviour                                          |
+|----------|----------------------------------------------------|
+| Opened (pre-populated) | All six fields populated with the tapped ingredient's current values. Scaled preview shows the current scaled values. Save is enabled because the initial state is by definition valid. |
+| Field being edited (still valid) | Scaled preview updates reactively. Save remains enabled. |
+| Validation error in one or more fields | The invalid field shows an inline error. The scaled preview shows "--" for any field that cannot be computed. Save is disabled. |
+| Saving (in-flight) | Not applicable -- the operation is in-memory only and completes synchronously. The sheet dismisses immediately on Save tap. |
+| Cancel pressed (with field changes) | The sheet dismisses immediately. The in-memory ingredient list is unchanged. No confirmation dialog is shown at this level because the recipe screen's outer discard confirmation already covers the broader case of abandoning the recipe edit session. Discarding a single in-progress sheet edit is low-stakes -- the user can simply re-tap the ingredient. |
+
+**Loading/empty/error states**: Not applicable. The sheet operates entirely on in-memory state and has no asynchronous data dependencies, no empty state (it is only opened from a populated row), and no failure modes other than form validation handled above.
 
 ---
 
 ### 3.14 Rolling Summaries (`summaries`)
 
-**Purpose**: Display cumulative nutritional intake versus cumulative plan targets over 7-day and 28-day periods. Top-level tab destination.
+**Purpose**: Display cumulative nutritional intake versus cumulative plan targets over rolling 7-day and 28-day periods. Top-level tab destination.
 
 **ViewModel**: `SummariesViewModel`
 
@@ -849,6 +974,7 @@ Both buttons are deliberately large per the product decision for easy-to-hit con
 | [  7 Days  |  28 Days  ]  tab row            |
 +----------------------------------------------+
 | Period: 13/03/2026 -- 19/03/2026             |
+| (today excluded -- updates after 20:00)      |
 |                                               |
 | Kilocalories                                  |
 |  Intake: 12,500 / Target: 14,000             |
@@ -881,26 +1007,49 @@ Both buttons are deliberately large per the product decision for easy-to-hit con
 
 1. **Top app bar**: Title "Summaries". No back arrow (top-level).
 
-2. **Tab row**: Material 3 `TabRow` with two tabs: "7 Days" and "28 Days". Selected tab uses `primary` indicator. Switching tabs reloads data for the respective period.
+2. **Tab row**: Material 3 `TabRow` with two tabs: "7 Days" and "28 Days". Selected tab uses `primary` indicator. Switching tabs reloads data for the respective period using the same rolling-window rules below.
 
-3. **Period label**: "dd/MM/yyyy -- dd/MM/yyyy" in `bodySmall` / `onSurfaceVariant`. The period always ends on today and extends backward 7 or 28 days.
+3. **Period label**: "dd/MM/yyyy -- dd/MM/yyyy" in `bodySmall` / `onSurfaceVariant`. The displayed dates are derived from the rolling-window rule (see below) so that the user can see exactly which days are included.
 
-4. **Metric sections**: Four sections (kcal, protein, carbs, fat), each containing:
+4. **Rolling-window status hint**: A short, single-line caption immediately below the period label, in `labelSmall` / `onSurfaceVariant`. It communicates whether today is included in the window:
+   - **Before 20:00 local time (today excluded)**: "Today excluded -- updates after 20:00". This explains to the user why their entries from earlier in the day are not yet reflected in the totals.
+   - **From 20:00 local time onward (today included)**: "Includes today". A neutral confirmation that the period now extends through the current day.
+   This hint is essential because the inclusion/exclusion of today is otherwise invisible -- without it, a user who logged a meal at 13:00 and then opened Summaries at 13:30 would be confused that their entry "did not count". The hint is rendered as plain caption text, not as a banner or warning, so it remains low-noise on screens where most users will not notice or care.
+
+5. **Metric sections**: Four sections (kcal, protein, carbs, fat), each containing:
    - Label in `titleSmall`.
-   - "Intake: X / Target: Y" in `bodyMedium`. The target is the sum of per-day plan targets across the period (accounting for plan changes via `getPlanForDate()`).
+   - "Intake: X / Target: Y" in `bodyMedium`. The target is the sum of per-day plan targets across the same `[startDate, endDate]` range, accounting for plan changes via `getPlanForDate()` (architecture section 7.6). Target and intake sums are aligned over the same set of days, so excluding today removes both today's intake and today's target from the period.
    - `LinearProgressIndicator` with the metric's semantic colour. Track: `progressTrack`.
    - "Remaining: Z" in `bodySmall` / `onSurfaceVariant`. If over target: "Over: Z" in `overage` colour.
 
-5. **Daily average row**: `Card` on `surfaceVariant` at the bottom. Shows the period total divided by the number of days. Formatted: "{kcal} kcal | P: Xg | C: Xg | F: Xg" in `bodyMedium`.
+6. **Daily average row**: `Card` on `surfaceVariant` at the bottom. Shows the period total divided by the number of days included in the window (7 days for the 7-day tab, 28 days for the 28-day tab). Formatted: "{kcal} kcal | P: Xg | C: Xg | F: Xg" in `bodyMedium`.
+
+**Rolling-window rule** (display-side summary of architecture section 7.6):
+
+The summary period is computed each time the screen becomes visible. Let `now` = local device time and `today` = local device date.
+
+- **If `now.hour < 20`**: the window ends at end-of-yesterday. The 7-day tab covers the 7 days ending yesterday; the 28-day tab covers the 28 days ending yesterday. Today is excluded.
+- **If `now.hour >= 20`**: the window ends at end-of-today. The 7-day tab covers the 7 days ending today (inclusive); the 28-day tab covers the 28 days ending today (inclusive). Today is included.
+
+The 20:00 cutoff is a fixed constant in this version (`SUMMARY_CUTOFF_HOUR = 20`, defined in the ViewModel layer). It is not user-configurable and there is no UI to change it.
+
+**Refresh behaviour**:
+
+The summaries screen recomputes the window and reloads data every time the user navigates to it (e.g. by tapping the Summaries tab, or by switching between the 7-day and 28-day sub-tabs). This means:
+- Newly logged entries from the Daily Progress tab appear immediately on the next visit to Summaries.
+- If the user opens the app before 20:00, logs entries through the evening, leaves the app open, and returns to Summaries after 20:00, the window correctly updates to include today on the next visit. The user does not need to restart the app.
+
+No manual "refresh" affordance is shown. The reload happens automatically per architecture section 7.5.
 
 **States**:
 
 | State    | Behaviour                                                    |
 |----------|--------------------------------------------------------------|
-| Loading  | Shimmer placeholders for all metrics.                        |
-| No plan  | Metrics show intake values only. Target shows "No plan". Progress bars hidden. Text: "Set up a nutrition plan to see targets." |
-| No entries in period | All intake values show 0. Progress bars at 0%. Daily average: 0. |
-| Populated | As described.                                               |
+| Loading  | Shimmer placeholders for the period label, rolling-window hint, and all metrics. |
+| No plan  | Metrics show intake values only. Target shows "No plan". Progress bars hidden. Text: "Set up a nutrition plan to see targets." The rolling-window hint and period label are still shown so the user knows which days are summarised. |
+| No entries in period | All intake values show 0. Progress bars at 0%. Daily average row shows "0 kcal | P: 0.0g | C: 0.0g | F: 0.0g". The period label and rolling-window hint are still shown. |
+| No history yet (new user, before 20:00) | Special variant of the "no entries" state. The period label shows e.g. "Period: dd/MM/yyyy -- dd/MM/yyyy" (the 7 or 28 days ending yesterday), and a small note appears in place of the daily average row: "No entries yet for this period. Today is not yet included -- check back after 20:00." This is the only state that explicitly calls out the cutoff, because for a brand-new user it is the most likely point of confusion. |
+| Populated | As described above.                                          |
 
 ---
 
@@ -1072,8 +1221,12 @@ Identical flow to 4.1 but the user selects "Search branded products (OFF)" in st
 1. User navigates to `recipes/detail/{id}`.
 2. User taps the **Edit** icon. -> `recipes/edit/{id}`
 3. Recipe name and ingredients are pre-populated. Live totals reflect current state.
-4. User can: remove ingredients (tap X), add new ingredients (same sub-flow as creation), or change the recipe name.
-5. User taps **"Save Recipe"**. -> Recipe updated. Navigates to `recipes/detail/{id}`.
+4. User can:
+   - Remove an ingredient by tapping the trailing X icon on its row.
+   - Add a new ingredient by tapping "+ Add Ingredient" (same sub-flow as creation).
+   - Change the recipe name.
+   - **Edit an existing ingredient in-place by tapping its row.** This opens the Edit Ingredient bottom sheet (Section 3.13a) pre-populated with that ingredient's current name, weight, and per-100g values. The user can change any of these fields. Tapping **Save** on the sheet applies the change to the in-memory ingredient list, updates the recipe screen's live totals immediately, and dismisses the sheet. Tapping **Cancel** (or the X icon, or dragging the sheet down, or tapping outside the sheet) discards the change and dismisses the sheet without modifying the ingredient. No database write occurs at this point -- the edit is held in memory until the user saves the whole recipe.
+5. User taps **"Save Recipe"**. -> Recipe updated (all in-memory changes flushed in a single transaction). Navigates to `recipes/detail/{id}`.
 
 ### 4.8 Nutrition Plan Setup
 
@@ -1087,6 +1240,18 @@ Identical flow to 4.1 but the user selects "Search branded products (OFF)" in st
 2. User taps the **Delete** (trash) icon on a log entry.
 3. Confirmation dialog appears: "Delete entry? {foodName} -- {kcal} kcal".
 4. User taps **"Delete"**. -> Entry deleted. List updates. Progress recalculated.
+
+### 4.10 Viewing Rolling Summaries
+
+1. User taps the **Summaries** tab in the bottom navigation. -> `summaries`.
+2. On entry, `SummariesViewModel` evaluates the local time and computes the rolling window:
+   - Before 20:00: window ends end-of-yesterday.
+   - From 20:00: window ends end-of-today.
+3. The screen shows the 7-day tab by default. Period label and rolling-window hint reflect the computed window.
+4. User can tap the **28 Days** tab to switch to the 28-day window. The window is re-evaluated and data reloaded.
+5. If the user leaves Summaries (e.g. switches to Daily Progress) and returns, the window is re-evaluated on each return. This covers two cases:
+   - New log entries made on Daily Progress are reflected on the next visit.
+   - If the local time has crossed 20:00 since the previous visit, the window expands to include today.
 
 ---
 
@@ -1122,7 +1287,7 @@ A card displaying nutritional values in a four-column grid layout.
 
 **Layout**: When `prominent = true` (confirmation screen): kcal in `titleLarge` centred above three macro columns in `titleMedium`. When `prominent = false` (weight entry preview): all four in a single row with `labelSmall` headers and `bodyMedium` values.
 
-**Usage**: Entry confirmation, weight entry preview, live recipe totals.
+**Usage**: Entry confirmation, weight entry preview, live recipe totals, Edit Ingredient sheet scaled preview.
 
 ### 5.4 ConfirmationDialog
 
@@ -1160,6 +1325,38 @@ A list item card for daily log entries.
 
 **Usage**: Daily Progress log entries list.
 
+### 5.8 RollingWindowHint
+
+A single-line caption used by the Summaries screen to communicate which days are included in the rolling window.
+
+**Props**: includesToday (Boolean).
+
+**Layout**: `labelSmall` / `onSurfaceVariant`, single line, left-aligned beneath the period label.
+- When `includesToday = false`: text reads "Today excluded -- updates after 20:00".
+- When `includesToday = true`: text reads "Includes today".
+
+**Usage**: Summaries screen, below the period label on both the 7-day and 28-day tabs.
+
+### 5.9 IngredientRow
+
+A tappable list item used in the Create/Edit Recipe screen ingredient list.
+
+**Props**: name (String), weightG (Double), kcal (Double), onClick (callback), onRemove (callback).
+
+**Layout**: Row content (name, weight, kcal) occupies the primary tap area mapped to `onClick`. A trailing `IconButton` with `Close` icon is wired to `onRemove` and has a separate click area. Minimum row height 56dp. Content description on the primary tap area reads "Edit {name}, {weightG}g, {kcal} kcal"; content description on the remove icon reads "Remove {name}".
+
+**Usage**: Create Recipe and Edit Recipe ingredient list (Section 3.13).
+
+### 5.10 EditIngredientSheet
+
+A modal bottom sheet for in-place editing of a recipe ingredient.
+
+**Props**: initialValues (IngredientEditValues with name, weight, per-100g kcal/protein/carbs/fat), onSave (callback with new IngredientEditValues), onCancel (callback).
+
+**Layout**: As described in Section 3.13a. Header, six input fields, scaled-for-this-ingredient preview, and a Cancel/Save button row.
+
+**Usage**: Rendered from the Create Recipe and Edit Recipe screen when an ingredient row is tapped.
+
 ---
 
 ## 6. Edge Cases and Special Behaviours
@@ -1182,11 +1379,13 @@ When the device has no internet connection:
 
 ### 6.4 Plan Changes Mid-Period
 
-When the user changes their nutrition plan, the new plan takes effect immediately. The summaries screen correctly sums per-day targets using the plan that was active on each day within the period (via `getPlanForDate()`). This means a 7-day summary may reflect two different daily targets if the plan was changed within the last 7 days. The summaries screen does not display a notice about plan changes within the period -- the cumulative target simply reflects the correct summed value.
+When the user changes their nutrition plan, the new plan takes effect immediately. The summaries screen correctly sums per-day targets using the plan that was active on each day within the rolling window (via `getPlanForDate()`). This means a 7-day summary may reflect two different daily targets if the plan was changed within the window. The summaries screen does not display a notice about plan changes within the period -- the cumulative target simply reflects the correct summed value. Because the same rolling window is used for both intake and target sums, the inclusion or exclusion of today by the 20:00 cutoff is automatically consistent across the two values.
 
 ### 6.5 Incomplete API Data
 
 When a food item from USDA or Open Food Facts is missing one or more of the four core nutritional values, the flow automatically routes through `log/missing_values` before reaching `log/weight_entry`. The user must fill in all missing values before proceeding. This is enforced by the `missingFields` property on `FoodSearchResult`.
+
+For ingredients already added to a recipe, the user does **not** need to remove and re-add an ingredient to fix incomplete or incorrect API data. Tapping the ingredient row opens the Edit Ingredient sheet (Section 3.13a), where the name and all per-100g values are editable regardless of the ingredient's source.
 
 ### 6.6 Very Large Numbers
 
@@ -1199,6 +1398,19 @@ For users logging multiple items in quick succession, the return to `daily_progr
 ### 6.8 Data Retention
 
 Log entries older than 2 years are automatically deleted by `DataRetentionWorker`. The user is never notified of this -- it happens silently in the background. Recipes are retained indefinitely and can be manually deleted by the user from the recipe detail screen.
+
+### 6.9 Rolling Window Cutoff (20:00 boundary)
+
+The Summaries screen excludes the current day from the rolling 7-day and 28-day windows until 20:00 local device time. From 20:00 onward today is included. This rule comes from the requirements (Rolling Summaries section) and is implemented per architecture section 7.6.
+
+Design implications:
+
+- The Summaries screen always shows a period label with concrete start and end dates, so the user can verify which days are covered without needing to know the rule.
+- A short rolling-window hint sits below the period label (see section 3.14 element 4) saying either "Today excluded -- updates after 20:00" or "Includes today". This is the only place in the UI where the 20:00 cutoff is surfaced. It is intentionally low-noise -- a plain caption, not a banner or modal.
+- The hint, period label, and totals all recompute on each visit to the screen (see section 3.14 refresh behaviour). A user who opens the app at 19:55, leaves it open, and returns to Summaries at 20:05 will see the window expand to include today on the second visit.
+- A new user opening Summaries before 20:00 on their first day will see no totals (because yesterday and earlier had no entries). The "no history yet" state (section 3.14, states table) addresses this specific case with an explanatory note. After 20:00 on the same day, today's entries appear in the window.
+- The Daily Progress screen is unaffected by the cutoff. It always reflects today's intake in real time. The cutoff is exclusively a summaries-screen concept.
+- The 20:00 value is not user-configurable in this version. No settings affordance is shown for it. If a future version makes it configurable, the corresponding control would live in the Settings screen, but designing that UI is out of scope for v1.
 
 ---
 
@@ -1213,6 +1425,8 @@ While not a primary design focus, the following baseline accessibility measures 
 - Confirmation dialogs use semantic button roles (confirm/dismiss).
 - Colour is never the sole means of conveying information -- all progress indicators also display numeric values.
 - Text contrast ratios meet WCAG AA on the dark background (all `onBackground` and `onSurface` text on `background`/`surface` exceeds 4.5:1 ratio).
+- The rolling-window hint on the Summaries screen is plain text and is read aloud by screen readers in natural reading order after the period label.
+- The ingredient row on the Create/Edit Recipe screen exposes its primary tap action via an explicit content description ("Edit {name}, {weightG}g, {kcal} kcal") so screen reader users are not surprised by the otherwise-unannotated row-level tap target. The remove icon has its own distinct content description ("Remove {name}").
 
 ---
 
@@ -1236,6 +1450,25 @@ The design specifies a bottom sheet for ingredient method selection during recip
 
 The 100% quick-select button for packaged foods depends on whether the API response includes a defined serving/package size. Open Food Facts often includes `serving_size` but not always. USDA Foundation/SR Legacy data does not have a standard package size. The 100% button should only appear when a reference total weight is available (recipes always have `totalWeightG`; API results only when a serving size is present in the response). The architecture does not currently store a serving size in `FoodCache`. This means the 100% button will primarily be useful for recipe portions. If packaged food serving sizes are desired, a `servingSizeG` nullable field would need to be added to `FoodCache`.
 
+### 8.5 Discoverability of the 20:00 Rolling-Window Cutoff
+
+The 20:00 cutoff rule is non-obvious. Before 20:00, today's entries do not appear in the Summaries totals at all, which can look like a bug to a user who logged a meal an hour ago. The design mitigates this with:
+
+1. An always-visible period label showing concrete start and end dates.
+2. A short rolling-window hint immediately below it ("Today excluded -- updates after 20:00" / "Includes today").
+3. A dedicated "no history yet" state for new users opening Summaries before 20:00 on their first day.
+
+These measures are deliberately low-noise (a caption and a period label, not a banner). The trade-off is that some users may still be briefly confused on first encounter. If the product owner later reports that this is a recurring point of confusion, alternatives include:
+
+- A small `Info` icon next to the hint that opens a popover explaining the rule.
+- Showing today's running intake as a separate, visually distinct row above the main totals (e.g. "Today so far -- not yet included: 1,250 kcal").
+
+Both would add visual noise and complexity, so they are not adopted by default. They are noted here for future consideration.
+
+### 8.6 Row-Tap for Ingredient Edit vs Explicit Edit Affordance
+
+The Edit Ingredient sheet is opened by tapping the ingredient row itself, not by an explicit "edit" icon. This was chosen because (a) the row is already a substantial 56dp+ tap target by virtue of its content, so it does not waste density on a redundant icon, and (b) the trailing X (remove) icon is the only secondary action and is well-separated visually. The trade-off is discoverability: a user who has never edited an ingredient must learn that the row is tappable. Mitigations: the row uses a `Modifier.clickable` with the default ripple, which gives a visual hint on press; the accessibility content description explicitly announces "Edit {name}, ..."; and the row is part of a list whose other instance (log entries on Daily Progress) does not currently have a similar tap action, so there is no inconsistent precedent. If discoverability proves a problem in usability testing, a small trailing `Edit` icon could be added without changing the tap behaviour.
+
 ---
 
 ## 9. Revision History
@@ -1249,3 +1482,53 @@ Amendments based on updated requirements (P03, P04) and architecture Revision 1.
 1. **Nutrition plan management moved to Settings (P03).** The dedicated `plan` route and `PlanViewModel` have been removed. Section 3.2 is replaced with a tombstone note. Section 3.15 (Settings) is expanded with a full Nutrition Plan sub-section including the plan input fields, effective date, save button, and validation rules. `SettingsViewModel` now owns both USDA API key management and plan management. References in Section 3.1 (Daily Progress) updated so the "Plan" button and "No nutrition plan set" card both navigate to `settings` instead of `plan`. The "Plan screen" row removed from the back-behaviour table in Section 2.3. Section 4.8 updated to reflect plan setup now occurs within the Settings screen.
 
 2. **Manual entry accepts as-consumed values, skips weight entry (P04).** Section 3.6 (Manual Entry) updated: field labels changed from "per 100g" context to "as consumed" (e.g. "Kilocalories consumed"). The Next button now navigates directly to `log/confirm`, bypassing `log/weight_entry`. A note is added to clarify that in ingredient-addition mode (recipe creation), the same screen still presents per-100g labels and a weight field, as recipes require per-100g reference data for proportional scaling. Section 4.4 interaction flow updated to remove the weight entry step, reducing the tap count from 6 to 4 (plus typing).
+
+### Revision 3 -- 2026-05-12
+
+Amendments based on requirements Revision 1 (2026-05-12) and architecture Revision 2 (2026-05-12), which introduced the rolling-summary window cutoff at 20:00 local device time.
+
+#### Changes
+
+3. **Rolling-summary window cutoff surfaced on the Summaries screen (Section 3.14).** The screen now describes the window-computation rule in user-facing terms: before 20:00 local time the window ends end-of-yesterday; from 20:00 onward it ends end-of-today. The previously generic "period always ends on today" text has been replaced by a concrete rule consistent with architecture section 7.6. The period label's example was updated to reflect a "today excluded" window.
+
+4. **New "rolling-window hint" caption added below the period label (Section 3.14, element 4).** A single-line `labelSmall` caption sits beneath the period label and reads either "Today excluded -- updates after 20:00" (before 20:00) or "Includes today" (from 20:00). This is the primary user-facing surface for the cutoff rule and is intentionally low-noise -- a caption rather than a banner.
+
+5. **Refresh behaviour clarified on the Summaries screen (Section 3.14).** The screen now explicitly recomputes the rolling window and reloads data on every visit. The interaction flow handles two cases: new entries logged between visits, and crossing the 20:00 boundary while the app is open. No manual refresh affordance is shown.
+
+6. **New "no history yet" state added to Summaries (Section 3.14, states table).** For a brand-new user opening Summaries before 20:00 on their first day, the screen shows an explanatory note in place of the daily-average row: "No entries yet for this period. Today is not yet included -- check back after 20:00." This is the only state that calls out the cutoff explicitly, because it is the most likely point of first-time confusion.
+
+7. **New interaction flow added: Viewing Rolling Summaries (Section 4.10).** Describes the tap path, the window-computation step, tab switching between 7-day and 28-day views, and the re-evaluation that occurs on each return to the screen (covering both newly logged entries and 20:00-boundary crossings).
+
+8. **New shared component: RollingWindowHint (Section 5.8).** Documents the low-noise caption component used on Summaries, including its two text variants based on the `includesToday` boolean prop.
+
+9. **New edge case section: Rolling Window Cutoff (Section 6.9).** Consolidates the design implications of the 20:00 rule: always-visible period label with concrete dates, rolling-window hint, first-day new-user state, and a note that the Daily Progress screen is unaffected by the cutoff (it always reflects today's intake in real time). Also confirms that the cutoff is not user-configurable in v1.
+
+10. **Section 6.4 (Plan Changes Mid-Period) refined.** Wording updated to refer to "the rolling window" rather than "the period" and to note explicitly that because intake and target sums share the same window, the cutoff applies consistently to both -- excluding today removes today's intake and today's target together.
+
+11. **New UX issue: Discoverability of the 20:00 Cutoff (Section 8.5).** Documents the trade-off between low-noise design and discoverability for a non-obvious rule, lists the three mitigations adopted, and records two unadopted alternatives (info popover, "today so far" row) for future consideration if confusion proves recurring.
+
+12. **Accessibility note added (Section 7).** Confirms that the new rolling-window hint is read aloud by screen readers in natural reading order after the period label.
+
+### Revision 4 -- 2026-05-12
+
+Amendments based on requirements Revision 2 (2026-05-12) and architecture Revision 3 (2026-05-12), which introduced in-place editing of recipe ingredients during recipe creation and editing.
+
+#### Changes
+
+13. **Section 3.13 (Create/Edit Recipe) updated for in-place ingredient editing.** Each ingredient row is now a tappable element whose primary tap target opens the Edit Ingredient sheet (Section 3.13a). The trailing X icon retains its existing remove-ingredient behaviour and is a separate tap target with its own click handler that does not propagate to the row. The row's accessibility content description explicitly announces "Edit {name}, {weight}g, {kcal} kcal". Row minimum height is 56dp. The discard confirmation dialog on the Close (X) icon now considers any in-memory ingredient edit as an unsaved change. The states table gains a new entry for "Unsaved in-memory edits" and an annotation on "Edit mode (loaded)" indicating that ingredient rows are tappable for in-place editing.
+
+14. **New section 3.13a (Edit Ingredient Sheet).** A new sub-section documents the modal bottom sheet that opens when an ingredient row is tapped. The sheet is pre-populated with the ingredient's current name, weight, and per-100g values. All six fields are editable for all ingredient sources (USDA, Open Food Facts, MANUAL), per the requirement that API-sourced values can be corrected without re-fetching. The sheet includes a scaled-for-this-ingredient preview card that updates reactively as fields change. Validation rules match those used when adding an ingredient (non-empty name, weight > 0, per-100g macros >= 0). Save invokes `CreateRecipeViewModel.editIngredient(id, IngredientEditValues)` and dismisses; Cancel (via the X icon, drag-to-dismiss, scrim tap, or the Cancel button) dismisses without applying changes. Persistence to Room occurs only when the user saves the entire recipe, consistent with architecture Section 7.7 and Section 7.8.
+
+15. **Form-factor justification: modal bottom sheet selected.** Section 3.13a includes an explicit justification for choosing a modal bottom sheet over a full-screen destination and over an inline-editable row. Key reasons: (a) the sheet keeps the primary Save action in the thumb-reach zone with a consistent 56dp touch target, matching the meal logging flow's preference for large easy-to-hit confirm buttons; (b) it is consistent with the app's existing modal patterns (ingredient method-selection sheet, barcode product-not-found bottom sheet) and avoids the back-stack complexity of a full-screen destination for a transient single-purpose form; (c) inline-row editing was rejected because six per-row fields hurts information density when collapsed, fights with the system IME when expanded, and creates ambiguous Cancel semantics when switching between rows mid-edit.
+
+16. **New interaction flow: Recipe Editing updated (Section 4.7).** The flow now describes in-place ingredient editing as a first-class option alongside add and remove. The flow notes that the edit is held in memory until the user saves the whole recipe, and that Cancel (including scrim tap and drag-to-dismiss) discards the change for that single ingredient without affecting the rest of the in-memory state.
+
+17. **New shared components: IngredientRow (Section 5.9) and EditIngredientSheet (Section 5.10).** `IngredientRow` documents the tappable list item with a separate trailing remove button, including the dual-content-description pattern for accessibility. `EditIngredientSheet` documents the modal bottom sheet as a reusable component scoped to the recipe screen, including its props (initial values, save callback, cancel callback) and the scaled-preview behaviour.
+
+18. **NutritionCard usage extended (Section 5.3).** The scaled-for-this-ingredient preview inside the Edit Ingredient sheet reuses the existing `NutritionCard` component (in its non-prominent form). The Usage line of Section 5.3 has been updated to include the Edit Ingredient sheet.
+
+19. **Section 6.5 (Incomplete API Data) updated.** A note has been added that for ingredients already added to a recipe, the user does not need to remove and re-add an ingredient to correct incomplete or incorrect API data; tapping the ingredient row opens the Edit Ingredient sheet where the name and all per-100g values are editable regardless of source. This matches the mitigation noted in architecture Section 17.4.
+
+20. **New UX issue (Section 8.6): Row-Tap for Ingredient Edit vs Explicit Edit Affordance.** Documents the choice not to add a dedicated edit icon to each ingredient row, the discoverability trade-off, and the mitigations adopted (Material ripple on press, explicit accessibility content description). Notes that a small trailing edit icon could be added later without changing the tap behaviour if usability testing reveals a discoverability problem.
+
+21. **Accessibility note added (Section 7).** Confirms that the ingredient row's primary tap action is exposed via an explicit content description so screen reader users are not surprised by the otherwise-unannotated row-level tap target, and that the remove icon retains its own distinct content description.

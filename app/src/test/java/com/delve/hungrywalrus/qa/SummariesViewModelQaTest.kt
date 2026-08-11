@@ -26,6 +26,10 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import java.time.Clock
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 
 /**
  * QA unit tests for [SummariesViewModel] filling coverage gaps:
@@ -57,6 +61,14 @@ class SummariesViewModelQaTest {
         Dispatchers.resetMain()
     }
 
+    // Fixed clock at 20:00 local time today. At/after the 20:00 cutoff (architecture
+    // §7.6) today is included in the rolling window, so end == today. This preserves
+    // the assertion semantics these tests inherited from the pre-cutoff implementation.
+    private val fixedClock: Clock = Clock.fixed(
+        LocalDate.now().atTime(LocalTime.of(20, 0)).atZone(ZoneId.systemDefault()).toInstant(),
+        ZoneId.systemDefault(),
+    )
+
     private fun plan(kcal: Int = 2000) = NutritionPlan(
         id = 1, kcalTarget = kcal, proteinTargetG = 150.0,
         carbsTargetG = 250.0, fatTargetG = 65.0, effectiveFrom = 0L,
@@ -76,7 +88,7 @@ class SummariesViewModelQaTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(entries)
         coEvery { planRepo.getPlanForDate(any()) } returns plan()
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             awaitItem() // Loading
@@ -95,7 +107,7 @@ class SummariesViewModelQaTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             awaitItem() // Loading
@@ -113,7 +125,7 @@ class SummariesViewModelQaTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns plan()
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase, fixedClock)
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.uiState.test {
@@ -142,7 +154,7 @@ class SummariesViewModelQaTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             awaitItem() // Loading
@@ -164,7 +176,7 @@ class SummariesViewModelQaTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase, fixedClock)
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.selectTab(SummaryTab.Day28)
@@ -214,7 +226,7 @@ class SummariesViewModelQaTest {
             todayPlan
         }
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             awaitItem() // Loading
@@ -240,7 +252,7 @@ class SummariesViewModelQaTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             awaitItem() // Loading

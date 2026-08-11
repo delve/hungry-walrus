@@ -61,6 +61,10 @@ class AddEntryViewModelTest {
         every { apiKeyStore.hasApiKey() } returns false
         every { apiKeyStore.getApiKey() } returns null
         every { recipeRepo.getAllRecipes() } returns flowOf(emptyList())
+        // W03 (UI Pass 1): selectFood / applyMissingValues now cache API-sourced
+        // complete results. Default the call to a no-op so existing tests that do
+        // not specifically verify caching are not affected.
+        coEvery { foodLookupRepo.cacheItem(any()) } just Runs
     }
 
     @After
@@ -648,5 +652,152 @@ class AddEntryViewModelTest {
         assertNotNull(scaled)
         // 130 * 150 / 100 = 195
         assertEquals(195.0, scaled!!.kcal, 0.001)
+    }
+
+    // ---- W03 (UI Pass 1): selectFood / applyMissingValues cache API-sourced results ----
+
+    @Test
+    fun `selectFood writes USDA complete result to cache via cacheItem`() = runTest {
+        val viewModel = createViewModel()
+        val food = FoodSearchResult(
+            id = "usda:12345", name = "Chicken breast", source = FoodSource.USDA,
+            kcalPer100g = 165.0, proteinPer100g = 31.0, carbsPer100g = 0.0, fatPer100g = 3.6,
+            missingFields = emptySet(),
+        )
+
+        viewModel.selectFood(food)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 1) { foodLookupRepo.cacheItem(food) }
+    }
+
+    @Test
+    fun `selectFood writes OFF complete result to cache via cacheItem`() = runTest {
+        val viewModel = createViewModel()
+        val food = FoodSearchResult(
+            id = "off:5901234123457", name = "Cola", source = FoodSource.OPEN_FOOD_FACTS,
+            kcalPer100g = 42.0, proteinPer100g = 0.0, carbsPer100g = 10.6, fatPer100g = 0.0,
+            missingFields = emptySet(),
+        )
+
+        viewModel.selectFood(food)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 1) { foodLookupRepo.cacheItem(food) }
+    }
+
+    @Test
+    fun `selectFood does not cache API result with missing fields`() = runTest {
+        // Per W03 the cache write is deferred until applyMissingValues completes the data.
+        val viewModel = createViewModel()
+        val incomplete = FoodSearchResult(
+            id = "off:incomplete", name = "Mystery Bar", source = FoodSource.OPEN_FOOD_FACTS,
+            kcalPer100g = null, proteinPer100g = 8.0, carbsPer100g = 50.0, fatPer100g = 10.0,
+            missingFields = setOf(NutritionField.KCAL),
+        )
+
+        viewModel.selectFood(incomplete)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 0) { foodLookupRepo.cacheItem(any()) }
+    }
+
+    @Test
+    fun `selectFood does not cache MANUAL source result`() = runTest {
+        // Manual entries have synthetic ids and are not part of the API cache contract.
+        val viewModel = createViewModel()
+        val manual = FoodSearchResult(
+            id = "manual_1716314400000", name = "Home-made smoothie", source = FoodSource.MANUAL,
+            kcalPer100g = 200.0, proteinPer100g = 5.0, carbsPer100g = 30.0, fatPer100g = 4.0,
+            missingFields = emptySet(),
+        )
+
+        viewModel.selectFood(manual)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 0) { foodLookupRepo.cacheItem(any()) }
+    }
+
+    @Test
+    fun `applyMissingValues caches result once it becomes complete (USDA)`() = runTest {
+        val viewModel = createViewModel()
+        val incomplete = FoodSearchResult(
+            id = "usda:partial", name = "Almonds", source = FoodSource.USDA,
+            kcalPer100g = null, proteinPer100g = 21.0, carbsPer100g = 22.0, fatPer100g = 50.0,
+            missingFields = setOf(NutritionField.KCAL),
+        )
+        viewModel.selectFood(incomplete)
+        testDispatcher.scheduler.advanceUntilIdle()
+        // Sanity: no cache write yet because kcal is still missing.
+        coVerify(exactly = 0) { foodLookupRepo.cacheItem(any()) }
+
+        viewModel.applyMissingValues(kcal = 579.0, protein = null, carbs = null, fat = null)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // After the override applies, the food is complete and must be cached exactly once.
+        coVerify(exactly = 1) { foodLookupRepo.cacheItem(match {
+            it.id == "usda:partial" && it.kcalPer100g == 579.0 && it.missingFields.isEmpty()
+        }) }
+    }
+
+    @Test
+    fun `applyMissingValues caches result once it becomes complete (OFF)`() = runTest {
+        val viewModel = createViewModel()
+        val incomplete = FoodSearchResult(
+            id = "off:partial", name = "Branded Bar", source = FoodSource.OPEN_FOOD_FACTS,
+            kcalPer100g = 350.0, proteinPer100g = null, carbsPer100g = 40.0, fatPer100g = null,
+            missingFields = setOf(NutritionField.PROTEIN, NutritionField.FAT),
+        )
+        viewModel.selectFood(incomplete)
+        testDispatcher.scheduler.advanceUntilIdle()
+        coVerify(exactly = 0) { foodLookupRepo.cacheItem(any()) }
+
+        viewModel.applyMissingValues(kcal = null, protein = 8.0, carbs = null, fat = 12.0)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 1) { foodLookupRepo.cacheItem(match {
+            it.id == "off:partial" && it.proteinPer100g == 8.0 && it.fatPer100g == 12.0
+                && it.missingFields.isEmpty()
+        }) }
+    }
+
+    @Test
+    fun `applyMissingValues does not cache when result still has missing fields`() = runTest {
+        // Two-of-four overrides supplied: result stays incomplete and must NOT be cached.
+        val viewModel = createViewModel()
+        val incomplete = FoodSearchResult(
+            id = "usda:partial", name = "Snack", source = FoodSource.USDA,
+            kcalPer100g = null, proteinPer100g = null, carbsPer100g = null, fatPer100g = null,
+            missingFields = setOf(
+                NutritionField.KCAL, NutritionField.PROTEIN,
+                NutritionField.CARBS, NutritionField.FAT,
+            ),
+        )
+        viewModel.selectFood(incomplete)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.applyMissingValues(kcal = 200.0, protein = 10.0, carbs = null, fat = null)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        coVerify(exactly = 0) { foodLookupRepo.cacheItem(any()) }
+    }
+
+    @Test
+    fun `cache write failure does not crash the ViewModel`() = runTest {
+        // Best-effort caching: a Room failure must not prevent the user from proceeding.
+        coEvery { foodLookupRepo.cacheItem(any()) } throws RuntimeException("disk full")
+        val viewModel = createViewModel()
+        val food = FoodSearchResult(
+            id = "usda:1", name = "Rice", source = FoodSource.USDA,
+            kcalPer100g = 130.0, proteinPer100g = 2.7, carbsPer100g = 28.0, fatPer100g = 0.3,
+            missingFields = emptySet(),
+        )
+
+        viewModel.selectFood(food)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // The selection still took effect even though the cache write threw.
+        assertEquals(food, viewModel.uiState.value.selectedFood)
+        coVerify(exactly = 1) { foodLookupRepo.cacheItem(food) }
     }
 }

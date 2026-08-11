@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.delve.hungrywalrus.data.repository.FoodLookupRepository
 import com.delve.hungrywalrus.data.repository.LogEntryRepository
 import com.delve.hungrywalrus.data.repository.RecipeRepository
-import com.delve.hungrywalrus.domain.OfflineException
+import com.delve.hungrywalrus.domain.model.OfflineException
 import com.delve.hungrywalrus.domain.model.FoodSearchResult
 import com.delve.hungrywalrus.domain.model.FoodSource
 import com.delve.hungrywalrus.domain.model.NutritionField
@@ -15,8 +15,10 @@ import com.delve.hungrywalrus.ui.screen.addentry.AddEntryUiEvent
 import com.delve.hungrywalrus.ui.screen.addentry.AddEntryViewModel
 import com.delve.hungrywalrus.ui.screen.addentry.SearchState
 import com.delve.hungrywalrus.util.ApiKeyStore
+import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -69,6 +71,10 @@ class AddEntryViewModelQaTest {
         every { apiKeyStore.hasApiKey() } returns false
         every { apiKeyStore.getApiKey() } returns null
         every { recipeRepo.getAllRecipes() } returns flowOf(emptyList())
+        // W03 (UI Pass 1): selectFood / applyMissingValues now cache API-sourced
+        // complete results. Default the call to a no-op so existing QA tests are
+        // not affected by the new write path.
+        coEvery { foodLookupRepo.cacheItem(any()) } just Runs
     }
 
     @After

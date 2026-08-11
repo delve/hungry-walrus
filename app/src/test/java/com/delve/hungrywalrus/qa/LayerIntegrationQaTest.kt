@@ -28,6 +28,10 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import java.time.Clock
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 
 /**
  * QA integration tests for the repository-to-ViewModel layer interaction.
@@ -62,6 +66,14 @@ class LayerIntegrationQaTest {
     fun tearDown() {
         Dispatchers.resetMain()
     }
+
+    // Fixed clock at 20:00 local time today. At/after the 20:00 cutoff (architecture
+    // §7.6) today is included in the rolling window, so end == today. This preserves
+    // the assertion semantics these tests inherited from the pre-cutoff implementation.
+    private val fixedClock: Clock = Clock.fixed(
+        LocalDate.now().atTime(LocalTime.of(20, 0)).atZone(ZoneId.systemDefault()).toInstant(),
+        ZoneId.systemDefault(),
+    )
 
     // ---- DailyProgressViewModel ----
 
@@ -159,7 +171,7 @@ class LayerIntegrationQaTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns plan
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase, fixedClock)
         testDispatcher.scheduler.advanceUntilIdle()
 
         viewModel.selectTab(SummaryTab.Day28)
@@ -184,7 +196,7 @@ class LayerIntegrationQaTest {
         every { logRepo.getEntriesForRange(any(), any()) } returns flowOf(emptyList())
         coEvery { planRepo.getPlanForDate(any()) } returns null
 
-        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase)
+        val viewModel = SummariesViewModel(logRepo, planRepo, summaryUseCase, fixedClock)
 
         viewModel.uiState.test {
             awaitItem() // Loading

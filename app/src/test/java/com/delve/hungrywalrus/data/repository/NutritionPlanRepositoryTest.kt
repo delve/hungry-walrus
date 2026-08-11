@@ -8,10 +8,12 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
@@ -112,8 +114,37 @@ class NutritionPlanRepositoryTest {
         assertEquals(160.0, captured.proteinTargetG, 0.001)
         assertEquals(280.0, captured.carbsTargetG, 0.001)
         assertEquals(75.0, captured.fatTargetG, 0.001)
-        assert(captured.effectiveFrom in beforeCall..afterCall) {
-            "effectiveFrom ${captured.effectiveFrom} was not in range [$beforeCall, $afterCall]"
+        assertTrue(
+            "effectiveFrom ${captured.effectiveFrom} was not in range [$beforeCall, $afterCall]",
+            captured.effectiveFrom in beforeCall..afterCall,
+        )
+    }
+
+    @Test
+    fun `getCurrentPlan passes a current-time snapshot to the DAO, not Long_MAX_VALUE`() = runTest {
+        val nowSlot = slot<Long>()
+        every { dao.getCurrentPlan(capture(nowSlot)) } returns flowOf(null)
+
+        val before = System.currentTimeMillis()
+        repository.getCurrentPlan().test {
+            awaitItem()
+            awaitComplete()
         }
+        val after = System.currentTimeMillis()
+
+        // Repository must propagate the current wall-clock time to the DAO so that the
+        // DAO's `effectiveFrom <= :now` filter continues to behave correctly even if a
+        // future-dated plan is ever inserted (e.g. a scheduled plan change feature).
+        // Using Long.MAX_VALUE would silently disable that filter.
+        //
+        // The `captured in before..after` window is sufficient on its own: the current wall
+        // clock is roughly 1.7e12 ms and Long.MAX_VALUE is ~9.2e18, so a `captured` value
+        // inside [before, after] cannot also equal Long.MAX_VALUE. An explicit
+        // `assertEquals(false, captured == Long.MAX_VALUE)` would therefore be redundant.
+        val captured = nowSlot.captured
+        assertTrue(
+            "DAO 'now' argument $captured not in expected window [$before, $after]",
+            captured in before..after,
+        )
     }
 }

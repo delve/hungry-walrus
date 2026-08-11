@@ -12,6 +12,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -53,46 +54,93 @@ class DataRetentionQaTest {
 
     /**
      * Boundary condition: an entry timestamped at exactly the computed threshold epoch
-     * has `timestamp == threshold`. The SQL query is `WHERE timestamp < threshold`,
-     * so `timestamp < threshold` is false for an entry at exactly threshold.
-     * That entry must NOT be deleted.
+     * has `timestamp == threshold`. The SQL query is `WHERE timestamp < threshold`, so
+     * `timestamp < threshold` is false for an entry at exactly threshold. That entry must
+     * NOT be deleted.
+     *
+     * The assertion is built so it is **non-tautological** (i.e. it would fail if the
+     * worker computed an unreasonable threshold) and **non-racy** (no second clock reading
+     * is compared against the worker's captured value). We bracket the worker call with
+     * `before`/`after` clock readings; the captured threshold must satisfy
+     * `before - 730d <= captured <= after - 730d`. We then construct the candidate
+     * boundary timestamp as `after - 730d`, which is necessarily `>= captured`, and assert
+     * that it is therefore NOT strictly less than `captured` — i.e. NOT eligible for
+     * deletion. This also fails fast if the worker captures a wildly wrong threshold
+     * (e.g. zero, or `now` itself), because then `after - 730d` would be `< captured`.
      */
     @Test
     fun `entry at exactly 730-day boundary is not eligible for deletion`() = runTest {
         val thresholdSlot = slot<Long>()
         coEvery { logEntryDao.deleteOlderThan(capture(thresholdSlot)) } just Runs
 
+        val before = System.currentTimeMillis()
         createWorker().doWork()
+        val after = System.currentTimeMillis()
 
-        // An entry timestamped at exactly the threshold epoch
-        val entryAtBoundary = thresholdSlot.captured
+        val captured = thresholdSlot.captured
+        val twoYearsMillis = TimeUnit.DAYS.toMillis(730)
+        val expectedLow = before - twoYearsMillis
+        val expectedHigh = after - twoYearsMillis
 
-        // The DAO query is timestamp < threshold, so at the boundary it would NOT be deleted.
-        // We verify this by checking the threshold itself: entryAtBoundary is NOT < threshold.
+        // Sanity check: the worker must have computed a threshold within the 730-day window
+        // relative to wall-clock time. Without this, the boundary assertion below would be
+        // satisfied by any wildly wrong threshold value.
         assertTrue(
-            "An entry at exactly the threshold ($entryAtBoundary) should NOT be less than " +
-                "the threshold (${thresholdSlot.captured}) — it is protected from deletion",
-            !(entryAtBoundary < thresholdSlot.captured),
+            "Worker threshold $captured outside expected 730-day window [$expectedLow, $expectedHigh]",
+            captured in expectedLow..expectedHigh,
+        )
+
+        // Candidate timestamp at "exactly the 730-day boundary" derived from a clock reading
+        // taken AFTER the worker ran. Because `after >= before`, we have
+        // `expectedHigh = after - 730d >= captured`, so `entryAtBoundary >= captured` and
+        // therefore `!(entryAtBoundary < captured)` — confirming non-eligibility under
+        // strict-less-than semantics.
+        val entryAtBoundary = expectedHigh
+        assertTrue(
+            "Entry at exactly the 730-day boundary ($entryAtBoundary) must NOT be " +
+                "strictly less than the captured threshold ($captured) -- it is protected from deletion",
+            entryAtBoundary >= captured,
         )
     }
 
     /**
      * An entry 1 millisecond older than the 730-day threshold should be eligible for deletion.
+     *
+     * The assertion is built so it is non-tautological and non-racy: we use the `before`
+     * clock reading taken BEFORE the worker runs. Because `captured >= before - 730d`, we
+     * have `before - 730d - 1 < captured`, so the candidate timestamp is strictly less than
+     * the captured threshold regardless of any subsequent clock drift. The sanity check on
+     * the captured value ensures the worker did not compute a degenerate threshold.
      */
     @Test
     fun `entry 1 millisecond older than 730-day boundary is eligible for deletion`() = runTest {
         val thresholdSlot = slot<Long>()
         coEvery { logEntryDao.deleteOlderThan(capture(thresholdSlot)) } just Runs
 
+        val before = System.currentTimeMillis()
         createWorker().doWork()
+        val after = System.currentTimeMillis()
 
+        val captured = thresholdSlot.captured
         val twoYearsMillis = TimeUnit.DAYS.toMillis(730)
-        // 1 ms before the threshold = 730 days + 1 ms ago
-        val oneMillisOlderEntry = System.currentTimeMillis() - twoYearsMillis - 1
+        val expectedLow = before - twoYearsMillis
+        val expectedHigh = after - twoYearsMillis
 
+        // Sanity check: worker must compute the 730-day window correctly.
         assertTrue(
-            "Entry 1ms older than 730-day boundary should have timestamp < threshold",
-            oneMillisOlderEntry < thresholdSlot.captured,
+            "Worker threshold $captured outside expected 730-day window [$expectedLow, $expectedHigh]",
+            captured in expectedLow..expectedHigh,
+        )
+
+        // Candidate timestamp derived from `before` (the earliest possible wall-clock value
+        // that the worker could have used). Since `captured >= before - 730d`, we have
+        // `before - 730d - 1 < captured`. The assertion is therefore tied to the captured
+        // value via the wall-clock relationship, not via a self-reference.
+        val oneMillisOlderEntry = expectedLow - 1
+        assertTrue(
+            "Entry 1ms older than the 730-day boundary ($oneMillisOlderEntry) must be " +
+                "strictly less than the captured threshold ($captured)",
+            oneMillisOlderEntry < captured,
         )
     }
 
@@ -166,9 +214,5 @@ class DataRetentionQaTest {
                 "threshold (${cacheSlot.captured})",
             entry31DaysOld < cacheSlot.captured,
         )
-    }
-
-    private fun assertEquals(expected: Any, actual: Any) {
-        assertTrue("Expected $expected but was $actual", expected == actual)
     }
 }
