@@ -62,3 +62,8 @@ Follow all additional rules and descriptions in the issue tracking document.
   and if it is sound update the finding and do not re-raise the same finding.
 - If a finding is deferred or ignored by the product owner update the finding 
   and do not report that finding on later passes.
+- Flag any code comment that references a finding ID (C##, W##, O##) or
+  the issue report as a Warning. The comment must be reworded to describe
+  the code's behaviour or rationale without depending on the issue
+  tracking document. Add this Warning finding to the review report the same way 
+  any other finding is recorded, using the format in `issue_tracking.md`.
