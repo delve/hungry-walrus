@@ -64,10 +64,10 @@ architecture is unchanged; the layer plan is still required.
   in place. Preserve the document's structure. Add or amend the affected
   sections; do not rewrite unaffected sections.
 - If architectural changes are NOT needed, leave `./handoffs/architecture.md`
-  unchanged and record that decision in the layer plan.
+  unchanged and record that decision in `./handoffs/architecture.json`.
 - Determine which layers of the app need work to fulfill the request.
 - Determine the correct order of that work. Data-layer changes come
-  before domain-layer changes that depend on them; domain before UI.
+  before domain-layer changes that depend on them; domain before UI. Record that plan in `./handoffs/architecture.json`.
 - Produce a layer plan regardless of whether the architecture needed updates.
 
 ## Product decisions to respect
