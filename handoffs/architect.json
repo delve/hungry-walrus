@@ -1,0 +1,20 @@
+{
+  "status": "success",
+  "message": "Quick-select reorder and wrapping is UI-only; no architecture change, designer must update the spec.",
+  "artifacts": {
+    "request_summary": "In the Log Food flow, move the 100% quick-select chip to the front of the quick-select list and make the list wrap onto multiple lines instead of scrolling horizontally.",
+    "architecture_updated": false,
+    "architecture_change_summary": "No changes required.",
+    "designer_needed": true,
+    "designer_rationale": "design.md explicitly specifies the quick-select chip order and the horizontally scrollable LazyRow layout (sections 3.9 elements 5-6, 5.5 QuickWeightSelector, 4.4/4.5 flows), so the spec itself must change before implementation.",
+    "layers": [
+      {
+        "id": "ui",
+        "name": "ui layer",
+        "scope": "Change only the quick-select weight control on the Weight Entry screen (route log/weight_entry) and its shared component com.delve.hungrywalrus.ui.component.QuickWeightSelector. Two changes: (1) Ordering - render the '100%' FilterChip as the first item in the list, before the gram chips (25g, 50g, 100g, 150g, 200g, 250g), instead of appending it last. The chip remains conditional on show100Percent && hundredPercentWeight != null, so for generic USDA/manual foods with no reference total weight the list still begins with 25g. (2) Layout - replace the horizontally scrolling LazyRow with a wrapping layout (androidx.compose.foundation.layout.FlowRow, stable in the Compose foundation version pulled in by the pinned BOM) so all chips are visible without a horizontal scroll gesture, flowing onto additional lines as needed. Apply both horizontal and vertical arrangement spacing (existing Spacing.sm horizontally; vertical spacing per the updated design spec) so wrapped rows are not visually cramped. The component is not lazy after this change, which is fine at 6-7 chips. Preserve all existing behaviour: the component's public props (options, selectedValue, onSelect, show100Percent, hundredPercentWeight, onSelect100Percent, modifier) and their semantics are unchanged; tapping a gram chip still sets the weight field to that value; tapping 100% still sets the weight to hundredPercentWeight (recipe totalWeightG or packaged serving size); selected-state highlighting rules are unchanged; the live scaled-nutrition preview and Confirm-button enablement continue to react to the weight field exactly as before. No ViewModel change is expected - AddEntryViewModel already supplies hundredPercentWeight and owns the weight state. Follow the designer's updated design.md for exact spacing, alignment, wrapped-row behaviour, and accessibility ordering (traversal order must follow the new visual order). Note for the designer/developer: with 100% first, a recipe whose total weight happens to equal a chip value (e.g. 100g) can render two chips in selected state simultaneously; resolve this per the updated spec rather than inventing behaviour.",
+        "handoff_prefix": "01-ui",
+        "depends_on": []
+      }
+    ]
+  }
+}

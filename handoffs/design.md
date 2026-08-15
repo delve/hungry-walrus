@@ -552,8 +552,10 @@ Each screen has a `TopAppBar` (Material 3 small top app bar, `surface` backgroun
 | [ - ]  [        150       ] g  [ + ]         |
 |                                               |
 | Quick select:                                 |
-| [25g] [50g] [100g] [150g] [200g] [250g]     |
-| [100%]  (only for packaged/recipe items)     |
+| [100%] [25g] [50g] [100g] [150g]             |
+| [200g] [250g]                                 |
+| (100% chip present only for recipe/packaged   |
+|  items; chips wrap, they do not scroll)       |
 |                                               |
 | Scaled nutrition preview:                     |
 | +--------------------------------------------+|
@@ -575,9 +577,9 @@ Each screen has a `TopAppBar` (Material 3 small top app bar, `surface` backgroun
 
 4. **+/- buttons**: `IconButton` on either side of the weight field. Each tap adjusts the value by 1g. The minus button does not allow the value to go below 1 (rejecting negative and zero values). Long-press accelerates adjustment (10g increments after 500ms hold).
 
-5. **Quick select chips**: Horizontally scrollable `LazyRow` of `FilterChip` components. Values: 25g, 50g, 100g, 150g, 200g, 250g. Tapping a chip sets the weight field to that value. The currently active value (if matching a chip) is shown in selected state.
+5. **Quick select chips**: A wrapping chip group of `FilterChip` components laid out in a `FlowRow` (`androidx.compose.foundation.layout.FlowRow`). The group is **not** horizontally scrollable: every chip is rendered at once and the set wraps onto as many lines as the available width requires. Chip order, reading left to right and then wrapping onto subsequent lines: **100%** (when shown -- see element 6), then 25g, 50g, 100g, 150g, 200g, 250g. Horizontal spacing between chips: `sm` (8dp). Vertical spacing between wrapped lines: `sm` (8dp). Tapping a chip sets the weight field to that value. The currently active value (if it matches a chip) is shown in selected state. Because the whole set is visible without scrolling, no preset is ever hidden off the trailing edge and the user never has to perform a scroll gesture before tapping the weight they want -- this removes a gesture from the fastest logging path and makes the full range of presets discoverable at a glance. The chip group's height varies with the number of wrapped lines; the surrounding layout must let it grow rather than constraining it to a single row height.
 
-6. **100% button**: A separate `FilterChip` labelled "100%". Shown only when the food source is a recipe (sets weight to `recipe.totalWeightG`) or a packaged food with a defined serving size. For generic USDA/manual foods, this chip is hidden. Tapping sets the weight to the total/serving weight.
+6. **100% chip**: A `FilterChip` labelled "100%" rendered as the **first chip of the quick-select group** described in element 5 (leading position, ahead of 25g). It is not a separate row or control. Shown only when the food source is a recipe (sets weight to `recipe.totalWeightG`) or a packaged food with a defined serving size. For generic USDA/manual foods the chip is hidden, the group simply begins with 25g, and the remaining chips reflow to fill the space. Tapping sets the weight to the total/serving weight. It is placed first because, in the flows where it appears (recipe portions and packaged items), it is the single highest-value preset -- putting it at the head of the reading order makes the most common one-tap action the first thing the user's eye and thumb reach.
 
 7. **Scaled nutrition preview**: A `Card` on `surfaceVariant` showing four columns:
    - Headers: "Kcal", "Protein", "Carbs", "Fat" in `labelSmall`.
@@ -1162,7 +1164,7 @@ No manual "refresh" affordance is shown. The reload happens automatically per ar
 2. User taps **"Search generic foods (USDA)"**. -> `log/search/usda`
 3. User types food name. Results appear after 300ms debounce.
 4. User taps a result. -> `log/weight_entry` (or `log/missing_values` first if data is incomplete).
-5. User enters weight (or taps a quick-select chip). Preview updates live.
+5. User enters weight, or taps a quick-select chip. The chip group wraps onto multiple lines and does not scroll horizontally, so every preset is visible and reachable with a single tap -- no scroll gesture is needed before selecting a weight. Preview updates live.
 6. User taps **"Confirm"**. -> `log/confirm`
 7. User taps **"Save Entry"**. -> Entry saved. Pops to `daily_progress`.
 
@@ -1170,7 +1172,7 @@ No manual "refresh" affordance is shown. The reload happens automatically per ar
 
 ### 4.2 Meal Logging -- Branded Product Search (Open Food Facts)
 
-Identical flow to 4.1 but the user selects "Search branded products (OFF)" in step 2 and is routed to `log/search/off`.
+Identical flow to 4.1 but the user selects "Search branded products (OFF)" in step 2 and is routed to `log/search/off`. For a branded product with a defined serving size, the **100%** chip is the first chip in the quick-select group (Section 3.9 elements 5-6), so logging a whole package is a single tap with no scrolling.
 
 ### 4.3 Meal Logging -- Barcode Scan
 
@@ -1178,7 +1180,7 @@ Identical flow to 4.1 but the user selects "Search branded products (OFF)" in st
 2. User taps **"Scan barcode"**. -> `log/barcode`
 3. Camera opens. User points at barcode. Auto-detected.
 4. Product looked up. -> `log/weight_entry` (or `log/missing_values` first).
-5. User enters weight or taps quick-select chip. Preview updates.
+5. User enters weight, or taps a quick-select chip. All chips (including the leading **100%** chip when the product has a defined serving size) are visible at once in the wrapping chip group -- there is no horizontal scrolling to perform. Preview updates.
 6. User taps **"Confirm"**. -> `log/confirm`
 7. User taps **"Save Entry"**. -> Pops to `daily_progress`.
 
@@ -1194,12 +1196,14 @@ Identical flow to 4.1 but the user selects "Search branded products (OFF)" in st
 
 **Total taps**: FAB + Manual option + Next + Save = **4 taps + typing 5 fields**.
 
+Note: this flow never reaches `log/weight_entry`, so the quick-select chip group (Section 3.9 elements 5-6) does not appear for manual entries.
+
 ### 4.5 Meal Logging -- Recipe Portion
 
 1. User taps **FAB (+)** on Daily Progress. -> `log/method`
 2. User taps **"Log from recipe"**. -> `log/recipe_select`
 3. User taps a recipe. -> `log/weight_entry` (pre-loaded with recipe nutrition data scaled proportionally).
-4. User enters portion weight or taps 100% for the full recipe.
+4. User enters the portion weight, or taps the **100%** chip for the full recipe. The 100% chip is the **first** chip in the quick-select group and, because the group wraps rather than scrolling horizontally, it is always on screen at the leading edge of the first line -- logging a whole recipe is therefore a single tap with no scroll gesture. The gram presets (25g, 50g, 100g, 150g, 200g, 250g) follow it, wrapping onto further lines as needed.
 5. User taps **"Confirm"**. -> `log/confirm`
 6. User taps **"Save Entry"**. -> Pops to `daily_progress`.
 
@@ -1299,11 +1303,19 @@ A standard Material 3 `AlertDialog` for destructive actions.
 
 ### 5.5 QuickWeightSelector
 
-A horizontally scrollable row of `FilterChip` components for common weights.
+A wrapping chip group of `FilterChip` components for common weights.
+
+**Container**: `FlowRow` (`androidx.compose.foundation.layout.FlowRow`). This component is **not** a `LazyRow` and is **not** horizontally scrollable. All chips are composed at once and wrap onto additional lines when the set exceeds the available width. The component holds no scroll state and shows no scroll indicators or edge fades.
 
 **Props**: options (List<Int>), selectedValue (Int?), onSelect (callback), show100Percent (Boolean), hundredPercentWeight (Double?).
 
-**Usage**: Weight entry screen.
+**Chip ordering**: When `show100Percent = true`, the "100%" chip is emitted **first**, ahead of every entry in `options`; it maps to `hundredPercentWeight`. The `options` values then follow in ascending order (default set: 25, 50, 100, 150, 200, 250). When `show100Percent = false`, the group contains only the `options` chips and begins with the smallest value; no gap is left in the leading position.
+
+**Layout behaviour**: `horizontalArrangement = Arrangement.spacedBy(8dp)` (`sm`) between chips on a line; `verticalArrangement = Arrangement.spacedBy(8dp)` (`sm`) between wrapped lines. The component's measured height varies with the number of lines produced at the current width and font scale, so callers must not constrain it to a fixed single-row height. Chips are left-aligned; the final line may be partially filled.
+
+**Selection**: `selectedValue` renders the matching chip in `FilterChip` selected state. A weight typed directly into the weight field that happens to match a chip value also renders that chip as selected.
+
+**Usage**: Weight entry screen (Section 3.9, elements 5-6).
 
 ### 5.6 FoodSearchResultItem
 
@@ -1412,6 +1424,12 @@ Design implications:
 - The Daily Progress screen is unaffected by the cutoff. It always reflects today's intake in real time. The cutoff is exclusively a summaries-screen concept.
 - The 20:00 value is not user-configurable in this version. No settings affordance is shown for it. If a future version makes it configurable, the corresponding control would live in the Settings screen, but designing that UI is out of scope for v1.
 
+### 6.10 Quick-Select Chip Group on Narrow Screens and Large Font Scales
+
+Because the quick-select chip group wraps rather than scrolls (Section 3.9 elements 5-6, Section 5.5), its height is not fixed. On a narrow device, or when the user has a large system font scale or display size, the seven chips may occupy three or more lines instead of two. This is acceptable and preferred over horizontal scrolling: it keeps every preset visible and tappable without a gesture, at the cost of some vertical space on the weight entry screen.
+
+The weight entry screen's content is vertically scrollable as a whole, so additional wrapped lines never push the Confirm button or the scaled nutrition preview off screen without a way to reach them. Implementations must not clip the chip group to a single row height or place it inside a fixed-height container.
+
 ---
 
 ## 7. Accessibility
@@ -1427,6 +1445,7 @@ While not a primary design focus, the following baseline accessibility measures 
 - Text contrast ratios meet WCAG AA on the dark background (all `onBackground` and `onSurface` text on `background`/`surface` exceeds 4.5:1 ratio).
 - The rolling-window hint on the Summaries screen is plain text and is read aloud by screen readers in natural reading order after the period label.
 - The ingredient row on the Create/Edit Recipe screen exposes its primary tap action via an explicit content description ("Edit {name}, {weightG}g, {kcal} kcal") so screen reader users are not surprised by the otherwise-unannotated row-level tap target. The remove icon has its own distinct content description ("Remove {name}").
+- The quick-select weight chips on the Weight Entry screen use a wrapping `FlowRow` rather than a horizontal scroller. Every chip is therefore present in the layout and in the accessibility tree at once, traversed in a single natural reading order starting with the "100%" chip where it is shown. No chip is hidden behind a scroll gesture, which benefits switch-access and screen-reader users in particular, and the group grows vertically rather than clipping when large font scales are in use.
 
 ---
 
@@ -1448,7 +1467,7 @@ The design specifies a bottom sheet for ingredient method selection during recip
 
 ### 8.4 100% Button Applicability
 
-The 100% quick-select button for packaged foods depends on whether the API response includes a defined serving/package size. Open Food Facts often includes `serving_size` but not always. USDA Foundation/SR Legacy data does not have a standard package size. The 100% button should only appear when a reference total weight is available (recipes always have `totalWeightG`; API results only when a serving size is present in the response). The architecture does not currently store a serving size in `FoodCache`. This means the 100% button will primarily be useful for recipe portions. If packaged food serving sizes are desired, a `servingSizeG` nullable field would need to be added to `FoodCache`.
+The 100% quick-select chip for packaged foods depends on whether the API response includes a defined serving/package size. Open Food Facts often includes `serving_size` but not always. USDA Foundation/SR Legacy data does not have a standard package size. The 100% chip should only appear when a reference total weight is available (recipes always have `totalWeightG`; API results only when a serving size is present in the response). When it is not shown, the wrapping chip group simply begins with the 25g chip and the remaining chips reflow -- no placeholder or gap is left in the leading position. The architecture does not currently store a serving size in `FoodCache`. This means the 100% chip will primarily be useful for recipe portions. If packaged food serving sizes are desired, a `servingSizeG` nullable field would need to be added to `FoodCache`.
 
 ### 8.5 Discoverability of the 20:00 Rolling-Window Cutoff
 
@@ -1468,6 +1487,10 @@ Both would add visual noise and complexity, so they are not adopted by default. 
 ### 8.6 Row-Tap for Ingredient Edit vs Explicit Edit Affordance
 
 The Edit Ingredient sheet is opened by tapping the ingredient row itself, not by an explicit "edit" icon. This was chosen because (a) the row is already a substantial 56dp+ tap target by virtue of its content, so it does not waste density on a redundant icon, and (b) the trailing X (remove) icon is the only secondary action and is well-separated visually. The trade-off is discoverability: a user who has never edited an ingredient must learn that the row is tappable. Mitigations: the row uses a `Modifier.clickable` with the default ripple, which gives a visual hint on press; the accessibility content description explicitly announces "Edit {name}, ..."; and the row is part of a list whose other instance (log entries on Daily Progress) does not currently have a similar tap action, so there is no inconsistent precedent. If discoverability proves a problem in usability testing, a small trailing `Edit` icon could be added without changing the tap behaviour.
+
+### 8.7 Vertical Cost of the Wrapping Quick-Select Chip Group
+
+Wrapping the quick-select chips rather than scrolling them trades vertical space for reachability: the group occupies two lines at typical widths (and three or more at large font scales) where a horizontal scroller would occupy one. This is in tension with the high-information-density principle, but it is the right trade for this specific control because the weight entry screen is a step in the app's primary, speed-critical interaction, and a hidden preset costs the user a scroll gesture plus a tap where a visible one costs a single tap. The screen has no competing dense content -- it shows only a food name, a weight field, the chip group, a four-value preview card, and the Confirm button -- so the extra line is absorbed without pushing anything important below the fold on a typical device. If a future revision adds content to this screen, the chip set (rather than the wrap behaviour) should be the thing that is trimmed.
 
 ---
 
@@ -1532,3 +1555,23 @@ Amendments based on requirements Revision 2 (2026-05-12) and architecture Revisi
 20. **New UX issue (Section 8.6): Row-Tap for Ingredient Edit vs Explicit Edit Affordance.** Documents the choice not to add a dedicated edit icon to each ingredient row, the discoverability trade-off, and the mitigations adopted (Material ripple on press, explicit accessibility content description). Notes that a small trailing edit icon could be added later without changing the tap behaviour if usability testing reveals a discoverability problem.
 
 21. **Accessibility note added (Section 7).** Confirms that the ingredient row's primary tap action is exposed via an explicit content description so screen reader users are not surprised by the otherwise-unannotated row-level tap target, and that the remove icon retains its own distinct content description.
+
+### Revision 5 -- 2026-08-15
+
+Scoped revision to the quick weight selection control on the Weight Entry screen (`log/weight_entry`). No other screen, flow, or component is affected.
+
+#### Changes
+
+22. **"100%" chip moved to the first position in the quick-select group (Section 3.9 elements 5-6, Section 5.5).** The "100%" chip is no longer a separate chip rendered after the gram presets. It is now the leading chip of the single quick-select group, ahead of 25g, and is followed by 25g, 50g, 100g, 150g, 200g, 250g in ascending order. Rationale: for the flows where the chip appears (recipe portions and packaged items with a defined serving size) it is the highest-value preset, so it belongs at the head of the reading order and at the most reachable position. When the chip is not applicable (generic USDA and manual foods) it is hidden and the group begins with 25g, with the remaining chips reflowing; no gap is left in the leading position.
+
+23. **Quick-select chips now wrap instead of scrolling horizontally (Section 3.9 element 5, Section 5.5).** The container changes from a horizontally scrollable `LazyRow` to a wrapping `FlowRow`. All chips are composed at once and wrap onto as many lines as the available width requires, with 8dp (`sm`) horizontal spacing between chips and 8dp (`sm`) vertical spacing between wrapped lines. The control holds no scroll state and shows no scroll indicators or edge fades. Rationale: a horizontal scroller hides presets off the trailing edge, forcing a scroll gesture before a tap on the app's primary, speed-critical interaction. Wrapping makes every preset visible and one tap away. The Section 3.9 layout diagram has been updated to show the wrapped arrangement with "100%" first.
+
+24. **Component spec updated: QuickWeightSelector (Section 5.5).** The component is now specified as a `FlowRow`-based wrapping chip group rather than a horizontally scrollable row. The spec documents the container type, the explicit chip ordering rule tied to the `show100Percent` prop, the horizontal and vertical arrangement spacing, the selection behaviour, and the requirement that callers must not constrain the component to a fixed single-row height because its measured height varies with the number of wrapped lines.
+
+25. **Log Food flow descriptions updated (Sections 4.1, 4.2, 4.3, 4.4, 4.5).** Flow steps that reference the weight quick-select control now state that all chips are visible without a scroll gesture, and the recipe-portion flow (4.5) and branded-product note (4.2) state that the "100%" chip is the first chip in the group so logging a whole recipe or package is a single tap. Section 4.4 (manual entry) carries a note that this flow never reaches the weight entry screen and therefore never shows the chip group. Tap counts are unchanged, but the previously implicit scroll gesture is removed from the barcode, search, and recipe-portion paths.
+
+26. **Accessibility note added (Section 7).** Because the group no longer scrolls, every chip is present in the accessibility tree at once and is traversed in a single natural reading order beginning with the "100%" chip where shown. References to horizontal scroll gestures and scroll indicators for this control have been removed throughout the document; the group grows vertically rather than clipping at large font scales.
+
+27. **New edge case (Section 6.10) and new UX issue (Section 8.7).** Section 6.10 documents the behaviour of the wrapping chip group on narrow screens and at large font scales (three or more lines is acceptable; the group must not be clipped or placed in a fixed-height container). Section 8.7 records the deliberate trade-off of vertical space against reachability, and notes that if the weight entry screen later gains competing content, the chip set rather than the wrap behaviour should be trimmed.
+
+28. **Section 8.4 (100% Button Applicability) updated.** Wording now refers to the "100% chip" consistently with its new status as a member of the quick-select group, and records that when the chip is hidden the remaining chips reflow with no gap in the leading position. The underlying architectural gap is unchanged: `FoodCache` has no `servingSizeG` field, so in practice the chip is currently useful mainly for recipe portions.

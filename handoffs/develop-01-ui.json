@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "message": "Quick-select weight chips now wrap in a FlowRow with the 100% chip first.",
+  "artifacts": {
+    "summary": "Reworked QuickWeightSelector from a horizontally scrolling LazyRow into a wrapping FlowRow chip group with the 100% chip in the leading position, extracting the ordering and selection rules into a testable pure function. Added 15 unit tests covering ordering, value resolution, selection states and spacing tokens; the full build and 562-test suite pass."
+  }
+}

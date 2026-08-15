@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "message": "Revised weight-entry quick-select chips: 100% chip first, wrapping FlowRow instead of horizontal scroll.",
+  "artifacts": {
+    "summary": "Applied a scoped revision to the Log Food weight entry control: the 100% chip is now the first chip in the quick-select group and the group wraps onto multiple lines via FlowRow instead of scrolling horizontally. Updated Section 3.9, the QuickWeightSelector component spec (5.5), the affected logging flow descriptions (4.1-4.5), accessibility notes, and added a wrap-related edge case, UX trade-off note, and revision history entry."
+  }
+}
