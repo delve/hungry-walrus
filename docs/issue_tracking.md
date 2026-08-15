@@ -25,7 +25,7 @@ The code reviewer adds and updates findings. When adding findings the code
 reviewer sets the ID, state, and summary fields. New findings have state 
 'Open'. The code reviewer can only update the state field, and can only set
 state to 'Open' or 'Resolved' based on its analysis. If an issue state is 
-'Fixed' or 'Resolved' but a subsequent analysis determines that the issue has
+'Resolved' but a subsequent analysis determines that the issue has
 returned this is a regression and the code reviewer will set its state to 
 'Open'. This will increment the 'regression count' reported to the orchestrator.
 
@@ -72,7 +72,7 @@ orchestrator.
 ## ID
 A unique identifier for a finding. It begins with a letter based on its 
 severity followed by a sequential two digit number that is unique in its 
-severity category. EG C01, C02, W01, O01
+severity category. EG C01, C02, P01, W01, O01
 
 ## State
 The state of the finding chosen from the state definitions described above.

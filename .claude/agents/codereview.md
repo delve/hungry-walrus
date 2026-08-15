@@ -58,7 +58,9 @@ UI-related code.
   that the Developer did not document in their session notes.
 - Assess whether the code integrates cleanly with existing layers
   based on the interfaces defined in the architecture.
-- Update the status of issues when the finding is fixed.
+- Verify all findings the developer marked Fixed. If the fix is adequate, set 
+  the state to Resolved. If inadequate, set it back to Open.
+- Reassess resolved issues for regressions.
 
 ## Rules
 - Do not modify any code. Your output is a report only.

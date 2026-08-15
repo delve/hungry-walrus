@@ -69,7 +69,7 @@ build upon consistently.
 - All nutritional values use metric units and kilocalories (kcal).
 - Your work is not complete until `./gradlew build test` compiles and all
   tests pass.
-- Do not reference finding IDs (C##, W##, O##) or the issue report in code
+- Do not reference finding IDs (C##, P##, W##, O##) or the issue report in code
   comments. Code comments must be self-contained and describe the code's
   current behaviour or rationale, not the review history that produced it.
 
