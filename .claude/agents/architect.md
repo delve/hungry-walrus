@@ -15,7 +15,7 @@ whether this is the initial architecture pass or an incremental request.
 
 ## Invariant (must hold on every invocation)
 
-Every architect invocation MUST produce `./handoffs/architecture.json`
+Every architect invocation MUST produce `./handoffs/architect.json`
 as its final action. This file is the machine-readable contract with
 the orchestrator; downstream agents cannot run without it. No mode,
 no request, and no situation exempts this. If you cannot produce it,
@@ -28,7 +28,7 @@ architecture is unchanged; the layer plan is still required.
   and `./CLAUDE.md`.
 - If `./handoffs/architecture.md` already exists, you are in **incremental
   mode**: a user-level feature request will be provided to you. Read the
-  existing architecture and follow the directions in 
+  existing architecture and follow the directions in
   `Incremental responsibilities`
 
 ## Input
@@ -64,10 +64,11 @@ architecture is unchanged; the layer plan is still required.
   in place. Preserve the document's structure. Add or amend the affected
   sections; do not rewrite unaffected sections.
 - If architectural changes are NOT needed, leave `./handoffs/architecture.md`
-  unchanged and record that decision in `./handoffs/architecture.json`.
+  unchanged and record that decision in `./handoffs/architect.json`.
 - Determine which layers of the app need work to fulfill the request.
 - Determine the correct order of that work. Data-layer changes come
-  before domain-layer changes that depend on them; domain before UI. Record that plan in `./handoffs/architecture.json`.
+  before domain-layer changes that depend on them; domain before UI.
+  Record that plan in `./handoffs/architect.json`.
 - Produce a layer plan regardless of whether the architecture needed updates.
 
 ## Product decisions to respect
@@ -107,46 +108,67 @@ These have been made by the product owner and are not open for debate.
 
 ## Outputs
 
-### Required on every invocation: architecture.json
-Write `./handoffs/architecture.json` with the following schema. This file is
-the contract with the orchestrator and downstream agents. It is consumed by the 
-orchestrator to route work to downstream agents. Producing it is not optional 
-and has no exceptions. It must be valid JSON, no trailing commas, no comments.
+### Required on every invocation: architect.json
+
+Write `./handoffs/architect.json` per the schema below. This file is the
+contract with the orchestrator. It is consumed by the orchestrator to
+route work to downstream agents. Producing it is not optional and has no
+exceptions. It must be valid JSON, no trailing commas, no comments.
+
+The file has two layers: a fixed envelope required by the orchestrator,
+and the architect-specific `artifacts` object nested inside it.
 
 ```json
 {
-  "request_summary": "One-sentence restatement of the feature request or 'Initial project build' for cold-start.",
-  "architecture_updated": true,
-  "architecture_change_summary": "Brief description of what changed in architecture.md, or 'No changes required.'",
-  "designer_needed": true,
-  "designer_rationale": "Why the designer must or must not run for this request.",
-  "layers": [
-    {
-      "id": "data",
-      "name": "data layer",
-      "scope": "Concrete description of what work is needed in this layer.",
-      "handoff_prefix": "01-data",
-      "depends_on": []
-    },
-    {
-      "id": "domain",
-      "name": "domain layer",
-      "scope": "...",
-      "handoff_prefix": "02-domain",
-      "depends_on": ["data"]
-    },
-    {
-      "id": "ui",
-      "name": "ui layer",
-      "scope": "...",
-      "handoff_prefix": "03-ui",
-      "depends_on": ["domain"]
-    }
-  ]
+  "status": "success",
+  "message": "One-sentence summary of what this invocation did.",
+  "artifacts": {
+    "request_summary": "One-sentence restatement of the feature request or 'Initial project build' for cold-start.",
+    "architecture_updated": true,
+    "architecture_change_summary": "Brief description of what changed in architecture.md, or 'No changes required.'",
+    "designer_needed": true,
+    "designer_rationale": "Why the designer must or must not run for this request.",
+    "layers": [
+      {
+        "id": "data",
+        "name": "data layer",
+        "scope": "Concrete description of what work is needed in this layer.",
+        "handoff_prefix": "01-data",
+        "depends_on": []
+      },
+      {
+        "id": "domain",
+        "name": "domain layer",
+        "scope": "...",
+        "handoff_prefix": "02-domain",
+        "depends_on": ["data"]
+      },
+      {
+        "id": "ui",
+        "name": "ui layer",
+        "scope": "...",
+        "handoff_prefix": "03-ui",
+        "depends_on": ["domain"]
+      }
+    ]
+  }
 }
 ```
 
-Field rules:
+### Envelope fields (required)
+
+- `status`: `"success"` if you completed your work and produced a valid
+  layer plan. `"failed"` only if you could not complete the invocation
+  (e.g. inputs missing, unrecoverable error). Do not use `"failed"` for
+  soft outcomes like "no architectural changes were needed" — that is a
+  successful invocation.
+- `message`: one short sentence summarising what this invocation did.
+  Shown by the orchestrator in status output. Keep it under 20 words.
+- `error`: include this field ONLY when `status` is `"failed"`. Give a
+  short factual description of the failure. Omit the field entirely on
+  success.
+
+### Artifact field rules
 
 - `request_summary`: one sentence, plain English.
 - `architecture_updated`: boolean. `true` if you modified
@@ -185,9 +207,9 @@ Update `./handoffs/architecture.md` if necessary as described in
 `Incremental responsibilities`.
 
 This is the long term, human and AI readable description of the architecture of
-the hungry-walrus software. It is a document of record of the *current state*, 
+the hungry-walrus software. It is a document of record of the *current state*,
 not a historical record of changes. Structure it with clear sections that the
 Designer and Developer agents can reference directly. Include diagrams described
 in text where they aid understanding (e.g. entity relationships, module
 dependencies, navigation flow). In incremental mode, preserve existing sections
-and only modify what the request requires. 
+and only modify what the request requires.

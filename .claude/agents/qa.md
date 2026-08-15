@@ -12,6 +12,14 @@ Your job is to verify the Hungry Walrus app through automated testing,
 identifying gaps in test coverage and validating that the application
 behaves according to its specifications.
 
+## Invariant (must hold on every invocation)
+
+Every QA invocation MUST produce `./handoffs/qa.json` as its final
+action. This file is the machine-readable contract with the
+orchestrator; the pipeline cannot terminate cleanly without it.
+Producing it is not optional and has no exceptions. If you cannot
+produce it, the invocation has failed.
+
 ## Input
 Read the following documents before starting:
 - Project context: `./CLAUDE.md`
@@ -64,32 +72,73 @@ Then examine the full codebase.
   verify whether it manifests as a test failure and include this in
   your report.
 
-## Output
-Write your QA report to `./handoffs/qa-report.md`. Structure the
+## Outputs
+
+### Required on every invocation: qa.json
+
+Write `./handoffs/qa.json` per the schema below. This file is the
+contract with the orchestrator. It must be valid JSON, no trailing
+commas, no comments.
+
+```json
+{
+  "status": "success",
+  "message": "One-sentence summary of the QA pass outcome.",
+  "artifacts": {
+    "summary": "One or two sentences characterising the QA pass — e.g. build state, whether tests passed, whether bugs were found."
+  }
+}
+```
+
+### Envelope fields (required)
+
+- `status`: `"success"` if you completed the QA pass — regardless of
+  whether the build succeeded, tests passed, or bugs were found. The
+  presence of bugs is a valid outcome that belongs in `qa-report.md`,
+  not a QA-pass failure. Use `"failed"` only if you could not complete
+  the pass itself (inputs missing, unrecoverable tool error).
+- `message`: one short sentence summarising the pass outcome. Shown by
+  the orchestrator in status output. Keep it under 20 words.
+- `error`: include this field ONLY when `status` is `"failed"`. Short
+  factual description of the failure. Omit on success.
+
+### Artifact rules
+
+- `summary`: one or two sentences characterising the QA outcome. Do
+  NOT restate the full report; the orchestrator does not read the
+  artifact beyond this summary. Anything beyond two sentences is
+  wasted output.
+
+### Required on every invocation: qa-report.md
+
+Write your full QA report to `./handoffs/qa-report.md`. Structure the
 report as follows:
 
-### Build status
+#### Build status
 Whether the project compiles successfully. If not, list the errors.
 
-### Existing test results
+#### Existing test results
 Summary of running the Developer's tests. Number passed, failed,
 and any errors.
 
-### New unit tests
+#### New unit tests
 List of additional unit tests written, what each tests, and which
 file it is in.
 
-### Integration tests
+#### Integration tests
 List of integration tests written, what layer interactions each
 verifies, and results.
 
-### Bugs found
+#### Bugs found
 Issues where application behaviour does not match the requirements
 or design specification. For each bug include: description, steps
 to reproduce through test, expected behaviour per spec, actual
 behaviour, and severity (critical, moderate, minor).
 
-### Coverage assessment
+#### Coverage assessment
 A qualitative summary of which areas of the application are well
 tested and which remain undertested. Recommend areas where further
 testing would add the most value.
+
+The markdown is the substantive deliverable. The JSON is just the
+orchestrator's status handle.

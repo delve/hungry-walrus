@@ -55,6 +55,14 @@ correct.
 
 `Ignored` - The issue is deemed insignificant or erroneous.
 
+## Internal state mappings to orchestration state
+
+`Open` and `Fixed` are counted in the `open` state for the orchestrator.
+
+`Resolved`, `Deferred`, and `Ignored` are counted in the `closed` state for the
+orchestrator.
+
+
 # Field definitions
 
 ## ID
