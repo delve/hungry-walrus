@@ -26,7 +26,7 @@ Read the following documents before starting:
 - Product requirements: `./handoffs/requirements.md`
 - Technical architecture: `./handoffs/architecture.md`
 - UI/UX design specification: `./handoffs/design.md`
-- All developer session notes in `./handoffs/developer-notes-*.md`
+- Any developer session notes in `./handoffs/developer-notes-*.md`
 - All code review reports in `./handoffs/code-review-*.md`
 
 Then examine the full codebase.

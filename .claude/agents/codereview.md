@@ -130,17 +130,15 @@ It must be valid JSON, no trailing commas, no comments.
   - `totalCount`: non-negative integer. Total number of findings you
     are tracking across all categories (Critical, Warnings,
     Observations) as of this pass.
-  - `open`: non-negative integer. Number of findings currently in
-    `Open` state, as described in `./docs/issue_tracking.md`. The orchestrator 
-    reads this to detect
-    convergence — when `open` reaches 0, the review loop for this
-    layer is done.
-  - `closed`: non-negative integer. Number of findings NOT in `Open`
-    state, as described in `./docs/issue_tracking.md`.
-  - `regressionCount`: optional. Non-negative integer reporting how
-    many findings regressed in THIS pass (Fixed → Open transitions).
-    Leave this out if there are no regressions. The orchestrator will halt the layer
-    when the count reaches its regression threshold.
+- `open`: non-negative integer. Count of findings in the orchestrator's
+  `open` state per the mapping in `./docs/issue_tracking.md`. When this
+  reaches 0, the review loop for this layer is done.
+- `closed`: non-negative integer. Count of findings in the orchestrator's
+  `closed` state per the mapping in `./docs/issue_tracking.md`.
+- `regressionCount`: optional. Non-negative integer reporting how
+    many findings regressed in THIS pass. Leave this out if there are no 
+    regressions. The orchestrator will halt the layer when the count reaches 
+    its regression threshold.
 
 ### Required on every invocation: markdown review report
 
